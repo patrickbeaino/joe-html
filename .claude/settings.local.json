@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(sips *)",
+      "Bash(python3 *)",
+      "Bash(pip3 install *)",
+      "Bash(/tmp/imgenv/bin/pip install *)",
+      "Bash(/tmp/imgenv/bin/python3 *)"
+    ]
+  }
+}
