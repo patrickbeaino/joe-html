@@ -1710,6 +1710,9 @@
         function appendExtraWorks(works) {
             const grid = document.getElementById('works-grid');
             if (!grid || !Array.isArray(works)) return;
+            if (works.length > 0) {
+                grid.textContent = '';
+            }
             works.forEach(work => {
                 if (!work || !work.imagePath || !work.title) return;
                 grid.appendChild(createWorkCard(work));

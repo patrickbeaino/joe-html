@@ -135,22 +135,6 @@
       font-size: 0.94rem;
     }
 
-    .utility-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 18px;
-      padding: 18px 24px;
-      background:
-        linear-gradient(135deg, rgba(233, 254, 107, 0.08), transparent 40%),
-        rgba(20, 18, 19, 0.88);
-    }
-
-    .utility-copy {
-      display: grid;
-      gap: 8px;
-    }
-
     .eyebrow {
       color: var(--yellow);
       text-transform: uppercase;
@@ -158,27 +142,30 @@
       font-size: 0.68rem;
     }
 
-    .utility-copy h1 {
+    .auth-heading {
+      display: grid;
+      gap: 10px;
+    }
+
+    .auth-heading h1 {
       margin: 0;
       font-family: "Syne", sans-serif;
-      font-size: clamp(2rem, 4vw, 3rem);
-      line-height: 0.96;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      line-height: 0.94;
       letter-spacing: -0.04em;
     }
 
-    .utility-copy p {
+    .auth-heading p {
       margin: 0;
-      max-width: 640px;
+      max-width: 520px;
       color: var(--text-soft);
       line-height: 1.65;
       font-size: 0.92rem;
     }
 
-    .session-box {
-      min-width: 260px;
-      display: grid;
-      gap: 10px;
-      justify-items: end;
+    .auth-shell {
+      max-width: 760px;
+      margin: 0 auto;
     }
 
     .session-chip {
@@ -191,12 +178,7 @@
       color: var(--white);
       font-size: 0.82rem;
       line-height: 1.4;
-    }
-
-    .auth-layout {
-      display: grid;
-      grid-template-columns: minmax(0, 0.95fr) minmax(280px, 0.8fr);
-      gap: 24px;
+      width: fit-content;
     }
 
     .auth-card {
@@ -658,22 +640,12 @@
 
     @media (max-width: 1120px) {
       .dashboard-grid,
-      .editor-layout,
-      .auth-layout {
+      .editor-layout {
         grid-template-columns: 1fr;
       }
 
       .works-list {
         grid-template-columns: 1fr;
-      }
-
-      .session-box {
-        justify-items: start;
-      }
-
-      .utility-bar {
-        align-items: start;
-        flex-direction: column;
       }
     }
 
@@ -683,8 +655,7 @@
       }
 
       .panel-body,
-      .panel-header,
-      .utility-bar {
+      .panel-header {
         padding-left: 16px;
         padding-right: 16px;
       }
@@ -714,18 +685,6 @@
 
 <body>
   <main class="admin-shell">
-    <section class="panel utility-bar">
-      <div class="utility-copy">
-        <div class="eyebrow">Entracte / Admin</div>
-        <h1>Manage works without changing the public site rhythm.</h1>
-        <p>Uploads, editing, and publishing now run through Supabase while the design language stays locked to the existing Entracte world.</p>
-      </div>
-      <div class="session-box">
-        <div class="session-chip" id="session-chip">Session inactive</div>
-        <button class="btn btn-secondary hidden" id="sign-out-btn">Sign Out</button>
-      </div>
-    </section>
-
     <section class="panel hidden" id="setup-panel">
       <div class="panel-header">
         <div>
@@ -745,44 +704,30 @@
 
     <section class="panel" id="auth-panel">
       <div class="panel-header">
-        <div>
+        <div class="auth-shell auth-heading">
           <div class="panel-index">Admin Access</div>
-          <h2>Sign In</h2>
+          <h1>Sign In</h1>
+          <p>Enter the Supabase admin credentials for Entracte.</p>
         </div>
       </div>
       <div class="panel-body">
-        <div class="auth-layout">
-          <div class="auth-card">
-            <p class="panel-copy">Use the admin account you create in Supabase Auth. This keeps `/admin` private even though the route itself remains public.</p>
-            <div class="auth-form">
-              <div class="field">
-                <label for="auth-email">Admin Email</label>
-                <input type="email" id="auth-email" placeholder="you@entracte.eu" autocomplete="username" />
-              </div>
-              <div class="field">
-                <label for="auth-password">Password</label>
-                <input type="password" id="auth-password" placeholder="Enter your password" autocomplete="current-password" />
-              </div>
-              <div class="actions">
-                <button class="btn" id="sign-in-btn">Sign In to Admin</button>
-              </div>
-              <div class="status" id="auth-status"></div>
+        <div class="auth-shell auth-card">
+          <div class="session-chip" id="session-chip">Session inactive</div>
+          <div class="auth-form">
+            <div class="field">
+              <label for="auth-email">Admin Email</label>
+              <input type="email" id="auth-email" placeholder="you@entracte.eu" autocomplete="username" />
             </div>
+            <div class="field">
+              <label for="auth-password">Password</label>
+              <input type="password" id="auth-password" placeholder="Enter your password" autocomplete="current-password" />
+            </div>
+            <div class="actions">
+              <button class="btn" id="sign-in-btn">Sign In to Admin</button>
+              <button class="btn btn-secondary hidden" id="sign-out-btn">Sign Out</button>
+            </div>
+            <div class="status" id="auth-status"></div>
           </div>
-          <aside class="panel auth-card">
-            <div class="panel-body">
-              <div class="editor-meta">
-                <div class="editor-kicker">Production Notes</div>
-                <div class="editor-title-display">Same route. Safer backend.</div>
-                <div class="editor-subtext">`/admin` stays the URL, but writes now depend on authenticated Supabase sessions, Row Level Security, and Storage policies instead of local files.</div>
-              </div>
-              <ul class="helper-list">
-                <li>No public sign-up is exposed here. Create the admin user from the Supabase dashboard.</li>
-                <li>The browser only uses the publishable key. Do not put a service role key in this repo.</li>
-                <li>Unauthorised users can reach the page, but they cannot read or write admin data.</li>
-              </ul>
-            </div>
-          </aside>
         </div>
       </div>
     </section>

@@ -24,7 +24,12 @@ on conflict (email) do nothing;
 
 Use the publishable/anon key from `Settings` -> `API`. Do not use the service role key in the browser.
 
-## 4. Deploy
+## 4. Seed the existing works
+- In Supabase SQL Editor, run [supabase/seed-works.sql](/Users/patrickbeaino/Documents/Patrick/joe-html/supabase/seed-works.sql).
+- This imports the 28 works that are currently hardcoded in `index.html`.
+- The seed is idempotent for the current catalog and skips rows with the same `title` + `director`.
+
+## 5. Deploy
 - Deploy the repo to Cloudflare Pages.
 - `/admin` should be served from `/admin/index.html`.
-- The public site will read extra works directly from Supabase.
+- The public site will switch to the Supabase works list when the table has rows.

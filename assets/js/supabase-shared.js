@@ -47,6 +47,7 @@
   function toPublicImageUrl(path) {
     if (!path) return "";
     if (/^(https?:)?\/\//i.test(path) || path.startsWith("/")) return path;
+    if (path.startsWith("assets/") || path.startsWith("assets-2/")) return `/${path}`;
     if (!isConfigured()) return path;
     const { data } = getClient().storage.from(bucket).getPublicUrl(path);
     return data && data.publicUrl ? data.publicUrl : path;
@@ -54,7 +55,8 @@
 
   function normalizeWork(row) {
     const imagePath = row.image_path || row.imagePath || "";
-    const imageUrl = row.image_url || row.imageUrl || toPublicImageUrl(imagePath);
+    const rawImageUrl = row.image_url || row.imageUrl || imagePath;
+    const imageUrl = toPublicImageUrl(rawImageUrl || imagePath);
     return {
       id: row.id,
       title: row.title || "",
