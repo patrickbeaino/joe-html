@@ -361,6 +361,26 @@
       align-items: start;
     }
 
+    .dashboard-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+    }
+
+    .dashboard-toolbar .panel-copy {
+      margin: 0;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
     .stack {
       display: grid;
       gap: 24px;
@@ -670,7 +690,8 @@
       }
 
       .actions,
-      .work-item-actions {
+      .work-item-actions,
+      .toolbar-actions {
         flex-direction: column;
         align-items: stretch;
       }
@@ -733,6 +754,16 @@
     </section>
 
     <div class="dashboard-grid hidden" id="admin-app">
+      <section class="panel dashboard-toolbar" id="admin-toolbar">
+        <div>
+          <div class="panel-index">Admin Session</div>
+          <p class="panel-copy">Signed in and ready to manage the live works catalog.</p>
+        </div>
+        <div class="toolbar-actions">
+          <div class="session-chip" id="dashboard-session-chip">Session active</div>
+          <button class="btn btn-secondary" id="dashboard-sign-out-btn">Sign Out</button>
+        </div>
+      </section>
       <div class="stack">
         <section class="panel">
           <div class="panel-header">
@@ -864,7 +895,9 @@
     const authPanel = document.getElementById("auth-panel");
     const setupPanel = document.getElementById("setup-panel");
     const sessionChip = document.getElementById("session-chip");
+    const dashboardSessionChip = document.getElementById("dashboard-session-chip");
     const signOutBtn = document.getElementById("sign-out-btn");
+    const dashboardSignOutBtn = document.getElementById("dashboard-sign-out-btn");
     const signInBtn = document.getElementById("sign-in-btn");
     const authStatus = document.getElementById("auth-status");
     const uploadBtn = document.getElementById("upload-btn");
@@ -959,7 +992,9 @@
 
     function setSessionState(message, active) {
       sessionChip.textContent = message;
+      dashboardSessionChip.textContent = message;
       signOutBtn.classList.toggle("hidden", !active);
+      dashboardSignOutBtn.classList.toggle("hidden", !active);
     }
 
     function showSetupState() {
@@ -1272,8 +1307,9 @@
       }
     });
 
-    signOutBtn.addEventListener("click", async () => {
+    async function handleSignOut() {
       signOutBtn.disabled = true;
+      dashboardSignOutBtn.disabled = true;
       try {
         await adminRuntime.getClient().auth.signOut();
         resetEditor();
@@ -1281,8 +1317,12 @@
         setStatus(authStatus, false, error.message || "Could not sign out.");
       } finally {
         signOutBtn.disabled = false;
+        dashboardSignOutBtn.disabled = false;
       }
-    });
+    }
+
+    signOutBtn.addEventListener("click", handleSignOut);
+    dashboardSignOutBtn.addEventListener("click", handleSignOut);
 
     uploadBtn.addEventListener("click", async () => {
       const file = fileInput.files && fileInput.files[0];
@@ -1374,11 +1414,8 @@
         }
 
         const row = Array.isArray(response.data) ? response.data[0] : response.data;
-        if (!row) {
-          throw new Error("The work saved, but no row was returned from Supabase.");
-        }
-        const work = adminRuntime.normalizeWork(row);
-        setStatus(createStatus, true, isEditing ? `Work updated: ${work.title}` : `Work added: ${work.title}`);
+        const savedTitle = (row && row.title) || payload.title;
+        setStatus(createStatus, true, isEditing ? `Work updated: ${savedTitle}` : `Work added: ${savedTitle}`);
         resetEditor();
         await refreshWorksList();
       } catch (error) {
