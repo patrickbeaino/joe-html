@@ -1,0 +1,1439 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Entracte Works Admin</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap"
+    rel="stylesheet" />
+  <style>
+    :root {
+      --yellow: #e9fe6b;
+      --black: #231f20;
+      --white: #f4f1f1;
+      --gray: #888;
+      --panel: rgba(20, 18, 19, 0.88);
+      --panel-strong: rgba(13, 12, 13, 0.96);
+      --line: rgba(244, 241, 241, 0.14);
+      --line-strong: rgba(233, 254, 107, 0.35);
+      --text-soft: rgba(244, 241, 241, 0.68);
+      --danger: #ff7871;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "DM Sans", sans-serif;
+      color: var(--white);
+      background:
+        radial-gradient(circle at top left, rgba(233, 254, 107, 0.12), transparent 28%),
+        radial-gradient(circle at 85% 15%, rgba(233, 254, 107, 0.08), transparent 24%),
+        linear-gradient(180deg, #181516 0%, #0e0c0d 55%, #090808 100%);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, rgba(244, 241, 241, 0.03) 1px, transparent 1px),
+        linear-gradient(rgba(244, 241, 241, 0.03) 1px, transparent 1px);
+      background-size: 120px 120px;
+      opacity: 0.25;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .admin-shell {
+      position: relative;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 28px 24px 72px;
+      display: grid;
+      gap: 24px;
+    }
+
+    .panel {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 30%);
+    }
+
+    .panel-header,
+    .panel-body {
+      position: relative;
+      z-index: 1;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 16px;
+      padding: 22px 24px 0;
+    }
+
+    .panel-header h2 {
+      margin: 0;
+      font-family: "Syne", sans-serif;
+      font-size: 1.55rem;
+      letter-spacing: -0.03em;
+    }
+
+    .panel-index {
+      color: rgba(244, 241, 241, 0.35);
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      font-size: 0.72rem;
+    }
+
+    .panel-body {
+      padding: 20px 24px 24px;
+    }
+
+    .panel-copy {
+      margin: 0 0 18px;
+      color: var(--text-soft);
+      line-height: 1.65;
+      font-size: 0.94rem;
+    }
+
+    .utility-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      padding: 18px 24px;
+      background:
+        linear-gradient(135deg, rgba(233, 254, 107, 0.08), transparent 40%),
+        rgba(20, 18, 19, 0.88);
+    }
+
+    .utility-copy {
+      display: grid;
+      gap: 8px;
+    }
+
+    .eyebrow {
+      color: var(--yellow);
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      font-size: 0.68rem;
+    }
+
+    .utility-copy h1 {
+      margin: 0;
+      font-family: "Syne", sans-serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 0.96;
+      letter-spacing: -0.04em;
+    }
+
+    .utility-copy p {
+      margin: 0;
+      max-width: 640px;
+      color: var(--text-soft);
+      line-height: 1.65;
+      font-size: 0.92rem;
+    }
+
+    .session-box {
+      min-width: 260px;
+      display: grid;
+      gap: 10px;
+      justify-items: end;
+    }
+
+    .session-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--white);
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+
+    .auth-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(280px, 0.8fr);
+      gap: 24px;
+    }
+
+    .auth-card {
+      display: grid;
+      gap: 18px;
+    }
+
+    .auth-form {
+      display: grid;
+      gap: 16px;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    label {
+      color: var(--text-soft);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+    }
+
+    .label-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .label-note {
+      color: rgba(244, 241, 241, 0.46);
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    input[type="text"],
+    input[type="url"],
+    input[type="email"],
+    input[type="password"],
+    input:not([type]) {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--white);
+      padding: 14px 15px;
+      min-height: 50px;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    input::placeholder {
+      color: rgba(244, 241, 241, 0.34);
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--yellow);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .btn {
+      min-height: 48px;
+      border: 1px solid var(--yellow);
+      background: var(--yellow);
+      color: var(--black);
+      padding: 12px 18px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+    }
+
+    .btn:disabled {
+      opacity: 0.56;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      border-color: var(--line);
+      background: transparent;
+      color: var(--white);
+    }
+
+    .btn-inline {
+      min-height: 40px;
+      padding: 10px 12px;
+      font-size: 0.66rem;
+      letter-spacing: 0.14em;
+    }
+
+    .danger {
+      border-color: rgba(255, 120, 113, 0.5);
+      color: var(--danger);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .status {
+      min-height: 22px;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    .ok {
+      color: var(--yellow);
+    }
+
+    .err {
+      color: var(--danger);
+    }
+
+    .tiny {
+      color: var(--text-soft);
+      font-size: 0.8rem;
+      line-height: 1.6;
+    }
+
+    .helper-list {
+      display: grid;
+      gap: 8px;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      color: var(--text-soft);
+      font-size: 0.82rem;
+      line-height: 1.55;
+    }
+
+    .helper-list li {
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .helper-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.65em;
+      width: 6px;
+      height: 6px;
+      background: var(--yellow);
+    }
+
+    .path-pill {
+      min-height: 52px;
+      display: flex;
+      align-items: center;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.025);
+      color: var(--text-soft);
+      font-size: 0.84rem;
+      line-height: 1.5;
+      word-break: break-all;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: minmax(320px, 420px) minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .stack {
+      display: grid;
+      gap: 24px;
+    }
+
+    .upload-card {
+      display: grid;
+      gap: 16px;
+    }
+
+    .upload-dropzone {
+      border: 1px dashed var(--line-strong);
+      background: rgba(255, 255, 255, 0.025);
+      min-height: 280px;
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+
+    .preview-frame {
+      position: relative;
+      overflow: hidden;
+      min-height: 220px;
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(180deg, rgba(244, 241, 241, 0.05), rgba(244, 241, 241, 0.01)),
+        #111011;
+      display: grid;
+      place-items: center;
+    }
+
+    .preview-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+
+    .preview-frame.has-image img {
+      display: block;
+    }
+
+    .preview-placeholder {
+      width: 100%;
+      padding: 18px;
+      text-align: center;
+      color: var(--text-soft);
+      line-height: 1.6;
+      font-size: 0.9rem;
+    }
+
+    .preview-frame.has-image .preview-placeholder {
+      display: none;
+    }
+
+    .preview-badge {
+      position: absolute;
+      left: 14px;
+      top: 14px;
+      padding: 8px 10px;
+      border: 1px solid rgba(244, 241, 241, 0.16);
+      background: rgba(10, 10, 10, 0.72);
+      color: var(--yellow);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 0.65rem;
+    }
+
+    .file-row {
+      display: grid;
+      gap: 12px;
+    }
+
+    .file-input {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--white);
+      padding: 12px 14px;
+    }
+
+    .file-input::file-selector-button {
+      margin-right: 14px;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--white);
+      padding: 10px 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 0.68rem;
+    }
+
+    .editor-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .editor-fields {
+      display: grid;
+      gap: 18px;
+    }
+
+    .editor-side {
+      display: grid;
+      gap: 14px;
+    }
+
+    .editor-preview {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.025);
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .editor-preview-frame {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 4 / 5;
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(180deg, rgba(244, 241, 241, 0.05), rgba(244, 241, 241, 0.02)),
+        #141314;
+      display: grid;
+      place-items: center;
+    }
+
+    .editor-preview-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+
+    .editor-preview-frame.has-image img {
+      display: block;
+    }
+
+    .editor-preview-frame.has-image .preview-placeholder {
+      display: none;
+    }
+
+    .editor-meta {
+      display: grid;
+      gap: 6px;
+    }
+
+    .editor-kicker {
+      color: var(--yellow);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 0.68rem;
+    }
+
+    .editor-title-display {
+      font-family: "Syne", sans-serif;
+      font-size: 1.55rem;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .editor-subtext {
+      color: var(--text-soft);
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+
+    .works-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .works-head p {
+      margin: 0;
+      color: var(--text-soft);
+      max-width: 520px;
+      line-height: 1.65;
+      font-size: 0.94rem;
+    }
+
+    .works-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .works-empty {
+      min-height: 220px;
+      border: 1px dashed var(--line);
+      background: rgba(255, 255, 255, 0.02);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 24px;
+    }
+
+    .work-item {
+      display: grid;
+      gap: 0;
+      border: 1px solid var(--line);
+      background: var(--panel-strong);
+      overflow: hidden;
+    }
+
+    .work-thumb {
+      position: relative;
+      aspect-ratio: 16 / 10;
+      overflow: hidden;
+      background: #171617;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .work-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .work-chip {
+      position: absolute;
+      left: 14px;
+      top: 14px;
+      padding: 8px 10px;
+      background: rgba(10, 10, 10, 0.75);
+      border: 1px solid rgba(244, 241, 241, 0.16);
+      color: var(--yellow);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 0.64rem;
+    }
+
+    .work-meta {
+      display: grid;
+      gap: 12px;
+      padding: 18px;
+    }
+
+    .work-meta strong {
+      font-family: "Syne", sans-serif;
+      font-size: 1.4rem;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    .work-meta p {
+      margin: 0;
+      color: var(--text-soft);
+      font-size: 0.84rem;
+      line-height: 1.65;
+    }
+
+    .meta-grid {
+      display: grid;
+      gap: 8px;
+    }
+
+    .meta-label {
+      color: rgba(244, 241, 241, 0.44);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 0.63rem;
+    }
+
+    .work-item-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    @media (max-width: 1120px) {
+      .dashboard-grid,
+      .editor-layout,
+      .auth-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .works-list {
+        grid-template-columns: 1fr;
+      }
+
+      .session-box {
+        justify-items: start;
+      }
+
+      .utility-bar {
+        align-items: start;
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .admin-shell {
+        padding: 18px 14px 56px;
+      }
+
+      .panel-body,
+      .panel-header,
+      .utility-bar {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .field-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .works-head {
+        align-items: start;
+        flex-direction: column;
+      }
+
+      .actions,
+      .work-item-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .btn,
+      .btn-inline {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="admin-shell">
+    <section class="panel utility-bar">
+      <div class="utility-copy">
+        <div class="eyebrow">Entracte / Admin</div>
+        <h1>Manage works without changing the public site rhythm.</h1>
+        <p>Uploads, editing, and publishing now run through Supabase while the design language stays locked to the existing Entracte world.</p>
+      </div>
+      <div class="session-box">
+        <div class="session-chip" id="session-chip">Session inactive</div>
+        <button class="btn btn-secondary hidden" id="sign-out-btn">Sign Out</button>
+      </div>
+    </section>
+
+    <section class="panel hidden" id="setup-panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-index">Setup Needed</div>
+          <h2>Connect Supabase</h2>
+        </div>
+      </div>
+      <div class="panel-body">
+        <p class="panel-copy">This admin is ready for Supabase, but the client config is still using placeholder values. Fill the public project URL, publishable key, and admin email before using `/admin` in production.</p>
+        <ul class="helper-list">
+          <li>Edit <code>assets/js/supabase-config.js</code>.</li>
+          <li>Run <code>supabase/setup.sql</code> in the Supabase SQL editor.</li>
+          <li>Use <code>SUPABASE_SETUP.md</code> for the full checklist.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="panel" id="auth-panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-index">Admin Access</div>
+          <h2>Sign In</h2>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="auth-layout">
+          <div class="auth-card">
+            <p class="panel-copy">Use the admin account you create in Supabase Auth. This keeps `/admin` private even though the route itself remains public.</p>
+            <div class="auth-form">
+              <div class="field">
+                <label for="auth-email">Admin Email</label>
+                <input type="email" id="auth-email" placeholder="you@entracte.eu" autocomplete="username" />
+              </div>
+              <div class="field">
+                <label for="auth-password">Password</label>
+                <input type="password" id="auth-password" placeholder="Enter your password" autocomplete="current-password" />
+              </div>
+              <div class="actions">
+                <button class="btn" id="sign-in-btn">Sign In to Admin</button>
+              </div>
+              <div class="status" id="auth-status"></div>
+            </div>
+          </div>
+          <aside class="panel auth-card">
+            <div class="panel-body">
+              <div class="editor-meta">
+                <div class="editor-kicker">Production Notes</div>
+                <div class="editor-title-display">Same route. Safer backend.</div>
+                <div class="editor-subtext">`/admin` stays the URL, but writes now depend on authenticated Supabase sessions, Row Level Security, and Storage policies instead of local files.</div>
+              </div>
+              <ul class="helper-list">
+                <li>No public sign-up is exposed here. Create the admin user from the Supabase dashboard.</li>
+                <li>The browser only uses the publishable key. Do not put a service role key in this repo.</li>
+                <li>Unauthorised users can reach the page, but they cannot read or write admin data.</li>
+              </ul>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <div class="dashboard-grid hidden" id="admin-app">
+      <div class="stack">
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-index">Step 01</div>
+              <h2>Upload Image</h2>
+            </div>
+          </div>
+          <div class="panel-body">
+            <p class="panel-copy">Upload directly to the public `works-images` bucket. The storage path becomes the internal reference for the work card.</p>
+            <div class="upload-card">
+              <div class="upload-dropzone">
+                <div class="preview-frame" id="upload-preview-frame">
+                  <span class="preview-badge">Preview</span>
+                  <img id="upload-preview-image" alt="Selected upload preview" />
+                  <div class="preview-placeholder">Select a JPG, PNG, or WEBP file to preview it here before upload.</div>
+                </div>
+                <div class="file-row">
+                  <label for="image-file">Image File</label>
+                  <input class="file-input" type="file" id="image-file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" />
+                  <button class="btn" id="upload-btn">Upload Image</button>
+                </div>
+              </div>
+              <div id="upload-status" class="status"></div>
+              <div id="uploaded-path" class="path-pill">Uploaded storage path will appear here after a successful upload.</div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="stack">
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-index" id="editor-step-label">Step 02</div>
+              <h2 id="editor-title">Create Work Card</h2>
+            </div>
+          </div>
+          <div class="panel-body">
+            <p class="panel-copy">This editor writes to Supabase Postgres and keeps the same visual tone as the public work grid.</p>
+            <div class="editor-layout">
+              <div class="editor-fields">
+                <div class="field-grid">
+                  <div class="field">
+                    <label for="title">Title *</label>
+                    <input id="title" placeholder="Film title" />
+                  </div>
+                  <div class="field">
+                    <label for="type">Type</label>
+                    <input id="type" placeholder="Trailer / Promoreel / Teaser..." />
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="director">Director *</label>
+                  <input id="director" placeholder="Director name" />
+                </div>
+                <div class="field">
+                  <label for="vimeo-url">Vimeo URL</label>
+                  <input id="vimeo-url" placeholder="https://vimeo.com/..." />
+                </div>
+                <div class="field">
+                  <div class="label-row">
+                    <label for="image-path">Image Path *</label>
+                    <span class="label-note">Auto-filled after upload</span>
+                  </div>
+                  <input id="image-path" placeholder="works/your-uploaded-image.jpg" />
+                </div>
+                <div class="field">
+                  <div class="label-row">
+                    <label for="image-style">Optional Image CSS Style</label>
+                    <span class="label-note">Applied to preview and public cards</span>
+                  </div>
+                  <input id="image-style" placeholder="filter:grayscale(40%)" />
+                </div>
+                <div class="actions">
+                  <button class="btn" id="create-btn">Create Work</button>
+                  <button class="btn btn-secondary" id="cancel-edit-btn" style="display:none">Cancel Edit</button>
+                </div>
+                <div id="create-status" class="status"></div>
+              </div>
+
+              <aside class="editor-side">
+                <div class="editor-preview">
+                  <div class="editor-preview-frame" id="editor-preview-frame">
+                    <img id="editor-preview-image" alt="Work image preview" />
+                    <div class="preview-placeholder">The selected image path will render here so you can confirm the card look before saving.</div>
+                  </div>
+                  <div class="editor-meta">
+                    <div class="editor-kicker" id="preview-type">Work Type</div>
+                    <div class="editor-title-display" id="preview-title">Untitled Work</div>
+                    <div class="editor-subtext" id="preview-director">Directed by —</div>
+                    <div class="path-pill" id="preview-path">Image path not set yet.</div>
+                  </div>
+                </div>
+                <ul class="helper-list">
+                  <li>Required fields remain the same: title, director, image path.</li>
+                  <li>The image path now refers to the object path inside the `works-images` bucket.</li>
+                  <li>Delete with image removes the storage object only when no other work still uses it.</li>
+                </ul>
+              </aside>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-index">Step 03</div>
+              <h2>Existing Uploaded Works</h2>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="works-head">
+              <p>The list below now reflects the live Supabase table. Edit and delete actions update the public site immediately after a fresh fetch.</p>
+            </div>
+            <div id="existing-works" class="works-list"></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/assets/js/supabase-config.js"></script>
+  <script src="/assets/js/supabase-shared.js"></script>
+  <script>
+    const adminRuntime = window.EntracteSupabase;
+    const adminApp = document.getElementById("admin-app");
+    const authPanel = document.getElementById("auth-panel");
+    const setupPanel = document.getElementById("setup-panel");
+    const sessionChip = document.getElementById("session-chip");
+    const signOutBtn = document.getElementById("sign-out-btn");
+    const signInBtn = document.getElementById("sign-in-btn");
+    const authStatus = document.getElementById("auth-status");
+    const uploadBtn = document.getElementById("upload-btn");
+    const createBtn = document.getElementById("create-btn");
+    const cancelEditBtn = document.getElementById("cancel-edit-btn");
+    const editorTitle = document.getElementById("editor-title");
+    const editorStepLabel = document.getElementById("editor-step-label");
+    const uploadStatus = document.getElementById("upload-status");
+    const createStatus = document.getElementById("create-status");
+    const uploadedPath = document.getElementById("uploaded-path");
+    const existingWorks = document.getElementById("existing-works");
+    const fileInput = document.getElementById("image-file");
+    const uploadPreviewFrame = document.getElementById("upload-preview-frame");
+    const uploadPreviewImage = document.getElementById("upload-preview-image");
+    const editorPreviewFrame = document.getElementById("editor-preview-frame");
+    const editorPreviewImage = document.getElementById("editor-preview-image");
+    const previewType = document.getElementById("preview-type");
+    const previewTitle = document.getElementById("preview-title");
+    const previewDirector = document.getElementById("preview-director");
+    const previewPath = document.getElementById("preview-path");
+    let editingId = null;
+    let authSubscription = null;
+
+    function setStatus(el, ok, message) {
+      if (!message) {
+        el.className = "status";
+        el.textContent = "";
+        return;
+      }
+      el.className = ok ? "status ok" : "status err";
+      el.textContent = message;
+    }
+
+    function readAsDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error("Could not read file."));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function updateUploadPreview(src) {
+      if (!src) {
+        uploadPreviewImage.removeAttribute("src");
+        uploadPreviewFrame.classList.remove("has-image");
+        return;
+      }
+      uploadPreviewImage.src = src;
+      uploadPreviewFrame.classList.add("has-image");
+    }
+
+    function resolvePreviewImage(path) {
+      return adminRuntime.toPublicImageUrl(path);
+    }
+
+    function applyPreviewImage(frame, imageEl, imagePath, imageStyle) {
+      if (!imagePath) {
+        imageEl.removeAttribute("src");
+        imageEl.style.cssText = "";
+        frame.classList.remove("has-image");
+        return;
+      }
+
+      imageEl.src = resolvePreviewImage(imagePath);
+      imageEl.style.cssText = imageStyle || "";
+      frame.classList.add("has-image");
+    }
+
+    function updateEditorPreview() {
+      const title = document.getElementById("title").value.trim();
+      const type = document.getElementById("type").value.trim();
+      const director = document.getElementById("director").value.trim();
+      const imagePath = document.getElementById("image-path").value.trim();
+      const imageStyle = document.getElementById("image-style").value.trim();
+
+      previewTitle.textContent = title || "Untitled Work";
+      previewType.textContent = (type || "Work Type").toUpperCase();
+      previewDirector.textContent = director ? `Directed by ${director.replace(/^Dir\.\s*/i, "")}` : "Directed by —";
+      previewPath.textContent = imagePath || "Image path not set yet.";
+      applyPreviewImage(editorPreviewFrame, editorPreviewImage, imagePath, imageStyle);
+    }
+
+    function setSessionState(message, active) {
+      sessionChip.textContent = message;
+      signOutBtn.classList.toggle("hidden", !active);
+    }
+
+    function showSetupState() {
+      setupPanel.classList.remove("hidden");
+      authPanel.classList.add("hidden");
+      adminApp.classList.add("hidden");
+      setSessionState("Supabase not configured", false);
+    }
+
+    function showAuthState(message) {
+      setupPanel.classList.add("hidden");
+      authPanel.classList.remove("hidden");
+      adminApp.classList.add("hidden");
+      setStatus(authStatus, false, message || "");
+      setSessionState("Session inactive", false);
+    }
+
+    function showAdminState(email) {
+      setupPanel.classList.add("hidden");
+      authPanel.classList.add("hidden");
+      adminApp.classList.remove("hidden");
+      setStatus(authStatus, true, "");
+      setSessionState(email || "Admin session active", true);
+    }
+
+    async function ensureAuthorizedSession(session) {
+      if (!session || !session.user) {
+        showAuthState("");
+        return false;
+      }
+
+      try {
+        const email = session.user.email || "";
+        const isAdmin = await adminRuntime.isAdminEmail(email);
+        if (!isAdmin) {
+          await adminRuntime.getClient().auth.signOut();
+          showAuthState("This user is not authorised for the Entracte admin.");
+          return false;
+        }
+        showAdminState(email);
+        await refreshWorksList();
+        return true;
+      } catch (error) {
+        showAuthState(error.message || "Could not verify admin access.");
+        return false;
+      }
+    }
+
+    function getPayloadFromEditor() {
+      const imagePath = document.getElementById("image-path").value.trim();
+      return {
+        title: document.getElementById("title").value.trim(),
+        type: document.getElementById("type").value.trim(),
+        director: document.getElementById("director").value.trim(),
+        vimeoUrl: document.getElementById("vimeo-url").value.trim(),
+        imagePath,
+        imageUrl: resolvePreviewImage(imagePath),
+        imageStyle: document.getElementById("image-style").value.trim()
+      };
+    }
+
+    function resetEditor() {
+      editingId = null;
+      document.getElementById("title").value = "";
+      document.getElementById("type").value = "";
+      document.getElementById("director").value = "";
+      document.getElementById("vimeo-url").value = "";
+      document.getElementById("image-path").value = "";
+      document.getElementById("image-style").value = "";
+      editorTitle.textContent = "Create Work Card";
+      editorStepLabel.textContent = "Step 02";
+      createBtn.textContent = "Create Work";
+      cancelEditBtn.style.display = "none";
+      setStatus(createStatus, true, "");
+      updateEditorPreview();
+    }
+
+    function startEdit(work) {
+      editingId = work.id;
+      document.getElementById("title").value = work.title || "";
+      document.getElementById("type").value = work.type || "";
+      document.getElementById("director").value = work.director || "";
+      document.getElementById("vimeo-url").value = work.vimeoUrl || "";
+      document.getElementById("image-path").value = work.imagePath || "";
+      document.getElementById("image-style").value = work.imageStyle || "";
+      editorTitle.textContent = "Edit Work Card";
+      editorStepLabel.textContent = "Step 02 / Editing";
+      createBtn.textContent = "Save Changes";
+      cancelEditBtn.style.display = "inline-block";
+      setStatus(createStatus, true, `Editing: ${work.title || "Untitled"}`);
+      updateEditorPreview();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function renderWorksList(works) {
+      existingWorks.textContent = "";
+      if (!Array.isArray(works) || works.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "works-empty";
+        empty.innerHTML = '<p class="tiny">No uploaded works yet. Use the upload and editor panels above to create the first card.</p>';
+        existingWorks.appendChild(empty);
+        return;
+      }
+
+      works.forEach((work) => {
+        const item = document.createElement("article");
+        item.className = "work-item";
+
+        const thumb = document.createElement("div");
+        thumb.className = "work-thumb";
+
+        const image = document.createElement("img");
+        image.src = work.imageUrl || resolvePreviewImage(work.imagePath);
+        image.alt = work.imageAlt || work.title || "Work image";
+        if (work.imageStyle) image.style.cssText = work.imageStyle;
+        thumb.appendChild(image);
+
+        const chip = document.createElement("div");
+        chip.className = "work-chip";
+        chip.textContent = (work.type || "Promoreel").toUpperCase();
+        thumb.appendChild(chip);
+        item.appendChild(thumb);
+
+        const meta = document.createElement("div");
+        meta.className = "work-meta";
+
+        const title = document.createElement("strong");
+        title.textContent = work.title || "Untitled";
+        meta.appendChild(title);
+
+        const director = document.createElement("p");
+        director.textContent = work.director ? `Director: ${work.director}` : "Director: -";
+        meta.appendChild(director);
+
+        const metaGrid = document.createElement("div");
+        metaGrid.className = "meta-grid";
+
+        const pathLabel = document.createElement("div");
+        pathLabel.className = "meta-label";
+        pathLabel.textContent = "Image Path";
+        metaGrid.appendChild(pathLabel);
+
+        const path = document.createElement("p");
+        path.textContent = work.imagePath || "-";
+        metaGrid.appendChild(path);
+
+        if (work.vimeoUrl) {
+          const vimeoLabel = document.createElement("div");
+          vimeoLabel.className = "meta-label";
+          vimeoLabel.textContent = "Vimeo URL";
+          metaGrid.appendChild(vimeoLabel);
+
+          const vimeo = document.createElement("p");
+          vimeo.textContent = work.vimeoUrl;
+          metaGrid.appendChild(vimeo);
+        }
+
+        meta.appendChild(metaGrid);
+
+        const actions = document.createElement("div");
+        actions.className = "work-item-actions";
+
+        const editBtn = document.createElement("button");
+        editBtn.className = "btn btn-secondary btn-inline";
+        editBtn.textContent = "Edit";
+        editBtn.addEventListener("click", () => startEdit(work));
+        actions.appendChild(editBtn);
+
+        const deleteWorkBtn = document.createElement("button");
+        deleteWorkBtn.className = "btn btn-secondary btn-inline danger";
+        deleteWorkBtn.textContent = "Delete Work";
+        deleteWorkBtn.addEventListener("click", () => deleteWork(work, false));
+        actions.appendChild(deleteWorkBtn);
+
+        const deleteWithImageBtn = document.createElement("button");
+        deleteWithImageBtn.className = "btn btn-secondary btn-inline danger";
+        deleteWithImageBtn.textContent = "Delete Work + Image";
+        deleteWithImageBtn.addEventListener("click", () => deleteWork(work, true));
+        actions.appendChild(deleteWithImageBtn);
+
+        meta.appendChild(actions);
+        item.appendChild(meta);
+        existingWorks.appendChild(item);
+      });
+    }
+
+    async function refreshWorksList() {
+      try {
+        const works = await adminRuntime.listAdminWorks();
+        renderWorksList(works);
+      } catch (error) {
+        existingWorks.textContent = "";
+        const fail = document.createElement("div");
+        fail.className = "works-empty";
+        fail.innerHTML = `<p class="tiny">${error.message || "Failed to load works."}</p>`;
+        existingWorks.appendChild(fail);
+      }
+    }
+
+    async function deleteWork(work, deleteImage) {
+      const confirmation = deleteImage
+        ? "Delete this work and remove its image file if no other work uses it?"
+        : "Delete this work entry?";
+      if (!window.confirm(confirmation)) {
+        return;
+      }
+
+      try {
+        const supabase = adminRuntime.getClient();
+        const imagePath = work.imagePath || "";
+        const { error: deleteError } = await supabase.from("works").delete().eq("id", work.id);
+        if (deleteError) {
+          throw deleteError;
+        }
+
+        let imageDeleted = false;
+        if (deleteImage && imagePath) {
+          const { count, error: countError } = await supabase
+            .from("works")
+            .select("id", { count: "exact", head: true })
+            .eq("image_path", imagePath);
+          if (countError) {
+            throw countError;
+          }
+          if ((count || 0) === 0) {
+            const { error: storageError } = await supabase.storage.from(adminRuntime.bucket).remove([imagePath]);
+            if (storageError) {
+              throw storageError;
+            }
+            imageDeleted = true;
+          }
+        }
+
+        if (editingId === work.id) {
+          resetEditor();
+        }
+
+        setStatus(
+          createStatus,
+          true,
+          deleteImage
+            ? imageDeleted
+              ? "Work and image deleted."
+              : "Work deleted. Image was still referenced or not removable."
+            : "Work deleted."
+        );
+        await refreshWorksList();
+      } catch (error) {
+        setStatus(createStatus, false, error.message || "Delete failed.");
+      }
+    }
+
+    fileInput.addEventListener("change", async () => {
+      const file = fileInput.files && fileInput.files[0];
+      if (!file) {
+        updateUploadPreview("");
+        return;
+      }
+
+      try {
+        const localPreview = await readAsDataUrl(file);
+        updateUploadPreview(localPreview);
+      } catch {
+        updateUploadPreview("");
+      }
+    });
+
+    ["title", "type", "director", "image-path", "image-style"].forEach((id) => {
+      document.getElementById(id).addEventListener("input", updateEditorPreview);
+    });
+
+    signInBtn.addEventListener("click", async () => {
+      const email = document.getElementById("auth-email").value.trim();
+      const password = document.getElementById("auth-password").value;
+      if (!email || !password) {
+        setStatus(authStatus, false, "Enter both email and password.");
+        return;
+      }
+
+      signInBtn.disabled = true;
+      setStatus(authStatus, true, "Signing in...");
+
+      try {
+        const supabase = adminRuntime.getClient();
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) {
+          throw error;
+        }
+        setStatus(authStatus, true, "Signed in.");
+      } catch (error) {
+        setStatus(authStatus, false, error.message || "Could not sign in.");
+      } finally {
+        signInBtn.disabled = false;
+      }
+    });
+
+    signOutBtn.addEventListener("click", async () => {
+      signOutBtn.disabled = true;
+      try {
+        await adminRuntime.getClient().auth.signOut();
+        resetEditor();
+      } catch (error) {
+        setStatus(authStatus, false, error.message || "Could not sign out.");
+      } finally {
+        signOutBtn.disabled = false;
+      }
+    });
+
+    uploadBtn.addEventListener("click", async () => {
+      const file = fileInput.files && fileInput.files[0];
+      if (!file) {
+        setStatus(uploadStatus, false, "Select an image first.");
+        return;
+      }
+
+      uploadBtn.disabled = true;
+      setStatus(uploadStatus, true, "Uploading...");
+      uploadedPath.textContent = "Uploading image asset...";
+
+      try {
+        const supabase = adminRuntime.getClient();
+        const storagePath = `works/${adminRuntime.slugifyFilename(file.name)}`;
+        const { error } = await supabase.storage.from(adminRuntime.bucket).upload(storagePath, file, {
+          cacheControl: "3600",
+          upsert: false,
+          contentType: file.type || undefined
+        });
+        if (error) {
+          throw error;
+        }
+
+        document.getElementById("image-path").value = storagePath;
+        uploadedPath.textContent = `Uploaded storage path: ${storagePath}`;
+        setStatus(uploadStatus, true, "Image uploaded.");
+        updateEditorPreview();
+      } catch (error) {
+        setStatus(uploadStatus, false, error.message || "Upload failed.");
+        uploadedPath.textContent = "Upload failed. Check the selected file and try again.";
+      } finally {
+        uploadBtn.disabled = false;
+      }
+    });
+
+    createBtn.addEventListener("click", async () => {
+      const payload = getPayloadFromEditor();
+      const isEditing = Boolean(editingId);
+      if (!payload.title || !payload.director || !payload.imagePath) {
+        setStatus(createStatus, false, "Title, director, and image path are required.");
+        return;
+      }
+
+      createBtn.disabled = true;
+      setStatus(createStatus, true, isEditing ? "Updating..." : "Saving...");
+
+      try {
+        const supabase = adminRuntime.getClient();
+        const dbPayload = {
+          title: payload.title,
+          type: payload.type || "Promoreel",
+          director: payload.director,
+          vimeo_url: payload.vimeoUrl,
+          image_path: payload.imagePath,
+          image_url: payload.imageUrl,
+          image_style: payload.imageStyle,
+          image_alt: payload.title
+        };
+
+        let response;
+        if (isEditing) {
+          response = await supabase
+            .from("works")
+            .update(dbPayload)
+            .eq("id", editingId)
+            .select("id,title,type,director,vimeo_url,image_path,image_url,image_style,image_alt,created_at,updated_at")
+            .single();
+        } else {
+          response = await supabase
+            .from("works")
+            .insert([dbPayload])
+            .select("id,title,type,director,vimeo_url,image_path,image_url,image_style,image_alt,created_at,updated_at")
+            .single();
+        }
+
+        if (response.error) {
+          throw response.error;
+        }
+
+        const work = adminRuntime.normalizeWork(response.data);
+        setStatus(createStatus, true, isEditing ? `Work updated: ${work.title}` : `Work added: ${work.title}`);
+        resetEditor();
+        await refreshWorksList();
+      } catch (error) {
+        setStatus(createStatus, false, error.message || "Could not save work.");
+      } finally {
+        createBtn.disabled = false;
+      }
+    });
+
+    cancelEditBtn.addEventListener("click", resetEditor);
+
+    async function initAdmin() {
+      updateEditorPreview();
+
+      if (!adminRuntime || !adminRuntime.isConfigured()) {
+        showSetupState();
+        return;
+      }
+
+      try {
+        const session = await adminRuntime.resolveSession();
+        await ensureAuthorizedSession(session);
+        const { data } = adminRuntime.getClient().auth.onAuthStateChange(async (_event, nextSession) => {
+          await ensureAuthorizedSession(nextSession);
+        });
+        authSubscription = data.subscription;
+      } catch (error) {
+        showAuthState(error.message || "Could not initialise Supabase.");
+      }
+    }
+
+    window.addEventListener("beforeunload", () => {
+      if (authSubscription) {
+        authSubscription.unsubscribe();
+      }
+    });
+
+    initAdmin();
+  </script>
+</body>
+
+</html>

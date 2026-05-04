@@ -95,59 +95,22 @@
             align-items: center;
             justify-content: center;
             pointer-events: none;
-        }
-
-        #intro-panel-top,
-        #intro-panel-bottom {
-            position: absolute;
-            left: 0;
-            right: 0;
-            height: 50%;
-            background: var(--black);
-            transition: transform .7s cubic-bezier(.76, 0, .24, 1);
-        }
-
-        #intro-panel-top {
-            top: 0;
-        }
-
-        #intro-panel-bottom {
-            bottom: 0;
-        }
-
-        #intro.open #intro-panel-top {
-            transform: translateY(-100%);
-        }
-
-        #intro.open #intro-panel-bottom {
-            transform: translateY(100%);
-        }
-
-        #intro-logo-center {
-            position: relative;
-            z-index: 1;
-            opacity: 0;
-            transform: scale(.7);
-            filter: blur(10px);
-            transition: opacity .6s ease, transform .6s cubic-bezier(.22, 1, .36, 1), filter .6s ease;
-            width: clamp(180px, 28vw, 420px);
-        }
-
-        #intro.show-logo #intro-logo-center {
             opacity: 1;
-            transform: scale(1);
-            filter: invert(1) brightness(10) blur(0);
+            visibility: visible;
+            transition: opacity .45s ease, visibility .45s ease;
         }
 
-        #intro.open #intro-logo-center {
-            opacity: 0;
-            transform: scale(1.15);
-            filter: invert(1) brightness(10) blur(4px);
-            transition: opacity .4s ease, transform .4s ease, filter .4s ease;
+        #intro-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
         }
 
         #intro.gone {
-            display: none;
+            opacity: 0;
+            visibility: hidden;
         }
 
         nav.dark .nav-logo-img {
@@ -1060,9 +1023,9 @@
 <body>
     <!-- INTRO -->
     <div id="intro">
-        <div id="intro-panel-top"></div>
-        <div id="intro-panel-bottom"></div>
-        <img id="intro-logo-center" src="assets/entracte-logo.png" alt="entracte" />
+        <video id="intro-video" autoplay muted playsinline preload="auto" aria-label="Entracte intro animation">
+            <source src="assets/entracte-intro.mp4" type="video/mp4" />
+        </video>
     </div>
     <div id="cursor"></div>
     <!-- NAV -->
@@ -1214,7 +1177,7 @@
             <p style="max-width:260px;font-size:.85rem;line-height:1.7;color:var(--gray)">Each project is protected.
                 Enter your access code or request a private screening link.</p>
         </div>
-        <div class="works-grid">
+        <div class="works-grid" id="works-grid">
             <!-- 1 -->
             <div class="work-card" onclick="openModal(event,'I Don\'t Know You','https://vimeo.com/1174435355')">
                 <img src="assets-2/brave-cat.jpg" alt="I Don't Know You" />
@@ -1611,22 +1574,51 @@
             </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/supabase-config.js"></script>
+    <script src="assets/js/supabase-shared.js"></script>
     <script>
         // INTRO
         (function () {
             const intro = document.getElementById('intro');
-            setTimeout(() => intro.classList.add('show-logo'), 300);
-            setTimeout(() => intro.classList.add('open'), 1600);
-            setTimeout(() => intro.classList.add('gone'), 2350);
+            const introVideo = document.getElementById('intro-video');
+            let dismissed = false;
+
+            function dismissIntro() {
+                if (dismissed) return;
+                dismissed = true;
+                intro.classList.add('gone');
+            }
+
+            const fallbackTimer = setTimeout(dismissIntro, 3000);
+
+            introVideo.addEventListener('ended', () => {
+                clearTimeout(fallbackTimer);
+                dismissIntro();
+            }, { once: true });
+
+            introVideo.addEventListener('error', () => {
+                clearTimeout(fallbackTimer);
+                dismissIntro();
+            }, { once: true });
+
+            const playAttempt = introVideo.play();
+            if (playAttempt && typeof playAttempt.catch === 'function') {
+                playAttempt.catch(() => {
+                    clearTimeout(fallbackTimer);
+                    dismissIntro();
+                });
+            }
         })();
 
         // CURSOR
         const cur = document.getElementById('cursor');
         document.addEventListener('mousemove', e => { cur.style.left = e.clientX + 'px'; cur.style.top = e.clientY + 'px'; });
-        document.querySelectorAll('a, button, .work-card, .client-box, .nav-logo-img').forEach(el => {
+        function bindCursorHover(el) {
             el.addEventListener('mouseenter', () => cur.classList.add('big'));
             el.addEventListener('mouseleave', () => cur.classList.remove('big'));
-        });
+        }
+        document.querySelectorAll('a, button, .work-card, .client-box, .nav-logo-img').forEach(bindCursorHover);
         // NAV scroll color
         window.addEventListener('scroll', () => {
             const nav = document.getElementById('main-nav');
@@ -1671,6 +1663,71 @@
         const statsObs = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) runCounters(); }); }, { threshold: 0.4 });
         const statsEl = document.getElementById('about-stats');
         if (statsEl) statsObs.observe(statsEl);
+        // WORKS (extra items from admin)
+        const lockIconSVG = `
+            <svg viewBox="0 0 24 24" fill="none" stroke="#231f20" stroke-width="2.5">
+                <rect x="3" y="11" width="18" height="11" rx="1"></rect>
+                <path d="M7 11V7a5 5 0 0110 0v4"></path>
+            </svg>
+        `;
+        function createWorkCard(work) {
+            const card = document.createElement('div');
+            card.className = 'work-card';
+            card.addEventListener('click', (event) => openModal(event, work.title || 'Untitled', work.vimeoUrl || ''));
+            bindCursorHover(card);
+
+            const image = document.createElement('img');
+            image.src = work.imageUrl || work.imagePath;
+            image.alt = work.imageAlt || work.title || 'Work image';
+            if (work.imageStyle) image.style.cssText = work.imageStyle;
+            card.appendChild(image);
+
+            const overlay = document.createElement('div');
+            overlay.className = 'work-overlay';
+
+            const type = document.createElement('div');
+            type.className = 'work-type';
+            type.textContent = work.type || 'Promoreel';
+
+            const title = document.createElement('div');
+            title.className = 'work-title';
+            title.textContent = work.title || 'Untitled';
+
+            const director = document.createElement('div');
+            director.className = 'work-director';
+            director.textContent = work.director ? `Dir. ${work.director.replace(/^Dir\.\s*/i, '')}` : 'Dir. N/A';
+
+            overlay.append(type, title, director);
+            card.appendChild(overlay);
+
+            const lock = document.createElement('div');
+            lock.className = 'work-lock';
+            lock.innerHTML = lockIconSVG;
+            card.appendChild(lock);
+
+            return card;
+        }
+        function appendExtraWorks(works) {
+            const grid = document.getElementById('works-grid');
+            if (!grid || !Array.isArray(works)) return;
+            works.forEach(work => {
+                if (!work || !work.imagePath || !work.title) return;
+                grid.appendChild(createWorkCard(work));
+            });
+        }
+        async function loadExtraWorks() {
+            if (!window.EntracteSupabase || !window.EntracteSupabase.isConfigured()) {
+                return;
+            }
+            try {
+                const works = await window.EntracteSupabase.listPublicWorks();
+                appendExtraWorks(works);
+            } catch {
+                // Keep original hardcoded works when Supabase is unavailable.
+            }
+        }
+        loadExtraWorks();
+
         // MODAL
         let currentVimeo = '';
         function openModal(e, filmName, vimeoUrl) {
