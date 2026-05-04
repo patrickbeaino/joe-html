@@ -898,6 +898,15 @@
       el.textContent = message;
     }
 
+    function withTimeout(promise, ms, message) {
+      return Promise.race([
+        promise,
+        new Promise((_, reject) => {
+          window.setTimeout(() => reject(new Error(message)), ms);
+        })
+      ]);
+    }
+
     function readAsDataUrl(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -1139,7 +1148,11 @@
 
     async function refreshWorksList() {
       try {
-        const works = await adminRuntime.listAdminWorks();
+        const works = await withTimeout(
+          adminRuntime.listAdminWorks(),
+          15000,
+          "Timed out while loading works."
+        );
         renderWorksList(works);
       } catch (error) {
         existingWorks.textContent = "";
@@ -1161,22 +1174,34 @@
       try {
         const supabase = adminRuntime.getClient();
         const imagePath = work.imagePath || "";
-        const { error: deleteError } = await supabase.from("works").delete().eq("id", work.id);
+        const { error: deleteError } = await withTimeout(
+          supabase.from("works").delete().eq("id", work.id),
+          15000,
+          "Timed out while deleting the work."
+        );
         if (deleteError) {
           throw deleteError;
         }
 
         let imageDeleted = false;
         if (deleteImage && imagePath) {
-          const { count, error: countError } = await supabase
-            .from("works")
-            .select("id", { count: "exact", head: true })
-            .eq("image_path", imagePath);
+          const { count, error: countError } = await withTimeout(
+            supabase
+              .from("works")
+              .select("id", { count: "exact", head: true })
+              .eq("image_path", imagePath),
+            15000,
+            "Timed out while checking image references."
+          );
           if (countError) {
             throw countError;
           }
           if ((count || 0) === 0) {
-            const { error: storageError } = await supabase.storage.from(adminRuntime.bucket).remove([imagePath]);
+            const { error: storageError } = await withTimeout(
+              supabase.storage.from(adminRuntime.bucket).remove([imagePath]),
+              15000,
+              "Timed out while removing the image."
+            );
             if (storageError) {
               throw storageError;
             }
@@ -1273,11 +1298,15 @@
       try {
         const supabase = adminRuntime.getClient();
         const storagePath = `works/${adminRuntime.slugifyFilename(file.name)}`;
-        const { error } = await supabase.storage.from(adminRuntime.bucket).upload(storagePath, file, {
-          cacheControl: "3600",
-          upsert: false,
-          contentType: file.type || undefined
-        });
+        const { error } = await withTimeout(
+          supabase.storage.from(adminRuntime.bucket).upload(storagePath, file, {
+            cacheControl: "3600",
+            upsert: false,
+            contentType: file.type || undefined
+          }),
+          20000,
+          "Timed out while uploading the image."
+        );
         if (error) {
           throw error;
         }
@@ -1320,25 +1349,35 @@
 
         let response;
         if (isEditing) {
-          response = await supabase
-            .from("works")
-            .update(dbPayload)
-            .eq("id", editingId)
-            .select("id,title,type,director,vimeo_url,image_path,image_url,image_style,image_alt,created_at,updated_at")
-            .single();
+          response = await withTimeout(
+            supabase
+              .from("works")
+              .update(dbPayload)
+              .eq("id", editingId)
+              .select("id,title,type,director,vimeo_url,image_path,image_url,image_style,image_alt,created_at,updated_at"),
+            15000,
+            "Timed out while updating the work."
+          );
         } else {
-          response = await supabase
-            .from("works")
-            .insert([dbPayload])
-            .select("id,title,type,director,vimeo_url,image_path,image_url,image_style,image_alt,created_at,updated_at")
-            .single();
+          response = await withTimeout(
+            supabase
+              .from("works")
+              .insert([dbPayload])
+              .select("id,title,type,director,vimeo_url,image_path,image_url,image_style,image_alt,created_at,updated_at"),
+            15000,
+            "Timed out while creating the work."
+          );
         }
 
         if (response.error) {
           throw response.error;
         }
 
-        const work = adminRuntime.normalizeWork(response.data);
+        const row = Array.isArray(response.data) ? response.data[0] : response.data;
+        if (!row) {
+          throw new Error("The work saved, but no row was returned from Supabase.");
+        }
+        const work = adminRuntime.normalizeWork(row);
         setStatus(createStatus, true, isEditing ? `Work updated: ${work.title}` : `Work added: ${work.title}`);
         resetEditor();
         await refreshWorksList();

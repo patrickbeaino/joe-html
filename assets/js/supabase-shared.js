@@ -47,7 +47,14 @@
   function toPublicImageUrl(path) {
     if (!path) return "";
     if (/^(https?:)?\/\//i.test(path) || path.startsWith("/")) return path;
-    if (path.startsWith("assets/") || path.startsWith("assets-2/")) return `/${path}`;
+    if (path.startsWith("assets/") || path.startsWith("assets-2/")) {
+      if (window.location.protocol === "file:") {
+        const currentPath = window.location.pathname || "";
+        const isNestedAdmin = /\/admin\/index\.html$/i.test(currentPath);
+        return isNestedAdmin ? `../${path}` : path;
+      }
+      return `/${path}`;
+    }
     if (!isConfigured()) return path;
     const { data } = getClient().storage.from(bucket).getPublicUrl(path);
     return data && data.publicUrl ? data.publicUrl : path;
