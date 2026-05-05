@@ -569,7 +569,7 @@
 
     .works-list {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 18px;
     }
 
@@ -658,9 +658,114 @@
       margin-top: 4px;
     }
 
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 1200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(8, 8, 8, 0.82);
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal-panel {
+      width: min(1100px, 100%);
+      max-height: calc(100vh - 48px);
+      overflow: auto;
+      border: 1px solid var(--line);
+      background: rgba(19, 17, 18, 0.98);
+      box-shadow: 0 28px 90px rgba(0, 0, 0, 0.45);
+    }
+
+    .modal-panel.modal-compact {
+      width: min(520px, 100%);
+    }
+
+    .modal-shell {
+      display: grid;
+      gap: 22px;
+      padding: 22px;
+    }
+
+    .modal-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 16px;
+    }
+
+    .modal-heading {
+      display: grid;
+      gap: 8px;
+    }
+
+    .modal-heading h3 {
+      margin: 0;
+      font-family: "Syne", sans-serif;
+      font-size: 2rem;
+      line-height: 0.96;
+      letter-spacing: -0.04em;
+    }
+
+    .modal-heading p {
+      margin: 0;
+      max-width: 640px;
+      color: var(--text-soft);
+      line-height: 1.65;
+      font-size: 0.9rem;
+    }
+
+    .icon-btn {
+      min-width: 46px;
+      min-height: 46px;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--white);
+      font-size: 1.1rem;
+      line-height: 1;
+      padding: 0;
+    }
+
+    .modal-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .confirm-copy {
+      display: grid;
+      gap: 12px;
+    }
+
+    .confirm-copy p {
+      margin: 0;
+      color: var(--text-soft);
+      line-height: 1.65;
+    }
+
+    .confirm-warning {
+      padding: 14px 16px;
+      border: 1px solid rgba(255, 120, 113, 0.35);
+      background: rgba(255, 120, 113, 0.08);
+      color: var(--white);
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+
     @media (max-width: 1120px) {
       .dashboard-grid,
-      .editor-layout {
+      .editor-layout,
+      .modal-grid {
         grid-template-columns: 1fr;
       }
 
@@ -710,15 +815,15 @@
       <div class="panel-header">
         <div>
           <div class="panel-index">Setup Needed</div>
-          <h2>Connect Supabase</h2>
+          <h2>Admin Setup</h2>
         </div>
       </div>
       <div class="panel-body">
-        <p class="panel-copy">This admin is ready for Supabase, but the client config is still using placeholder values. Fill the public project URL, publishable key, and admin email before using `/admin` in production.</p>
+        <p class="panel-copy">This admin is not ready yet. Complete the private project setup before using `/admin` in production.</p>
         <ul class="helper-list">
-          <li>Edit <code>assets/js/supabase-config.js</code>.</li>
-          <li>Run <code>supabase/setup.sql</code> in the Supabase SQL editor.</li>
-          <li>Use <code>SUPABASE_SETUP.md</code> for the full checklist.</li>
+          <li>Finish the private project configuration.</li>
+          <li>Complete the database setup checklist.</li>
+          <li>Make sure the allowed admin account is configured.</li>
         </ul>
       </div>
     </section>
@@ -728,7 +833,7 @@
         <div class="auth-shell auth-heading">
           <div class="panel-index">Admin Access</div>
           <h1>Sign In</h1>
-          <p>Enter the Supabase admin credentials for Entracte.</p>
+          <p>Enter the admin credentials for Entracte.</p>
         </div>
       </div>
       <div class="panel-body">
@@ -753,138 +858,234 @@
       </div>
     </section>
 
-    <div class="dashboard-grid hidden" id="admin-app">
+    <div class="hidden" id="admin-app">
       <section class="panel dashboard-toolbar" id="admin-toolbar">
         <div>
           <div class="panel-index">Admin Session</div>
-          <p class="panel-copy">Signed in and ready to manage the live works catalog.</p>
+          <p class="panel-copy">Signed in and ready to manage the works catalog.</p>
         </div>
         <div class="toolbar-actions">
           <div class="session-chip" id="dashboard-session-chip">Session active</div>
           <button class="btn btn-secondary" id="dashboard-sign-out-btn">Sign Out</button>
         </div>
       </section>
-      <div class="stack">
-        <section class="panel">
-          <div class="panel-header">
-            <div>
-              <div class="panel-index">Step 01</div>
-              <h2>Upload Image</h2>
-            </div>
-          </div>
-          <div class="panel-body">
-            <p class="panel-copy">Upload directly to the public `works-images` bucket. The storage path becomes the internal reference for the work card.</p>
-            <div class="upload-card">
-              <div class="upload-dropzone">
-                <div class="preview-frame" id="upload-preview-frame">
-                  <span class="preview-badge">Preview</span>
-                  <img id="upload-preview-image" alt="Selected upload preview" />
-                  <div class="preview-placeholder">Select a JPG, PNG, or WEBP file to preview it here before upload.</div>
-                </div>
-                <div class="file-row">
-                  <label for="image-file">Image File</label>
-                  <input class="file-input" type="file" id="image-file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" />
-                  <button class="btn" id="upload-btn">Upload Image</button>
-                </div>
+      <div class="dashboard-grid">
+        <div class="stack">
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <div class="panel-index">Step 01</div>
+                <h2>Upload Image</h2>
               </div>
-              <div id="upload-status" class="status"></div>
-              <div id="uploaded-path" class="path-pill">Uploaded storage path will appear here after a successful upload.</div>
             </div>
-          </div>
-        </section>
-      </div>
-
-      <div class="stack">
-        <section class="panel">
-          <div class="panel-header">
-            <div>
-              <div class="panel-index" id="editor-step-label">Step 02</div>
-              <h2 id="editor-title">Create Work Card</h2>
-            </div>
-          </div>
-          <div class="panel-body">
-            <p class="panel-copy">This editor writes to Supabase Postgres and keeps the same visual tone as the public work grid.</p>
-            <div class="editor-layout">
-              <div class="editor-fields">
-                <div class="field-grid">
-                  <div class="field">
-                    <label for="title">Title *</label>
-                    <input id="title" placeholder="Film title" />
+            <div class="panel-body">
+              <p class="panel-copy">Upload an image and use the generated path as the visual reference for the work card.</p>
+              <div class="upload-card">
+                <div class="upload-dropzone">
+                  <div class="preview-frame" id="upload-preview-frame">
+                    <span class="preview-badge">Preview</span>
+                    <img id="upload-preview-image" alt="Selected upload preview" />
+                    <div class="preview-placeholder">Select a JPG, PNG, or WEBP file to preview it here before upload.</div>
                   </div>
-                  <div class="field">
-                    <label for="type">Type</label>
-                    <input id="type" placeholder="Trailer / Promoreel / Teaser..." />
+                  <div class="file-row">
+                    <label for="image-file">Image File</label>
+                    <input class="file-input" type="file" id="image-file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" />
+                    <button class="btn" id="upload-btn">Upload Image</button>
                   </div>
                 </div>
-                <div class="field">
-                  <label for="director">Director *</label>
-                  <input id="director" placeholder="Director name" />
-                </div>
-                <div class="field">
-                  <label for="vimeo-url">Vimeo URL</label>
-                  <input id="vimeo-url" placeholder="https://vimeo.com/..." />
-                </div>
-                <div class="field">
-                  <div class="label-row">
-                    <label for="image-path">Image Path *</label>
-                    <span class="label-note">Auto-filled after upload</span>
-                  </div>
-                  <input id="image-path" placeholder="works/your-uploaded-image.jpg" />
-                </div>
-                <div class="field">
-                  <div class="label-row">
-                    <label for="image-style">Optional Image CSS Style</label>
-                    <span class="label-note">Applied to preview and public cards</span>
-                  </div>
-                  <input id="image-style" placeholder="filter:grayscale(40%)" />
-                </div>
-                <div class="actions">
-                  <button class="btn" id="create-btn">Create Work</button>
-                  <button class="btn btn-secondary" id="cancel-edit-btn" style="display:none">Cancel Edit</button>
-                </div>
-                <div id="create-status" class="status"></div>
+                <div id="upload-status" class="status"></div>
+                <div id="uploaded-path" class="path-pill">Uploaded image path will appear here after a successful upload.</div>
               </div>
+            </div>
+          </section>
+        </div>
 
-              <aside class="editor-side">
-                <div class="editor-preview">
-                  <div class="editor-preview-frame" id="editor-preview-frame">
-                    <img id="editor-preview-image" alt="Work image preview" />
-                    <div class="preview-placeholder">The selected image path will render here so you can confirm the card look before saving.</div>
+        <div class="stack">
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <div class="panel-index">Step 02</div>
+                <h2>Create Work Card</h2>
+              </div>
+            </div>
+            <div class="panel-body">
+              <p class="panel-copy">Update the card details and publish changes to the works catalog.</p>
+              <div class="editor-layout">
+                <div class="editor-fields">
+                  <div class="field-grid">
+                    <div class="field">
+                      <label for="title">Title *</label>
+                      <input id="title" placeholder="Film title" />
+                    </div>
+                    <div class="field">
+                      <label for="type">Type</label>
+                      <input id="type" placeholder="Trailer / Promoreel / Teaser..." />
+                    </div>
                   </div>
-                  <div class="editor-meta">
-                    <div class="editor-kicker" id="preview-type">Work Type</div>
-                    <div class="editor-title-display" id="preview-title">Untitled Work</div>
-                    <div class="editor-subtext" id="preview-director">Directed by —</div>
-                    <div class="path-pill" id="preview-path">Image path not set yet.</div>
+                  <div class="field">
+                    <label for="director">Director *</label>
+                    <input id="director" placeholder="Director name" />
                   </div>
+                  <div class="field">
+                    <label for="vimeo-url">Vimeo URL</label>
+                    <input id="vimeo-url" placeholder="https://vimeo.com/..." />
+                  </div>
+                  <div class="field">
+                    <div class="label-row">
+                      <label for="image-path">Image Path *</label>
+                      <span class="label-note">Auto-filled after upload</span>
+                    </div>
+                    <input id="image-path" placeholder="works/your-uploaded-image.jpg" />
+                  </div>
+                  <div class="field">
+                    <div class="label-row">
+                      <label for="image-style">Optional Image CSS Style</label>
+                      <span class="label-note">Applied to preview and public cards</span>
+                    </div>
+                    <input id="image-style" placeholder="filter:grayscale(40%)" />
+                  </div>
+                  <div class="actions">
+                    <button class="btn" id="create-btn">Create Work</button>
+                  </div>
+                  <div id="create-status" class="status"></div>
                 </div>
-                <ul class="helper-list">
-                  <li>Required fields remain the same: title, director, image path.</li>
-                  <li>The image path now refers to the object path inside the `works-images` bucket.</li>
-                  <li>Delete with image removes the storage object only when no other work still uses it.</li>
-                </ul>
-              </aside>
-            </div>
-          </div>
-        </section>
 
-        <section class="panel">
-          <div class="panel-header">
-            <div>
-              <div class="panel-index">Step 03</div>
-              <h2>Existing Uploaded Works</h2>
+                <aside class="editor-side">
+                  <div class="editor-preview">
+                    <div class="editor-preview-frame" id="editor-preview-frame">
+                      <img id="editor-preview-image" alt="Work image preview" />
+                      <div class="preview-placeholder">The selected image path will render here so you can confirm the card look before saving.</div>
+                    </div>
+                    <div class="editor-meta">
+                      <div class="editor-kicker" id="preview-type">Work Type</div>
+                      <div class="editor-title-display" id="preview-title">Untitled Work</div>
+                      <div class="editor-subtext" id="preview-director">Directed by —</div>
+                      <div class="path-pill" id="preview-path">Image path not set yet.</div>
+                    </div>
+                  </div>
+                  <ul class="helper-list">
+                    <li>Required fields remain the same: title, director, image path.</li>
+                    <li>Uploaded images can be reused across multiple cards.</li>
+                    <li>Delete with image removes the file only when no other work still uses it.</li>
+                  </ul>
+                </aside>
+              </div>
             </div>
-          </div>
-          <div class="panel-body">
-            <div class="works-head">
-              <p>The list below now reflects the live Supabase table. Edit and delete actions update the public site immediately after a fresh fetch.</p>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <div class="panel-index">Step 03</div>
+                <h2>Existing Uploaded Works</h2>
+              </div>
             </div>
-            <div id="existing-works" class="works-list"></div>
-          </div>
-        </section>
+            <div class="panel-body">
+              <div class="works-head">
+                <p>The list below reflects the current works catalog. Edit opens a focused overlay, and delete actions ask for confirmation before the grid refreshes.</p>
+              </div>
+              <div id="existing-works" class="works-list"></div>
+            </div>
+          </section>
+        </div>
       </div>
     </div>
   </main>
+
+  <div class="modal-backdrop" id="edit-modal">
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="edit-modal-title">
+      <div class="modal-shell">
+        <div class="modal-topbar">
+          <div class="modal-heading">
+            <div class="panel-index">Edit Work</div>
+            <h3 id="edit-modal-title">Update Work Card</h3>
+            <p>Adjust the selected work, save, and the catalog will refresh automatically.</p>
+          </div>
+          <button class="icon-btn" id="edit-modal-close-btn" aria-label="Close edit dialog">✕</button>
+        </div>
+
+        <div class="modal-grid">
+          <div class="editor-fields">
+            <div class="field-grid">
+              <div class="field">
+                <label for="edit-title">Title *</label>
+                <input id="edit-title" placeholder="Film title" />
+              </div>
+              <div class="field">
+                <label for="edit-type">Type</label>
+                <input id="edit-type" placeholder="Trailer / Promoreel / Teaser..." />
+              </div>
+            </div>
+            <div class="field">
+              <label for="edit-director">Director *</label>
+              <input id="edit-director" placeholder="Director name" />
+            </div>
+            <div class="field">
+              <label for="edit-vimeo-url">Vimeo URL</label>
+              <input id="edit-vimeo-url" placeholder="https://vimeo.com/..." />
+            </div>
+            <div class="field">
+              <div class="label-row">
+                <label for="edit-image-path">Image Path *</label>
+                <span class="label-note">Use an existing uploaded image</span>
+              </div>
+              <input id="edit-image-path" placeholder="works/your-uploaded-image.jpg" />
+            </div>
+            <div class="field">
+              <div class="label-row">
+                <label for="edit-image-style">Optional Image CSS Style</label>
+                <span class="label-note">Applied to preview and public cards</span>
+              </div>
+              <input id="edit-image-style" placeholder="filter:grayscale(40%)" />
+            </div>
+            <div class="actions">
+              <button class="btn" id="edit-save-btn">Save Changes</button>
+              <button class="btn btn-secondary" id="edit-cancel-btn">Cancel</button>
+            </div>
+            <div id="edit-status" class="status"></div>
+          </div>
+
+          <aside class="editor-side">
+            <div class="editor-preview">
+              <div class="editor-preview-frame" id="edit-preview-frame">
+                <img id="edit-preview-image" alt="Work image preview" />
+                <div class="preview-placeholder">The selected image path will render here so you can confirm the card look before saving.</div>
+              </div>
+              <div class="editor-meta">
+                <div class="editor-kicker" id="edit-preview-type">Work Type</div>
+                <div class="editor-title-display" id="edit-preview-title">Untitled Work</div>
+                <div class="editor-subtext" id="edit-preview-director">Directed by —</div>
+                <div class="path-pill" id="edit-preview-path">Image path not set yet.</div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="delete-modal">
+    <div class="modal-panel modal-compact" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title">
+      <div class="modal-shell">
+        <div class="modal-topbar">
+          <div class="modal-heading">
+            <div class="panel-index">Confirm Delete</div>
+            <h3 id="delete-modal-title">Remove Work</h3>
+          </div>
+          <button class="icon-btn" id="delete-modal-close-btn" aria-label="Close delete dialog">✕</button>
+        </div>
+        <div class="confirm-copy">
+          <p id="delete-modal-message">Delete this work entry?</p>
+          <div class="confirm-warning" id="delete-modal-warning">This action cannot be undone.</div>
+        </div>
+        <div class="actions">
+          <button class="btn danger" id="delete-confirm-btn">Delete</button>
+          <button class="btn btn-secondary" id="delete-cancel-btn">Cancel</button>
+        </div>
+        <div id="delete-status" class="status"></div>
+      </div>
+    </div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="/assets/js/supabase-config.js"></script>
@@ -902,9 +1103,6 @@
     const authStatus = document.getElementById("auth-status");
     const uploadBtn = document.getElementById("upload-btn");
     const createBtn = document.getElementById("create-btn");
-    const cancelEditBtn = document.getElementById("cancel-edit-btn");
-    const editorTitle = document.getElementById("editor-title");
-    const editorStepLabel = document.getElementById("editor-step-label");
     const uploadStatus = document.getElementById("upload-status");
     const createStatus = document.getElementById("create-status");
     const uploadedPath = document.getElementById("uploaded-path");
@@ -918,7 +1116,28 @@
     const previewTitle = document.getElementById("preview-title");
     const previewDirector = document.getElementById("preview-director");
     const previewPath = document.getElementById("preview-path");
+    const editModal = document.getElementById("edit-modal");
+    const editTitle = document.getElementById("edit-title");
+    const editType = document.getElementById("edit-type");
+    const editDirector = document.getElementById("edit-director");
+    const editVimeoUrl = document.getElementById("edit-vimeo-url");
+    const editImagePath = document.getElementById("edit-image-path");
+    const editImageStyle = document.getElementById("edit-image-style");
+    const editStatus = document.getElementById("edit-status");
+    const editPreviewFrame = document.getElementById("edit-preview-frame");
+    const editPreviewImage = document.getElementById("edit-preview-image");
+    const editPreviewType = document.getElementById("edit-preview-type");
+    const editPreviewTitle = document.getElementById("edit-preview-title");
+    const editPreviewDirector = document.getElementById("edit-preview-director");
+    const editPreviewPath = document.getElementById("edit-preview-path");
+    const editSaveBtn = document.getElementById("edit-save-btn");
+    const deleteModal = document.getElementById("delete-modal");
+    const deleteModalMessage = document.getElementById("delete-modal-message");
+    const deleteModalWarning = document.getElementById("delete-modal-warning");
+    const deleteStatus = document.getElementById("delete-status");
+    const deleteConfirmBtn = document.getElementById("delete-confirm-btn");
     let editingId = null;
+    let pendingDelete = null;
     let authSubscription = null;
 
     function setStatus(el, ok, message) {
@@ -976,18 +1195,52 @@
       frame.classList.add("has-image");
     }
 
-    function updateEditorPreview() {
-      const title = document.getElementById("title").value.trim();
-      const type = document.getElementById("type").value.trim();
-      const director = document.getElementById("director").value.trim();
-      const imagePath = document.getElementById("image-path").value.trim();
-      const imageStyle = document.getElementById("image-style").value.trim();
+    function updatePreviewState(elements, values) {
+      elements.title.textContent = values.title || "Untitled Work";
+      elements.type.textContent = (values.type || "Work Type").toUpperCase();
+      elements.director.textContent = values.director ? `Directed by ${values.director.replace(/^Dir\.\s*/i, "")}` : "Directed by —";
+      elements.path.textContent = values.imagePath || "Image path not set yet.";
+      applyPreviewImage(elements.frame, elements.image, values.imagePath, values.imageStyle);
+    }
 
-      previewTitle.textContent = title || "Untitled Work";
-      previewType.textContent = (type || "Work Type").toUpperCase();
-      previewDirector.textContent = director ? `Directed by ${director.replace(/^Dir\.\s*/i, "")}` : "Directed by —";
-      previewPath.textContent = imagePath || "Image path not set yet.";
-      applyPreviewImage(editorPreviewFrame, editorPreviewImage, imagePath, imageStyle);
+    function updateEditorPreview() {
+      updatePreviewState(
+        {
+          frame: editorPreviewFrame,
+          image: editorPreviewImage,
+          type: previewType,
+          title: previewTitle,
+          director: previewDirector,
+          path: previewPath
+        },
+        {
+          title: document.getElementById("title").value.trim(),
+          type: document.getElementById("type").value.trim(),
+          director: document.getElementById("director").value.trim(),
+          imagePath: document.getElementById("image-path").value.trim(),
+          imageStyle: document.getElementById("image-style").value.trim()
+        }
+      );
+    }
+
+    function updateEditPreview() {
+      updatePreviewState(
+        {
+          frame: editPreviewFrame,
+          image: editPreviewImage,
+          type: editPreviewType,
+          title: editPreviewTitle,
+          director: editPreviewDirector,
+          path: editPreviewPath
+        },
+        {
+          title: editTitle.value.trim(),
+          type: editType.value.trim(),
+          director: editDirector.value.trim(),
+          imagePath: editImagePath.value.trim(),
+          imageStyle: editImageStyle.value.trim()
+        }
+      );
     }
 
     function setSessionState(message, active) {
@@ -1001,7 +1254,7 @@
       setupPanel.classList.remove("hidden");
       authPanel.classList.add("hidden");
       adminApp.classList.add("hidden");
-      setSessionState("Supabase not configured", false);
+      setSessionState("Admin unavailable", false);
     }
 
     function showAuthState(message) {
@@ -1056,37 +1309,77 @@
       };
     }
 
+    function getPayloadFromEditModal() {
+      const imagePath = editImagePath.value.trim();
+      return {
+        title: editTitle.value.trim(),
+        type: editType.value.trim(),
+        director: editDirector.value.trim(),
+        vimeoUrl: editVimeoUrl.value.trim(),
+        imagePath,
+        imageUrl: resolvePreviewImage(imagePath),
+        imageStyle: editImageStyle.value.trim()
+      };
+    }
+
     function resetEditor() {
-      editingId = null;
       document.getElementById("title").value = "";
       document.getElementById("type").value = "";
       document.getElementById("director").value = "";
       document.getElementById("vimeo-url").value = "";
       document.getElementById("image-path").value = "";
       document.getElementById("image-style").value = "";
-      editorTitle.textContent = "Create Work Card";
-      editorStepLabel.textContent = "Step 02";
       createBtn.textContent = "Create Work";
-      cancelEditBtn.style.display = "none";
       setStatus(createStatus, true, "");
       updateEditorPreview();
     }
 
-    function startEdit(work) {
+    function openEditModal(work) {
       editingId = work.id;
-      document.getElementById("title").value = work.title || "";
-      document.getElementById("type").value = work.type || "";
-      document.getElementById("director").value = work.director || "";
-      document.getElementById("vimeo-url").value = work.vimeoUrl || "";
-      document.getElementById("image-path").value = work.imagePath || "";
-      document.getElementById("image-style").value = work.imageStyle || "";
-      editorTitle.textContent = "Edit Work Card";
-      editorStepLabel.textContent = "Step 02 / Editing";
-      createBtn.textContent = "Save Changes";
-      cancelEditBtn.style.display = "inline-block";
-      setStatus(createStatus, true, `Editing: ${work.title || "Untitled"}`);
-      updateEditorPreview();
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      editTitle.value = work.title || "";
+      editType.value = work.type || "";
+      editDirector.value = work.director || "";
+      editVimeoUrl.value = work.vimeoUrl || "";
+      editImagePath.value = work.imagePath || "";
+      editImageStyle.value = work.imageStyle || "";
+      setStatus(editStatus, true, "");
+      updateEditPreview();
+      editModal.classList.add("active");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeEditModal() {
+      editingId = null;
+      editTitle.value = "";
+      editType.value = "";
+      editDirector.value = "";
+      editVimeoUrl.value = "";
+      editImagePath.value = "";
+      editImageStyle.value = "";
+      setStatus(editStatus, true, "");
+      updateEditPreview();
+      editModal.classList.remove("active");
+      document.body.style.overflow = "";
+    }
+
+    function openDeleteModal(work, deleteImage) {
+      pendingDelete = { work, deleteImage };
+      deleteModalMessage.textContent = deleteImage
+        ? `Delete "${work.title}" and remove its image if no other work still uses it?`
+        : `Delete "${work.title}" from the catalog?`;
+      deleteModalWarning.textContent = deleteImage
+        ? "If this image is shared by another work, the file will be kept and only the selected card will be removed."
+        : "This action removes the selected work entry.";
+      setStatus(deleteStatus, true, "");
+      deleteModal.classList.add("active");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeDeleteModal() {
+      pendingDelete = null;
+      setStatus(deleteStatus, true, "");
+      deleteModal.classList.remove("active");
+      document.body.style.overflow = editModal.classList.contains("active") ? "hidden" : "";
     }
 
     function renderWorksList(works) {
@@ -1160,19 +1453,19 @@
         const editBtn = document.createElement("button");
         editBtn.className = "btn btn-secondary btn-inline";
         editBtn.textContent = "Edit";
-        editBtn.addEventListener("click", () => startEdit(work));
+        editBtn.addEventListener("click", () => openEditModal(work));
         actions.appendChild(editBtn);
 
         const deleteWorkBtn = document.createElement("button");
         deleteWorkBtn.className = "btn btn-secondary btn-inline danger";
         deleteWorkBtn.textContent = "Delete Work";
-        deleteWorkBtn.addEventListener("click", () => deleteWork(work, false));
+        deleteWorkBtn.addEventListener("click", () => openDeleteModal(work, false));
         actions.appendChild(deleteWorkBtn);
 
         const deleteWithImageBtn = document.createElement("button");
         deleteWithImageBtn.className = "btn btn-secondary btn-inline danger";
         deleteWithImageBtn.textContent = "Delete Work + Image";
-        deleteWithImageBtn.addEventListener("click", () => deleteWork(work, true));
+        deleteWithImageBtn.addEventListener("click", () => openDeleteModal(work, true));
         actions.appendChild(deleteWithImageBtn);
 
         meta.appendChild(actions);
@@ -1199,14 +1492,12 @@
     }
 
     async function deleteWork(work, deleteImage) {
-      const confirmation = deleteImage
-        ? "Delete this work and remove its image file if no other work uses it?"
-        : "Delete this work entry?";
-      if (!window.confirm(confirmation)) {
+      if (!work) {
         return;
       }
 
       try {
+        deleteConfirmBtn.disabled = true;
         const supabase = adminRuntime.getClient();
         const imagePath = work.imagePath || "";
         const { error: deleteError } = await withTimeout(
@@ -1249,7 +1540,7 @@
         }
 
         setStatus(
-          createStatus,
+          deleteStatus,
           true,
           deleteImage
             ? imageDeleted
@@ -1258,8 +1549,11 @@
             : "Work deleted."
         );
         await refreshWorksList();
+        closeDeleteModal();
       } catch (error) {
-        setStatus(createStatus, false, error.message || "Delete failed.");
+        setStatus(deleteStatus, false, error.message || "Delete failed.");
+      } finally {
+        deleteConfirmBtn.disabled = false;
       }
     }
 
@@ -1280,6 +1574,10 @@
 
     ["title", "type", "director", "image-path", "image-style"].forEach((id) => {
       document.getElementById(id).addEventListener("input", updateEditorPreview);
+    });
+
+    [editTitle, editType, editDirector, editImagePath, editImageStyle].forEach((el) => {
+      el.addEventListener("input", updateEditPreview);
     });
 
     signInBtn.addEventListener("click", async () => {
@@ -1312,6 +1610,8 @@
       dashboardSignOutBtn.disabled = true;
       try {
         await adminRuntime.getClient().auth.signOut();
+        closeEditModal();
+        closeDeleteModal();
         resetEditor();
       } catch (error) {
         setStatus(authStatus, false, error.message || "Could not sign out.");
@@ -1352,7 +1652,7 @@
         }
 
         document.getElementById("image-path").value = storagePath;
-        uploadedPath.textContent = `Uploaded storage path: ${storagePath}`;
+        uploadedPath.textContent = `Uploaded image path: ${storagePath}`;
         setStatus(uploadStatus, true, "Image uploaded.");
         updateEditorPreview();
       } catch (error) {
@@ -1365,14 +1665,13 @@
 
     createBtn.addEventListener("click", async () => {
       const payload = getPayloadFromEditor();
-      const isEditing = Boolean(editingId);
       if (!payload.title || !payload.director || !payload.imagePath) {
         setStatus(createStatus, false, "Title, director, and image path are required.");
         return;
       }
 
       createBtn.disabled = true;
-      setStatus(createStatus, true, isEditing ? "Updating..." : "Saving...");
+      setStatus(createStatus, true, "Saving...");
 
       try {
         const supabase = adminRuntime.getClient();
@@ -1387,35 +1686,20 @@
           image_alt: payload.title
         };
 
-        let response;
-        if (isEditing) {
-          response = await withTimeout(
-            supabase
-              .from("works")
-              .update(dbPayload)
-              .eq("id", editingId)
-              .select("id,title,type,director,vimeo_url,image_path,image_url,image_style,image_alt,created_at,updated_at"),
-            15000,
-            "Timed out while updating the work."
-          );
-        } else {
-          response = await withTimeout(
-            supabase
-              .from("works")
-              .insert([dbPayload])
-              .select("id,title,type,director,vimeo_url,image_path,image_url,image_style,image_alt,created_at,updated_at"),
-            15000,
-            "Timed out while creating the work."
-          );
-        }
+        const response = await withTimeout(
+          supabase
+            .from("works")
+            .insert([dbPayload]),
+          15000,
+          "Timed out while creating the work."
+        );
 
         if (response.error) {
           throw response.error;
         }
 
-        const row = Array.isArray(response.data) ? response.data[0] : response.data;
-        const savedTitle = (row && row.title) || payload.title;
-        setStatus(createStatus, true, isEditing ? `Work updated: ${savedTitle}` : `Work added: ${savedTitle}`);
+        const savedTitle = payload.title;
+        setStatus(createStatus, true, `Work added: ${savedTitle}`);
         resetEditor();
         await refreshWorksList();
       } catch (error) {
@@ -1425,7 +1709,79 @@
       }
     });
 
-    cancelEditBtn.addEventListener("click", resetEditor);
+    editSaveBtn.addEventListener("click", async () => {
+      const payload = getPayloadFromEditModal();
+      if (!editingId || !payload.title || !payload.director || !payload.imagePath) {
+        setStatus(editStatus, false, "Title, director, and image path are required.");
+        return;
+      }
+
+      editSaveBtn.disabled = true;
+      setStatus(editStatus, true, "Updating...");
+
+      try {
+        const supabase = adminRuntime.getClient();
+        const response = await withTimeout(
+          supabase
+            .from("works")
+            .update({
+              title: payload.title,
+              type: payload.type || "Promoreel",
+              director: payload.director,
+              vimeo_url: payload.vimeoUrl,
+              image_path: payload.imagePath,
+              image_url: payload.imageUrl,
+              image_style: payload.imageStyle,
+              image_alt: payload.title
+            })
+            .eq("id", editingId),
+          15000,
+          "Timed out while updating the work."
+        );
+
+        if (response.error) {
+          throw response.error;
+        }
+
+        setStatus(editStatus, true, `Work updated: ${payload.title}`);
+        await refreshWorksList();
+        closeEditModal();
+      } catch (error) {
+        setStatus(editStatus, false, error.message || "Could not save work.");
+      } finally {
+        editSaveBtn.disabled = false;
+      }
+    });
+
+    document.getElementById("edit-modal-close-btn").addEventListener("click", closeEditModal);
+    document.getElementById("edit-cancel-btn").addEventListener("click", closeEditModal);
+    document.getElementById("delete-modal-close-btn").addEventListener("click", closeDeleteModal);
+    document.getElementById("delete-cancel-btn").addEventListener("click", closeDeleteModal);
+    deleteConfirmBtn.addEventListener("click", async () => {
+      if (!pendingDelete) return;
+      await deleteWork(pendingDelete.work, pendingDelete.deleteImage);
+    });
+    editModal.addEventListener("click", (event) => {
+      if (event.target === editModal) closeEditModal();
+    });
+    deleteModal.addEventListener("click", (event) => {
+      if (event.target === deleteModal) closeDeleteModal();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape") {
+        return;
+      }
+
+      if (deleteModal.classList.contains("active")) {
+        closeDeleteModal();
+        return;
+      }
+
+      if (editModal.classList.contains("active")) {
+        closeEditModal();
+      }
+    });
 
     async function initAdmin() {
       updateEditorPreview();
@@ -1443,7 +1799,7 @@
         });
         authSubscription = data.subscription;
       } catch (error) {
-        showAuthState(error.message || "Could not initialise Supabase.");
+        showAuthState(error.message || "Could not initialise admin access.");
       }
     }
 
