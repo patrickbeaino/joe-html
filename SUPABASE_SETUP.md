@@ -26,8 +26,10 @@ Use the publishable/anon key from `Settings` -> `API`. Do not use the service ro
 
 ## 4. Seed the existing works
 - In Supabase SQL Editor, run [supabase/seed-works.sql](/Users/patrickbeaino/Documents/Patrick/joe-html/supabase/seed-works.sql).
-- This imports the 28 works that are currently hardcoded in `index.html`.
-- The seed is idempotent for the current catalog and skips rows with the same `title` + `director`.
+- This seeds the 28 works that are currently hardcoded in `index.html`.
+- It updates existing rows that match the same `title` + `director`.
+- It inserts any missing rows from the current catalog.
+- The image references now point to `/assets-2/catalog/*`, so make sure those files are deployed with the site before relying on the seeded records.
 
 ## 5. Deploy
 - Deploy the repo to Cloudflare Pages.

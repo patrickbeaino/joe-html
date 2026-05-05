@@ -276,6 +276,12 @@
       color: var(--white);
     }
 
+    .btn-ready {
+      border-color: var(--yellow);
+      background: var(--yellow);
+      color: var(--black);
+    }
+
     .btn-inline {
       min-height: 40px;
       padding: 10px 12px;
@@ -356,7 +362,7 @@
 
     .dashboard-grid {
       display: grid;
-      grid-template-columns: minmax(320px, 420px) minmax(0, 1fr);
+      grid-template-columns: 1fr;
       gap: 24px;
       align-items: start;
     }
@@ -453,6 +459,20 @@
     .file-row {
       display: grid;
       gap: 12px;
+    }
+
+    .modal-upload-card {
+      display: grid;
+      gap: 14px;
+      margin-bottom: 20px;
+      padding: 16px;
+      border: 1px dashed var(--line-strong);
+      background: rgba(255, 255, 255, 0.025);
+    }
+
+    .modal-upload-card .file-row {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
     }
 
     .file-input {
@@ -763,7 +783,7 @@
     }
 
     @media (max-width: 1120px) {
-      .dashboard-grid,
+
       .editor-layout,
       .modal-grid {
         grid-template-columns: 1fr;
@@ -819,7 +839,8 @@
         </div>
       </div>
       <div class="panel-body">
-        <p class="panel-copy">This admin is not ready yet. Complete the private project setup before using `/admin` in production.</p>
+        <p class="panel-copy">This admin is not ready yet. Complete the private project setup before using `/admin` in
+          production.</p>
         <ul class="helper-list">
           <li>Finish the private project configuration.</li>
           <li>Complete the database setup checklist.</li>
@@ -846,7 +867,8 @@
             </div>
             <div class="field">
               <label for="auth-password">Password</label>
-              <input type="password" id="auth-password" placeholder="Enter your password" autocomplete="current-password" />
+              <input type="password" id="auth-password" placeholder="Enter your password"
+                autocomplete="current-password" />
             </div>
             <div class="actions">
               <button class="btn" id="sign-in-btn">Sign In to Admin</button>
@@ -865,6 +887,7 @@
           <p class="panel-copy">Signed in and ready to manage the works catalog.</p>
         </div>
         <div class="toolbar-actions">
+          <button class="btn" id="open-create-modal-btn">Create Work</button>
           <div class="session-chip" id="dashboard-session-chip">Session active</div>
           <button class="btn btn-secondary" id="dashboard-sign-out-btn">Sign Out</button>
         </div>
@@ -875,114 +898,13 @@
             <div class="panel-header">
               <div>
                 <div class="panel-index">Step 01</div>
-                <h2>Upload Image</h2>
-              </div>
-            </div>
-            <div class="panel-body">
-              <p class="panel-copy">Upload an image and use the generated path as the visual reference for the work card.</p>
-              <div class="upload-card">
-                <div class="upload-dropzone">
-                  <div class="preview-frame" id="upload-preview-frame">
-                    <span class="preview-badge">Preview</span>
-                    <img id="upload-preview-image" alt="Selected upload preview" />
-                    <div class="preview-placeholder">Select a JPG, PNG, or WEBP file to preview it here before upload.</div>
-                  </div>
-                  <div class="file-row">
-                    <label for="image-file">Image File</label>
-                    <input class="file-input" type="file" id="image-file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" />
-                    <button class="btn" id="upload-btn">Upload Image</button>
-                  </div>
-                </div>
-                <div id="upload-status" class="status"></div>
-                <div id="uploaded-path" class="path-pill">Uploaded image path will appear here after a successful upload.</div>
-              </div>
-            </div>
-          </section>
-        </div>
-
-        <div class="stack">
-          <section class="panel">
-            <div class="panel-header">
-              <div>
-                <div class="panel-index">Step 02</div>
-                <h2>Create Work Card</h2>
-              </div>
-            </div>
-            <div class="panel-body">
-              <p class="panel-copy">Update the card details and publish changes to the works catalog.</p>
-              <div class="editor-layout">
-                <div class="editor-fields">
-                  <div class="field-grid">
-                    <div class="field">
-                      <label for="title">Title *</label>
-                      <input id="title" placeholder="Film title" />
-                    </div>
-                    <div class="field">
-                      <label for="type">Type</label>
-                      <input id="type" placeholder="Trailer / Promoreel / Teaser..." />
-                    </div>
-                  </div>
-                  <div class="field">
-                    <label for="director">Director *</label>
-                    <input id="director" placeholder="Director name" />
-                  </div>
-                  <div class="field">
-                    <label for="vimeo-url">Vimeo URL</label>
-                    <input id="vimeo-url" placeholder="https://vimeo.com/..." />
-                  </div>
-                  <div class="field">
-                    <div class="label-row">
-                      <label for="image-path">Image Path *</label>
-                      <span class="label-note">Auto-filled after upload</span>
-                    </div>
-                    <input id="image-path" placeholder="works/your-uploaded-image.jpg" />
-                  </div>
-                  <div class="field">
-                    <div class="label-row">
-                      <label for="image-style">Optional Image CSS Style</label>
-                      <span class="label-note">Applied to preview and public cards</span>
-                    </div>
-                    <input id="image-style" placeholder="filter:grayscale(40%)" />
-                  </div>
-                  <div class="actions">
-                    <button class="btn" id="create-btn">Create Work</button>
-                  </div>
-                  <div id="create-status" class="status"></div>
-                </div>
-
-                <aside class="editor-side">
-                  <div class="editor-preview">
-                    <div class="editor-preview-frame" id="editor-preview-frame">
-                      <img id="editor-preview-image" alt="Work image preview" />
-                      <div class="preview-placeholder">The selected image path will render here so you can confirm the card look before saving.</div>
-                    </div>
-                    <div class="editor-meta">
-                      <div class="editor-kicker" id="preview-type">Work Type</div>
-                      <div class="editor-title-display" id="preview-title">Untitled Work</div>
-                      <div class="editor-subtext" id="preview-director">Directed by —</div>
-                      <div class="path-pill" id="preview-path">Image path not set yet.</div>
-                    </div>
-                  </div>
-                  <ul class="helper-list">
-                    <li>Required fields remain the same: title, director, image path.</li>
-                    <li>Uploaded images can be reused across multiple cards.</li>
-                    <li>Delete with image removes the file only when no other work still uses it.</li>
-                  </ul>
-                </aside>
-              </div>
-            </div>
-          </section>
-
-          <section class="panel">
-            <div class="panel-header">
-              <div>
-                <div class="panel-index">Step 03</div>
                 <h2>Existing Uploaded Works</h2>
               </div>
             </div>
             <div class="panel-body">
               <div class="works-head">
-                <p>The list below reflects the current works catalog. Edit opens a focused overlay, and delete actions ask for confirmation before the grid refreshes.</p>
+                <p>The list below reflects the current works catalog. Create and edit open focused overlays, and delete
+                  actions ask for confirmation before the grid refreshes.</p>
               </div>
               <div id="existing-works" class="works-list"></div>
             </div>
@@ -991,6 +913,83 @@
       </div>
     </div>
   </main>
+
+  <div class="modal-backdrop" id="create-modal">
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="create-modal-title">
+      <div class="modal-shell">
+        <div class="modal-topbar">
+          <div class="modal-heading">
+            <div class="panel-index">Create Work</div>
+            <h3 id="create-modal-title">Add Work Card</h3>
+            <p>Build a new work entry, save it, and the catalog will refresh automatically.</p>
+          </div>
+          <button class="icon-btn" id="create-modal-close-btn" aria-label="Close create dialog">✕</button>
+        </div>
+
+        <div class="modal-grid">
+          <div class="editor-fields">
+            <div class="modal-upload-card">
+              <div class="label-row">
+                <label for="create-image-file">Image</label>
+                <span class="label-note">Upload the image for this work card</span>
+              </div>
+              <div class="file-row">
+                <input class="file-input" type="file" id="create-image-file"
+                  accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" />
+                <button class="btn btn-secondary" id="create-upload-btn" type="button">Upload Image</button>
+              </div>
+              <div id="create-upload-status" class="status"></div>
+            </div>
+            <div class="field-grid">
+              <div class="field">
+                <label for="title">Title *</label>
+                <input id="title" placeholder="Film title" />
+              </div>
+              <div class="field">
+                <label for="type">Type</label>
+                <input id="type" placeholder="Trailer / Promoreel / Teaser..." />
+              </div>
+            </div>
+            <div class="field">
+              <label for="director">Director *</label>
+              <input id="director" placeholder="Director name" />
+            </div>
+            <div class="field">
+              <label for="vimeo-url">Vimeo URL</label>
+              <input id="vimeo-url" placeholder="https://vimeo.com/..." />
+            </div>
+            <input id="image-path" type="hidden" />
+            <input id="image-style" type="hidden" />
+            <div class="actions">
+              <button class="btn" id="create-btn">Create Work</button>
+              <button class="btn btn-secondary" id="create-cancel-btn">Cancel</button>
+            </div>
+            <div id="create-status" class="status"></div>
+          </div>
+
+          <aside class="editor-side">
+            <div class="editor-preview">
+              <div class="editor-preview-frame" id="editor-preview-frame">
+                <img id="editor-preview-image" alt="Work image preview" />
+                <div class="preview-placeholder">Select and upload an image, then confirm the card look before saving.
+                </div>
+              </div>
+              <div class="editor-meta">
+                <div class="editor-kicker" id="preview-type">Work Type</div>
+                <div class="editor-title-display" id="preview-title">Untitled Work</div>
+                <div class="editor-subtext" id="preview-director">Directed by —</div>
+              </div>
+            </div>
+            <ul class="helper-list">
+              <li>Required fields remain the same: title, director, and image.</li>
+              <li>Uploaded images can be reused across multiple work cards.</li>
+              <li>Delete with image removes the file only when no other work still uses it.</li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div class="modal-backdrop" id="edit-modal">
     <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="edit-modal-title">
@@ -1006,6 +1005,18 @@
 
         <div class="modal-grid">
           <div class="editor-fields">
+            <div class="modal-upload-card">
+              <div class="label-row">
+                <label for="edit-image-file">Replace Image</label>
+                <span class="label-note">Only upload if you want to swap the current visual</span>
+              </div>
+              <div class="file-row">
+                <input class="file-input" type="file" id="edit-image-file"
+                  accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" />
+                <button class="btn btn-secondary" id="edit-upload-btn" type="button">Upload Image</button>
+              </div>
+              <div id="edit-upload-status" class="status"></div>
+            </div>
             <div class="field-grid">
               <div class="field">
                 <label for="edit-title">Title *</label>
@@ -1024,20 +1035,8 @@
               <label for="edit-vimeo-url">Vimeo URL</label>
               <input id="edit-vimeo-url" placeholder="https://vimeo.com/..." />
             </div>
-            <div class="field">
-              <div class="label-row">
-                <label for="edit-image-path">Image Path *</label>
-                <span class="label-note">Use an existing uploaded image</span>
-              </div>
-              <input id="edit-image-path" placeholder="works/your-uploaded-image.jpg" />
-            </div>
-            <div class="field">
-              <div class="label-row">
-                <label for="edit-image-style">Optional Image CSS Style</label>
-                <span class="label-note">Applied to preview and public cards</span>
-              </div>
-              <input id="edit-image-style" placeholder="filter:grayscale(40%)" />
-            </div>
+            <input id="edit-image-path" type="hidden" />
+            <input id="edit-image-style" type="hidden" />
             <div class="actions">
               <button class="btn" id="edit-save-btn">Save Changes</button>
               <button class="btn btn-secondary" id="edit-cancel-btn">Cancel</button>
@@ -1049,13 +1048,13 @@
             <div class="editor-preview">
               <div class="editor-preview-frame" id="edit-preview-frame">
                 <img id="edit-preview-image" alt="Work image preview" />
-                <div class="preview-placeholder">The selected image path will render here so you can confirm the card look before saving.</div>
+                <div class="preview-placeholder">Upload a new image only if you want to replace the current visual.
+                </div>
               </div>
               <div class="editor-meta">
                 <div class="editor-kicker" id="edit-preview-type">Work Type</div>
                 <div class="editor-title-display" id="edit-preview-title">Untitled Work</div>
                 <div class="editor-subtext" id="edit-preview-director">Directed by —</div>
-                <div class="path-pill" id="edit-preview-path">Image path not set yet.</div>
               </div>
             </div>
           </aside>
@@ -1099,24 +1098,25 @@
     const dashboardSessionChip = document.getElementById("dashboard-session-chip");
     const signOutBtn = document.getElementById("sign-out-btn");
     const dashboardSignOutBtn = document.getElementById("dashboard-sign-out-btn");
+    const openCreateModalBtn = document.getElementById("open-create-modal-btn");
     const signInBtn = document.getElementById("sign-in-btn");
     const authStatus = document.getElementById("auth-status");
-    const uploadBtn = document.getElementById("upload-btn");
     const createBtn = document.getElementById("create-btn");
-    const uploadStatus = document.getElementById("upload-status");
     const createStatus = document.getElementById("create-status");
-    const uploadedPath = document.getElementById("uploaded-path");
     const existingWorks = document.getElementById("existing-works");
-    const fileInput = document.getElementById("image-file");
-    const uploadPreviewFrame = document.getElementById("upload-preview-frame");
-    const uploadPreviewImage = document.getElementById("upload-preview-image");
+    const createImageFile = document.getElementById("create-image-file");
+    const createUploadBtn = document.getElementById("create-upload-btn");
+    const createUploadStatus = document.getElementById("create-upload-status");
     const editorPreviewFrame = document.getElementById("editor-preview-frame");
     const editorPreviewImage = document.getElementById("editor-preview-image");
     const previewType = document.getElementById("preview-type");
     const previewTitle = document.getElementById("preview-title");
     const previewDirector = document.getElementById("preview-director");
-    const previewPath = document.getElementById("preview-path");
+    const createModal = document.getElementById("create-modal");
     const editModal = document.getElementById("edit-modal");
+    const editImageFile = document.getElementById("edit-image-file");
+    const editUploadBtn = document.getElementById("edit-upload-btn");
+    const editUploadStatus = document.getElementById("edit-upload-status");
     const editTitle = document.getElementById("edit-title");
     const editType = document.getElementById("edit-type");
     const editDirector = document.getElementById("edit-director");
@@ -1129,7 +1129,6 @@
     const editPreviewType = document.getElementById("edit-preview-type");
     const editPreviewTitle = document.getElementById("edit-preview-title");
     const editPreviewDirector = document.getElementById("edit-preview-director");
-    const editPreviewPath = document.getElementById("edit-preview-path");
     const editSaveBtn = document.getElementById("edit-save-btn");
     const deleteModal = document.getElementById("delete-modal");
     const deleteModalMessage = document.getElementById("delete-modal-message");
@@ -1139,6 +1138,14 @@
     let editingId = null;
     let pendingDelete = null;
     let authSubscription = null;
+
+    function syncBodyOverflow() {
+      const hasOpenModal =
+        createModal.classList.contains("active") ||
+        editModal.classList.contains("active") ||
+        deleteModal.classList.contains("active");
+      document.body.style.overflow = hasOpenModal ? "hidden" : "";
+    }
 
     function setStatus(el, ok, message) {
       if (!message) {
@@ -1168,18 +1175,20 @@
       });
     }
 
-    function updateUploadPreview(src) {
-      if (!src) {
-        uploadPreviewImage.removeAttribute("src");
-        uploadPreviewFrame.classList.remove("has-image");
-        return;
-      }
-      uploadPreviewImage.src = src;
-      uploadPreviewFrame.classList.add("has-image");
-    }
-
     function resolvePreviewImage(path) {
       return adminRuntime.toPublicImageUrl(path);
+    }
+
+    function clearFileInput(input) {
+      if (input) {
+        input.value = "";
+      }
+    }
+
+    function updateUploadButtonState(input, button) {
+      const hasFile = Boolean(input && input.files && input.files[0]);
+      button.classList.toggle("btn-ready", hasFile);
+      button.classList.toggle("btn-secondary", !hasFile);
     }
 
     function applyPreviewImage(frame, imageEl, imagePath, imageStyle) {
@@ -1199,7 +1208,6 @@
       elements.title.textContent = values.title || "Untitled Work";
       elements.type.textContent = (values.type || "Work Type").toUpperCase();
       elements.director.textContent = values.director ? `Directed by ${values.director.replace(/^Dir\.\s*/i, "")}` : "Directed by —";
-      elements.path.textContent = values.imagePath || "Image path not set yet.";
       applyPreviewImage(elements.frame, elements.image, values.imagePath, values.imageStyle);
     }
 
@@ -1210,8 +1218,7 @@
           image: editorPreviewImage,
           type: previewType,
           title: previewTitle,
-          director: previewDirector,
-          path: previewPath
+          director: previewDirector
         },
         {
           title: document.getElementById("title").value.trim(),
@@ -1230,8 +1237,7 @@
           image: editPreviewImage,
           type: editPreviewType,
           title: editPreviewTitle,
-          director: editPreviewDirector,
-          path: editPreviewPath
+          director: editPreviewDirector
         },
         {
           title: editTitle.value.trim(),
@@ -1329,9 +1335,23 @@
       document.getElementById("vimeo-url").value = "";
       document.getElementById("image-path").value = "";
       document.getElementById("image-style").value = "";
-      createBtn.textContent = "Create Work";
+      clearFileInput(createImageFile);
+      updateUploadButtonState(createImageFile, createUploadBtn);
+      setStatus(createUploadStatus, true, "");
       setStatus(createStatus, true, "");
       updateEditorPreview();
+    }
+
+    function openCreateModal() {
+      resetEditor();
+      createModal.classList.add("active");
+      syncBodyOverflow();
+    }
+
+    function closeCreateModal() {
+      resetEditor();
+      createModal.classList.remove("active");
+      syncBodyOverflow();
     }
 
     function openEditModal(work) {
@@ -1342,10 +1362,13 @@
       editVimeoUrl.value = work.vimeoUrl || "";
       editImagePath.value = work.imagePath || "";
       editImageStyle.value = work.imageStyle || "";
+      clearFileInput(editImageFile);
+      updateUploadButtonState(editImageFile, editUploadBtn);
+      setStatus(editUploadStatus, true, "");
       setStatus(editStatus, true, "");
       updateEditPreview();
       editModal.classList.add("active");
-      document.body.style.overflow = "hidden";
+      syncBodyOverflow();
     }
 
     function closeEditModal() {
@@ -1356,10 +1379,13 @@
       editVimeoUrl.value = "";
       editImagePath.value = "";
       editImageStyle.value = "";
+      clearFileInput(editImageFile);
+      updateUploadButtonState(editImageFile, editUploadBtn);
+      setStatus(editUploadStatus, true, "");
       setStatus(editStatus, true, "");
       updateEditPreview();
       editModal.classList.remove("active");
-      document.body.style.overflow = "";
+      syncBodyOverflow();
     }
 
     function openDeleteModal(work, deleteImage) {
@@ -1372,14 +1398,14 @@
         : "This action removes the selected work entry.";
       setStatus(deleteStatus, true, "");
       deleteModal.classList.add("active");
-      document.body.style.overflow = "hidden";
+      syncBodyOverflow();
     }
 
     function closeDeleteModal() {
       pendingDelete = null;
       setStatus(deleteStatus, true, "");
       deleteModal.classList.remove("active");
-      document.body.style.overflow = editModal.classList.contains("active") ? "hidden" : "";
+      syncBodyOverflow();
     }
 
     function renderWorksList(works) {
@@ -1387,7 +1413,7 @@
       if (!Array.isArray(works) || works.length === 0) {
         const empty = document.createElement("div");
         empty.className = "works-empty";
-        empty.innerHTML = '<p class="tiny">No uploaded works yet. Use the upload and editor panels above to create the first card.</p>';
+        empty.innerHTML = '<p class="tiny">No uploaded works yet. Use the upload panel and the Create Work action to add the first card.</p>';
         existingWorks.appendChild(empty);
         return;
       }
@@ -1557,19 +1583,79 @@
       }
     }
 
-    fileInput.addEventListener("change", async () => {
-      const file = fileInput.files && fileInput.files[0];
+    async function previewSelectedFile(file, frame, imageEl, imageStyle) {
       if (!file) {
-        updateUploadPreview("");
         return;
       }
 
       try {
         const localPreview = await readAsDataUrl(file);
-        updateUploadPreview(localPreview);
+        imageEl.src = localPreview;
+        imageEl.style.cssText = imageStyle || "";
+        frame.classList.add("has-image");
       } catch {
-        updateUploadPreview("");
+        // Keep the last valid preview state if local preview generation fails.
       }
+    }
+
+    async function uploadImageFromInput(input, statusEl, targetPathInput, previewUpdater, triggerBtn) {
+      const file = input.files && input.files[0];
+      if (!file) {
+        setStatus(statusEl, false, "Select an image first.");
+        return;
+      }
+
+      triggerBtn.disabled = true;
+      setStatus(statusEl, true, "Uploading...");
+
+      try {
+        const supabase = adminRuntime.getClient();
+        const storagePath = `works/${adminRuntime.slugifyFilename(file.name)}`;
+        const { error } = await withTimeout(
+          supabase.storage.from(adminRuntime.bucket).upload(storagePath, file, {
+            cacheControl: "3600",
+            upsert: false,
+            contentType: file.type || undefined
+          }),
+          20000,
+          "Timed out while uploading the image."
+        );
+        if (error) {
+          throw error;
+        }
+
+        targetPathInput.value = storagePath;
+        setStatus(statusEl, true, "Image uploaded.");
+        previewUpdater();
+      } catch (error) {
+        setStatus(statusEl, false, error.message || "Upload failed.");
+      } finally {
+        triggerBtn.disabled = false;
+      }
+    }
+
+    createImageFile.addEventListener("change", async () => {
+      updateUploadButtonState(createImageFile, createUploadBtn);
+      const file = createImageFile.files && createImageFile.files[0];
+      if (!file) return;
+      await previewSelectedFile(
+        file,
+        editorPreviewFrame,
+        editorPreviewImage,
+        document.getElementById("image-style").value.trim()
+      );
+    });
+
+    editImageFile.addEventListener("change", async () => {
+      updateUploadButtonState(editImageFile, editUploadBtn);
+      const file = editImageFile.files && editImageFile.files[0];
+      if (!file) return;
+      await previewSelectedFile(
+        file,
+        editPreviewFrame,
+        editPreviewImage,
+        editImageStyle.value.trim()
+      );
     });
 
     ["title", "type", "director", "image-path", "image-style"].forEach((id) => {
@@ -1610,6 +1696,7 @@
       dashboardSignOutBtn.disabled = true;
       try {
         await adminRuntime.getClient().auth.signOut();
+        closeCreateModal();
         closeEditModal();
         closeDeleteModal();
         resetEditor();
@@ -1624,43 +1711,24 @@
     signOutBtn.addEventListener("click", handleSignOut);
     dashboardSignOutBtn.addEventListener("click", handleSignOut);
 
-    uploadBtn.addEventListener("click", async () => {
-      const file = fileInput.files && fileInput.files[0];
-      if (!file) {
-        setStatus(uploadStatus, false, "Select an image first.");
-        return;
-      }
+    createUploadBtn.addEventListener("click", async () => {
+      await uploadImageFromInput(
+        createImageFile,
+        createUploadStatus,
+        document.getElementById("image-path"),
+        updateEditorPreview,
+        createUploadBtn
+      );
+    });
 
-      uploadBtn.disabled = true;
-      setStatus(uploadStatus, true, "Uploading...");
-      uploadedPath.textContent = "Uploading image asset...";
-
-      try {
-        const supabase = adminRuntime.getClient();
-        const storagePath = `works/${adminRuntime.slugifyFilename(file.name)}`;
-        const { error } = await withTimeout(
-          supabase.storage.from(adminRuntime.bucket).upload(storagePath, file, {
-            cacheControl: "3600",
-            upsert: false,
-            contentType: file.type || undefined
-          }),
-          20000,
-          "Timed out while uploading the image."
-        );
-        if (error) {
-          throw error;
-        }
-
-        document.getElementById("image-path").value = storagePath;
-        uploadedPath.textContent = `Uploaded image path: ${storagePath}`;
-        setStatus(uploadStatus, true, "Image uploaded.");
-        updateEditorPreview();
-      } catch (error) {
-        setStatus(uploadStatus, false, error.message || "Upload failed.");
-        uploadedPath.textContent = "Upload failed. Check the selected file and try again.";
-      } finally {
-        uploadBtn.disabled = false;
-      }
+    editUploadBtn.addEventListener("click", async () => {
+      await uploadImageFromInput(
+        editImageFile,
+        editUploadStatus,
+        editImagePath,
+        updateEditPreview,
+        editUploadBtn
+      );
     });
 
     createBtn.addEventListener("click", async () => {
@@ -1700,8 +1768,8 @@
 
         const savedTitle = payload.title;
         setStatus(createStatus, true, `Work added: ${savedTitle}`);
-        resetEditor();
         await refreshWorksList();
+        closeCreateModal();
       } catch (error) {
         setStatus(createStatus, false, error.message || "Could not save work.");
       } finally {
@@ -1753,6 +1821,9 @@
       }
     });
 
+    openCreateModalBtn.addEventListener("click", openCreateModal);
+    document.getElementById("create-modal-close-btn").addEventListener("click", closeCreateModal);
+    document.getElementById("create-cancel-btn").addEventListener("click", closeCreateModal);
     document.getElementById("edit-modal-close-btn").addEventListener("click", closeEditModal);
     document.getElementById("edit-cancel-btn").addEventListener("click", closeEditModal);
     document.getElementById("delete-modal-close-btn").addEventListener("click", closeDeleteModal);
@@ -1760,6 +1831,9 @@
     deleteConfirmBtn.addEventListener("click", async () => {
       if (!pendingDelete) return;
       await deleteWork(pendingDelete.work, pendingDelete.deleteImage);
+    });
+    createModal.addEventListener("click", (event) => {
+      if (event.target === createModal) closeCreateModal();
     });
     editModal.addEventListener("click", (event) => {
       if (event.target === editModal) closeEditModal();
@@ -1775,6 +1849,11 @@
 
       if (deleteModal.classList.contains("active")) {
         closeDeleteModal();
+        return;
+      }
+
+      if (createModal.classList.contains("active")) {
+        closeCreateModal();
         return;
       }
 
