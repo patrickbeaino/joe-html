@@ -1130,6 +1130,7 @@
     let editingId = null;
     let pendingDelete = null;
     let authSubscription = null;
+    const UPLOAD_TIMEOUT_MS = 90000;
 
     function syncBodyOverflow() {
       const hasOpenModal =
@@ -1158,13 +1159,12 @@
       ]);
     }
 
-    function readAsDataUrl(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = () => reject(new Error("Could not read file."));
-        reader.readAsDataURL(file);
-      });
+    function revokePreviewUrl(imageEl) {
+      const current = imageEl && imageEl.dataset ? imageEl.dataset.previewUrl : "";
+      if (current) {
+        URL.revokeObjectURL(current);
+        delete imageEl.dataset.previewUrl;
+      }
     }
 
     function resolvePreviewImage(path) {
@@ -1184,6 +1184,7 @@
     }
 
     function applyPreviewImage(frame, imageEl, imagePath, imageStyle) {
+      revokePreviewUrl(imageEl);
       if (!imagePath) {
         imageEl.removeAttribute("src");
         imageEl.style.cssText = "";
@@ -1581,8 +1582,10 @@
       }
 
       try {
-        const localPreview = await readAsDataUrl(file);
+        revokePreviewUrl(imageEl);
+        const localPreview = URL.createObjectURL(file);
         imageEl.src = localPreview;
+        imageEl.dataset.previewUrl = localPreview;
         imageEl.style.cssText = imageStyle || "";
         frame.classList.add("has-image");
       } catch {
@@ -1598,7 +1601,8 @@
       }
 
       triggerBtn.disabled = true;
-      setStatus(statusEl, true, "Uploading...");
+      const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
+      setStatus(statusEl, true, `Uploading ${sizeMb} MB image...`);
 
       try {
         const supabase = adminRuntime.getClient();
@@ -1609,7 +1613,7 @@
             upsert: false,
             contentType: file.type || undefined
           }),
-          20000,
+          UPLOAD_TIMEOUT_MS,
           "Timed out while uploading the image."
         );
         if (error) {
