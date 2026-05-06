@@ -445,6 +445,69 @@ async function handleContact(req, res) {
   sendJson(res, 200, { ok: true });
 }
 
+async function handleAccessRequest(req, res) {
+  let body;
+  try {
+    body = await readJsonBody(req);
+  } catch {
+    sendJson(res, 400, { error: "Invalid JSON body." });
+    return;
+  }
+
+  const title = typeof body.title === "string" ? body.title.trim() : "";
+  const name = typeof body.name === "string" ? body.name.trim() : "";
+  const email = typeof body.email === "string" ? body.email.trim() : "";
+
+  if (!title || !name || !email) {
+    sendJson(res, 400, { error: "Film title, name, and email are required." });
+    return;
+  }
+
+  if (!RESEND_API_KEY || RESEND_API_KEY === "re_xxxxxxxxx") {
+    sendJson(res, 500, {
+      error: "Resend is not configured. Replace re_xxxxxxxxx with your real API key in RESEND_API_KEY."
+    });
+    return;
+  }
+
+  let Resend;
+  try {
+    ({ Resend } = await import("resend"));
+  } catch {
+    sendJson(res, 500, {
+      error: "Resend package is not installed yet. Run npm install before using access request email."
+    });
+    return;
+  }
+
+  const resend = new Resend(RESEND_API_KEY);
+  const html = `
+    <p>You received a new private screening access request from the Entracte website.</p>
+    <p><strong>Film:</strong> ${escapeHtml(title)}</p>
+    <p><strong>Name:</strong> ${escapeHtml(name)}</p>
+    <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+  `;
+
+  try {
+    const result = await resend.emails.send({
+      from: formatFromEmail(RESEND_FROM_EMAIL),
+      to: CONTACT_TO_EMAIL,
+      reply_to: email,
+      subject: `Entracte Access Request: ${title}`,
+      html
+    });
+
+    if (result && result.error) {
+      throw new Error(result.error.message || "Email send failed.");
+    }
+  } catch (error) {
+    sendJson(res, 502, { error: error.message || "Failed to send email." });
+    return;
+  }
+
+  sendJson(res, 200, { ok: true });
+}
+
 const server = http.createServer(async (req, res) => {
   const urlObj = new URL(req.url, `http://${req.headers.host || "localhost"}`);
   const pathname = decodeURIComponent(urlObj.pathname);
@@ -452,6 +515,11 @@ const server = http.createServer(async (req, res) => {
   try {
     if (req.method === "POST" && pathname === "/api/contact") {
       await handleContact(req, res);
+      return;
+    }
+
+    if (req.method === "POST" && pathname === "/api/access-request") {
+      await handleAccessRequest(req, res);
       return;
     }
 

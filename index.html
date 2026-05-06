@@ -183,12 +183,15 @@ footer{background:var(--b);padding:26px 48px;border-top:1px solid rgba(244,241,2
 .modal input:focus{border-bottom-color:var(--p)}
 .modal input::placeholder{color:rgba(35,31,32,.2)}
 .modal .btnb{background:var(--b);color:var(--y);width:100%;text-align:center;font-family:'DM Sans',sans-serif;cursor:pointer;display:block}
+.modal .btnb:disabled{opacity:.75;cursor:wait}
 .merror{font-size:.68rem;color:#c0504f;margin-top:10px;display:none}
 .mclose{position:absolute;top:16px;right:20px;background:none;border:none;font-size:1.2rem;color:rgba(35,31,32,.3);cursor:pointer;transition:color .3s}
 .mclose:hover{color:var(--b)}
 .req-sent{display:none;text-align:center;padding:18px 0}
 .req-sent p{font-size:.84rem;color:var(--b);line-height:1.7}
 .req-sent strong{color:var(--p)}
+.req-feedback{display:none;font-size:.72rem;line-height:1.6;margin-top:10px}
+.req-feedback.error{color:#c0504f}
 
 /* ── RESPONSIVE ── */
 @media(max-width:900px){
@@ -621,7 +624,8 @@ footer{background:var(--b);padding:26px 48px;border-top:1px solid rgba(244,241,2
       <div id="req-form">
         <label>Your Name</label><input type="text" id="rname" placeholder="Full name"/>
         <label>Email</label><input type="email" id="remail" placeholder="your@email.com"/>
-        <button class="btnb" onclick="sendRequest()">Request Access</button>
+        <button class="btnb" id="req-submit" onclick="sendRequest()">Request Access</button>
+        <div class="req-feedback error" id="req-error"></div>
       </div>
       <div class="req-sent" id="req-sent">
         <p>✦ Request sent!<br/><strong>We'll send your link within 24 hours.</strong></p>
@@ -760,8 +764,14 @@ function openModal(e, title, vimeo) {
   document.getElementById('modal-film').textContent = title;
   document.getElementById('merror').style.display = 'none';
   document.getElementById('mpass').value = '';
+  document.getElementById('rname').value = '';
+  document.getElementById('remail').value = '';
   document.getElementById('req-form').style.display = 'block';
   document.getElementById('req-sent').style.display = 'none';
+  document.getElementById('req-error').style.display = 'none';
+  document.getElementById('req-error').textContent = '';
+  document.getElementById('req-submit').disabled = false;
+  document.getElementById('req-submit').textContent = document.getElementById('req-submit').dataset.idleLabel || 'Request Access';
   switchTab('pw');
   document.getElementById('modalBg').classList.add('active');
 }
@@ -785,12 +795,54 @@ function tryLogin() {
     document.getElementById('merror').style.display='block';
   }
 }
-function sendRequest() {
-  if (!document.getElementById('rname').value.trim()||!document.getElementById('remail').value.trim()) {
-    alert('Please fill in your name and email.'); return;
+async function sendRequest() {
+  var name = document.getElementById('rname').value.trim();
+  var email = document.getElementById('remail').value.trim();
+  var title = document.getElementById('modal-film').textContent.trim() || 'Unknown title';
+  var button = document.getElementById('req-submit');
+  var error = document.getElementById('req-error');
+  var idleLabel = button.dataset.idleLabel || button.textContent;
+
+  button.dataset.idleLabel = idleLabel;
+  error.style.display = 'none';
+  error.textContent = '';
+
+  if (!name || !email) {
+    error.textContent = 'Please fill in your name and email.';
+    error.style.display = 'block';
+    return;
   }
-  document.getElementById('req-form').style.display='none';
-  document.getElementById('req-sent').style.display='block';
+
+  button.disabled = true;
+  button.textContent = 'Sending...';
+
+  try {
+    var response = await fetch('/api/access-request', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        title: title,
+        name: name,
+        email: email
+      })
+    });
+
+    var payload = await response.json().catch(function() { return {}; });
+    if (!response.ok) {
+      throw new Error(payload.error || 'Could not send your access request.');
+    }
+
+    document.getElementById('req-form').style.display = 'none';
+    document.getElementById('req-sent').style.display = 'block';
+  } catch (requestError) {
+    error.textContent = requestError.message || 'Could not send your access request.';
+    error.style.display = 'block';
+  } finally {
+    button.disabled = false;
+    button.textContent = idleLabel;
+  }
 }
 
 // ── PUBLIC WORKS ──
