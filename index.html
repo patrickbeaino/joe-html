@@ -12,8 +12,8 @@ html{scroll-behavior:smooth}
 body{background:var(--b);color:var(--b);font-family:'DM Sans',sans-serif;overflow-x:hidden}
 
 /* ── INTRO ── */
-#intro{position:fixed;inset:0;z-index:10000;background:var(--b);display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:1;visibility:visible;transition:opacity .45s ease,visibility .45s ease}
-#intro-video{width:100%;height:100%;object-fit:cover;object-position:center;display:block}
+#intro{position:fixed;inset:0;z-index:10000;min-height:100dvh;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden;pointer-events:none;opacity:1;visibility:visible;transition:opacity .45s ease,visibility .45s ease}
+#intro-video{width:min(88vw,1680px);height:auto;max-width:88vw;max-height:88dvh;aspect-ratio:16/9;object-fit:contain;object-position:center;display:block;background:#000}
 #intro.gone{opacity:0;visibility:hidden}
 
 /* ── NAV ── */
@@ -114,8 +114,9 @@ nav.dark .nbtn:hover,nav.dark .nbtn.active{color:var(--y);font-weight:700}
 .cfg select option{background:var(--b)}
 .cfg input:focus,.cfg textarea:focus,.cfg select:focus{border-bottom-color:var(--y)}
 .cfg input::placeholder,.cfg textarea::placeholder{color:rgba(244,241,241,.18)}
-.btny{background:var(--y);color:var(--b);padding:14px 32px;font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;border:none;cursor:pointer;transition:background .3s;width:100%}
+.btny{background:var(--y);color:var(--b);padding:14px 32px;font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;border:none;cursor:pointer;transition:background .3s,color .3s,opacity .3s;width:100%}
 .btny:hover{background:var(--pk);color:#fff}
+.btny:disabled{background:rgba(233,254,107,.55);color:rgba(18,16,16,.85);cursor:wait;opacity:.9}
 .fsuccess{display:none;padding:13px;border:1px solid rgba(233,254,107,.25);text-align:center;font-size:.74rem;letter-spacing:.1em;color:var(--y);margin-top:4px}
 
 /* FOOTER */
@@ -191,6 +192,7 @@ footer{background:var(--b);padding:26px 48px;border-top:1px solid rgba(244,241,2
 
 /* ── RESPONSIVE ── */
 @media(max-width:900px){
+  #intro-video{width:94vw;max-width:94vw;max-height:72dvh}
   nav{padding:14px 20px 0}
   .nlogo{height:50px}
   #hero{padding:130px 20px 60px}
@@ -297,7 +299,7 @@ footer{background:var(--b);padding:26px 48px;border-top:1px solid rgba(244,241,2
           <select id="cf-subj"><option value="" disabled selected>Select a topic</option><option>New Project Inquiry</option><option>Client Access Request</option><option>Partnership</option><option>Other</option></select>
         </div>
         <div class="cfg"><label>Message</label><textarea placeholder="Tell us about your project..." id="cf-msg" rows="4"></textarea></div>
-        <button class="btny" onclick="submitForm()">Send Message</button>
+        <button class="btny" id="cf-submit" onclick="submitForm()">Send Message</button>
         <div class="fsuccess" id="fsuccess">✦ Message received. We'll be in touch soon.</div>
       </div>
     </div>
@@ -872,15 +874,60 @@ async function loadExtraWorks() {
 loadExtraWorks();
 
 // ── CONTACT ──
-function submitForm() {
-  if (!document.getElementById('cf-name').value.trim()||!document.getElementById('cf-email').value.trim()) {
-    alert('Please enter your name and email.'); return;
+async function submitForm() {
+  var name = document.getElementById('cf-name').value.trim();
+  var email = document.getElementById('cf-email').value.trim();
+  var subject = document.getElementById('cf-subj').value || '';
+  var message = document.getElementById('cf-msg').value.trim();
+  var status = document.getElementById('fsuccess');
+  var button = document.getElementById('cf-submit');
+  var idleLabel = button.dataset.idleLabel || button.textContent;
+
+  button.dataset.idleLabel = idleLabel;
+
+  if (!name || !email || !message) {
+    status.textContent = 'Please enter your name, email, and message.';
+    status.style.display = 'block';
+    return;
   }
-  document.getElementById('fsuccess').style.display='block';
-  document.getElementById('cf-name').value='';
-  document.getElementById('cf-email').value='';
-  document.getElementById('cf-subj').selectedIndex=0;
-  document.getElementById('cf-msg').value='';
+
+  button.disabled = true;
+  button.textContent = 'Sending...';
+  button.setAttribute('aria-busy', 'true');
+  status.textContent = 'Sending...';
+  status.style.display = 'block';
+
+  try {
+    var response = await fetch('/api/contact', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: name,
+        email: email,
+        subject: subject,
+        message: message
+      })
+    });
+
+    var payload = await response.json().catch(function() { return {}; });
+    if (!response.ok) {
+      throw new Error(payload.error || 'Could not send your message.');
+    }
+
+    status.textContent = 'Message received. We will be in touch soon.';
+    document.getElementById('cf-name').value = '';
+    document.getElementById('cf-email').value = '';
+    document.getElementById('cf-subj').selectedIndex = 0;
+    document.getElementById('cf-msg').value = '';
+  } catch (error) {
+    status.textContent = error.message || 'Could not send your message.';
+  } finally {
+    button.disabled = false;
+    button.textContent = idleLabel;
+    button.removeAttribute('aria-busy');
+  }
 }
 </script>
 </body>

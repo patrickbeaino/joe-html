@@ -2,6 +2,9 @@
   "name": "joe-html",
   "version": "1.0.0",
   "private": true,
+  "dependencies": {
+    "resend": "^4.8.0"
+  },
   "scripts": {
     "start": "node server.js"
   }

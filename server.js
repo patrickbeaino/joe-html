@@ -3,10 +3,51 @@ const fs = require("fs");
 const fsp = fs.promises;
 const path = require("path");
 
+function loadLocalEnv() {
+  const envPath = path.join(__dirname, ".env");
+
+  try {
+    const raw = fs.readFileSync(envPath, "utf8");
+    const lines = raw.split(/\r?\n/);
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+
+      if (!trimmed || trimmed.startsWith("#")) continue;
+
+      const separatorIndex = trimmed.indexOf("=");
+      if (separatorIndex === -1) continue;
+
+      const key = trimmed.slice(0, separatorIndex).trim();
+      let value = trimmed.slice(separatorIndex + 1).trim();
+
+      if (!key || process.env[key] !== undefined) continue;
+
+      if (
+        (value.startsWith('"') && value.endsWith('"')) ||
+        (value.startsWith("'") && value.endsWith("'"))
+      ) {
+        value = value.slice(1, -1);
+      }
+
+      process.env[key] = value;
+    }
+  } catch (error) {
+    if (error.code !== "ENOENT") {
+      console.warn("Could not load .env:", error.message);
+    }
+  }
+}
+
+loadLocalEnv();
+
 const PORT = Number(process.env.PORT || 3000);
 const ROOT = __dirname;
 const WORKS_FILE = path.join(ROOT, "data", "works-extra.json");
 const UPLOAD_DIR = path.join(ROOT, "assets-2");
+const RESEND_API_KEY = process.env.RESEND_API_KEY || "re_xxxxxxxxx";
+const RESEND_FROM_EMAIL = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
+const CONTACT_TO_EMAIL = process.env.CONTACT_TO_EMAIL || "patrikbeaino@gmail.com";
 
 const ADMIN_USER = process.env.ADMIN_USER || "admin";
 const ADMIN_PASS = process.env.ADMIN_PASS || "change-me";
@@ -46,6 +87,21 @@ function sendJson(res, statusCode, payload) {
 function sendText(res, statusCode, text) {
   res.writeHead(statusCode, { "Content-Type": "text/plain; charset=utf-8" });
   res.end(text);
+}
+
+function escapeHtml(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function formatFromEmail(value) {
+  const raw = String(value || "").trim();
+  if (!raw) return "onboarding@resend.dev";
+  return raw.includes("<") ? raw : `Entracte <${raw}>`;
 }
 
 function unauthorized(res) {
@@ -322,11 +378,83 @@ async function handleDeleteWork(res, workId, shouldDeleteImage) {
   sendJson(res, 200, { ok: true, removedId: workId, imageDeleted });
 }
 
+async function handleContact(req, res) {
+  let body;
+  try {
+    body = await readJsonBody(req);
+  } catch {
+    sendJson(res, 400, { error: "Invalid JSON body." });
+    return;
+  }
+
+  const name = typeof body.name === "string" ? body.name.trim() : "";
+  const email = typeof body.email === "string" ? body.email.trim() : "";
+  const subject = typeof body.subject === "string" ? body.subject.trim() : "";
+  const message = typeof body.message === "string" ? body.message.trim() : "";
+
+  if (!name || !email || !message) {
+    sendJson(res, 400, { error: "Name, email, and message are required." });
+    return;
+  }
+
+  if (!RESEND_API_KEY || RESEND_API_KEY === "re_xxxxxxxxx") {
+    sendJson(res, 500, {
+      error: "Resend is not configured. Replace re_xxxxxxxxx with your real API key in RESEND_API_KEY."
+    });
+    return;
+  }
+
+  let Resend;
+  try {
+    ({ Resend } = await import("resend"));
+  } catch {
+    sendJson(res, 500, {
+      error: "Resend package is not installed yet. Run npm install before using contact email."
+    });
+    return;
+  }
+
+  const resend = new Resend(RESEND_API_KEY);
+  const safeSubject = subject || "New Project Inquiry";
+  const html = `
+    <p>You received a new message from the Entracte contact form.</p>
+    <p><strong>Name:</strong> ${escapeHtml(name)}</p>
+    <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+    <p><strong>Subject:</strong> ${escapeHtml(safeSubject)}</p>
+    <p><strong>Message:</strong></p>
+    <p>${escapeHtml(message).replace(/\n/g, "<br/>")}</p>
+  `;
+
+  try {
+    const result = await resend.emails.send({
+      from: formatFromEmail(RESEND_FROM_EMAIL),
+      to: CONTACT_TO_EMAIL,
+      reply_to: email,
+      subject: `Entracte Contact: ${safeSubject}`,
+      html
+    });
+
+    if (result && result.error) {
+      throw new Error(result.error.message || "Email send failed.");
+    }
+  } catch (error) {
+    sendJson(res, 502, { error: error.message || "Failed to send email." });
+    return;
+  }
+
+  sendJson(res, 200, { ok: true });
+}
+
 const server = http.createServer(async (req, res) => {
   const urlObj = new URL(req.url, `http://${req.headers.host || "localhost"}`);
   const pathname = decodeURIComponent(urlObj.pathname);
 
   try {
+    if (req.method === "POST" && pathname === "/api/contact") {
+      await handleContact(req, res);
+      return;
+    }
+
     if (req.method === "GET" && pathname === "/api/works-extra") {
       const works = await readWorks();
       sendJson(res, 200, works);
