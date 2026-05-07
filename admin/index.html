@@ -587,6 +587,28 @@
       font-size: 0.94rem;
     }
 
+    .order-status {
+      min-width: 180px;
+      text-align: right;
+    }
+
+    .order-toolbar {
+      display: grid;
+      justify-items: end;
+      gap: 10px;
+    }
+
+    .order-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .order-actions .btn {
+      padding: 10px 14px;
+      min-height: 38px;
+      font-size: 0.64rem;
+    }
+
     .works-list {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -609,6 +631,18 @@
       border: 1px solid var(--line);
       background: var(--panel-strong);
       overflow: hidden;
+    }
+
+    .work-item[draggable="true"] {
+      cursor: grab;
+    }
+
+    .work-item.is-dragging {
+      opacity: 0.55;
+    }
+
+    .work-item.drag-over {
+      border-color: var(--yellow);
     }
 
     .work-thumb {
@@ -704,6 +738,51 @@
       font-size: 1.4rem;
       line-height: 1;
       letter-spacing: -0.03em;
+    }
+
+    .work-order-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .work-order-label {
+      color: var(--text-soft);
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .work-drag-note {
+      color: rgba(244, 241, 241, 0.36);
+      font-size: 0.64rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .work-order-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .work-order-btn {
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--white);
+      cursor: pointer;
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .work-order-btn:disabled {
+      color: rgba(244, 241, 241, 0.22);
+      cursor: not-allowed;
     }
 
     .work-meta p {
@@ -949,8 +1028,15 @@
             </div>
             <div class="panel-body">
               <div class="works-head">
-                <p>The list below reflects the current works catalog. Create and edit open focused overlays, and delete
-                  actions ask for confirmation before the grid refreshes.</p>
+                <p>The list below reflects the current client catalog order. Drag cards into place, then save once when
+                  the order is right.</p>
+                <div class="order-toolbar">
+                  <div id="order-status" class="status order-status"></div>
+                  <div class="order-actions">
+                    <button class="btn btn-secondary" id="reset-order-btn" type="button" disabled>Reset</button>
+                    <button class="btn" id="save-order-btn" type="button" disabled>Save Order</button>
+                  </div>
+                </div>
               </div>
               <div id="existing-works" class="works-list"></div>
             </div>
@@ -1150,6 +1236,9 @@
     const createBtn = document.getElementById("create-btn");
     const createStatus = document.getElementById("create-status");
     const existingWorks = document.getElementById("existing-works");
+    const orderStatus = document.getElementById("order-status");
+    const resetOrderBtn = document.getElementById("reset-order-btn");
+    const saveOrderBtn = document.getElementById("save-order-btn");
     const createImageFile = document.getElementById("create-image-file");
     const createUploadBtn = document.getElementById("create-upload-btn");
     const createUploadStatus = document.getElementById("create-upload-status");
@@ -1183,6 +1272,11 @@
     const deleteConfirmBtn = document.getElementById("delete-confirm-btn");
     let editingId = null;
     let pendingDelete = null;
+    let currentWorks = [];
+    let savedWorksSnapshot = [];
+    let orderDirty = false;
+    let orderSaving = false;
+    let draggedWorkId = null;
     let authSubscription = null;
     const UPLOAD_TIMEOUT_MS = 90000;
 
@@ -1465,9 +1559,114 @@
       closeAllWorkMenus();
     });
 
+    function normalizeOrderedWorks(works) {
+      return Array.isArray(works)
+        ? works.map((work, index) => ({ ...work, sortOrder: index + 1 }))
+        : [];
+    }
+
+    function updateOrderActionState(message, ok = true) {
+      saveOrderBtn.disabled = !orderDirty || orderSaving;
+      resetOrderBtn.disabled = !orderDirty || orderSaving;
+      if (typeof message === "string") {
+        setStatus(orderStatus, ok, message);
+      }
+    }
+
+    function setOrderDirty(dirty, message) {
+      orderDirty = dirty;
+      updateOrderActionState(message);
+    }
+
+    function applyLocalOrder(nextWorks, message) {
+      currentWorks = normalizeOrderedWorks(nextWorks);
+      renderWorksList(currentWorks);
+      setOrderDirty(true, message || "Unsaved order. Save when ready.");
+    }
+
+    function moveWorkToIndex(workId, toIndex) {
+      const fromIndex = currentWorks.findIndex((work) => work.id === workId);
+      if (fromIndex === -1 || toIndex < 0 || toIndex >= currentWorks.length || fromIndex === toIndex) {
+        return;
+      }
+
+      const nextWorks = currentWorks.map((work) => ({ ...work }));
+      const [moved] = nextWorks.splice(fromIndex, 1);
+      nextWorks.splice(toIndex, 0, moved);
+      applyLocalOrder(nextWorks);
+    }
+
+    function moveWorkNear(sourceId, targetId, placeAfter) {
+      if (!sourceId || !targetId || sourceId === targetId) {
+        return;
+      }
+
+      const sourceIndex = currentWorks.findIndex((work) => work.id === sourceId);
+      const targetIndex = currentWorks.findIndex((work) => work.id === targetId);
+      if (sourceIndex === -1 || targetIndex === -1) {
+        return;
+      }
+
+      const nextWorks = currentWorks.map((work) => ({ ...work }));
+      const [moved] = nextWorks.splice(sourceIndex, 1);
+      const nextTargetIndex = nextWorks.findIndex((work) => work.id === targetId);
+      nextWorks.splice(placeAfter ? nextTargetIndex + 1 : nextTargetIndex, 0, moved);
+      applyLocalOrder(nextWorks);
+    }
+
+    function createWorkOrderControls(work, index, total) {
+      const controls = document.createElement("div");
+      controls.className = "work-order-controls";
+
+      const labelWrap = document.createElement("div");
+
+      const label = document.createElement("div");
+      label.className = "work-order-label";
+      label.textContent = `Position ${index + 1}`;
+      labelWrap.appendChild(label);
+
+      const dragNote = document.createElement("div");
+      dragNote.className = "work-drag-note";
+      dragNote.textContent = "Drag card";
+      labelWrap.appendChild(dragNote);
+
+      controls.appendChild(labelWrap);
+
+      const buttons = document.createElement("div");
+      buttons.className = "work-order-buttons";
+
+      const upBtn = document.createElement("button");
+      upBtn.className = "work-order-btn";
+      upBtn.type = "button";
+      upBtn.innerHTML = "&uarr;";
+      upBtn.setAttribute("aria-label", `Move ${work.title || "work"} up`);
+      upBtn.disabled = index === 0 || orderSaving;
+      upBtn.addEventListener("click", (event) => {
+        event.stopPropagation();
+        moveWork(work.id, -1);
+      });
+      buttons.appendChild(upBtn);
+
+      const downBtn = document.createElement("button");
+      downBtn.className = "work-order-btn";
+      downBtn.type = "button";
+      downBtn.innerHTML = "&darr;";
+      downBtn.setAttribute("aria-label", `Move ${work.title || "work"} down`);
+      downBtn.disabled = index === total - 1 || orderSaving;
+      downBtn.addEventListener("click", (event) => {
+        event.stopPropagation();
+        moveWork(work.id, 1);
+      });
+      buttons.appendChild(downBtn);
+
+      controls.appendChild(buttons);
+      return controls;
+    }
+
     function renderWorksList(works) {
       existingWorks.textContent = "";
       if (!Array.isArray(works) || works.length === 0) {
+        currentWorks = [];
         const empty = document.createElement("div");
         empty.className = "works-empty";
         empty.innerHTML = '<p class="tiny">No uploaded works yet. Use the upload panel and the Create Work action to add the first card.</p>';
@@ -1475,9 +1674,53 @@
         return;
       }
 
-      works.forEach((work) => {
+      currentWorks = normalizeOrderedWorks(works);
+
+      currentWorks.forEach((work, index) => {
         const item = document.createElement("article");
         item.className = "work-item";
+        item.draggable = !orderSaving;
+        item.dataset.workId = work.id;
+
+        item.addEventListener("dragstart", (event) => {
+          if (event.target.closest("button")) {
+            event.preventDefault();
+            return;
+          }
+          draggedWorkId = work.id;
+          item.classList.add("is-dragging");
+          event.dataTransfer.effectAllowed = "move";
+          event.dataTransfer.setData("text/plain", work.id);
+        });
+
+        item.addEventListener("dragover", (event) => {
+          if (!draggedWorkId || draggedWorkId === work.id) {
+            return;
+          }
+          event.preventDefault();
+          item.classList.add("drag-over");
+        });
+
+        item.addEventListener("dragleave", () => {
+          item.classList.remove("drag-over");
+        });
+
+        item.addEventListener("drop", (event) => {
+          event.preventDefault();
+          item.classList.remove("drag-over");
+          const sourceId = event.dataTransfer.getData("text/plain") || draggedWorkId;
+          const rect = item.getBoundingClientRect();
+          const placeAfter = event.clientY > rect.top + rect.height / 2;
+          moveWorkNear(sourceId, work.id, placeAfter);
+        });
+
+        item.addEventListener("dragend", () => {
+          draggedWorkId = null;
+          item.classList.remove("is-dragging");
+          document.querySelectorAll(".work-item.drag-over").forEach((dragItem) => {
+            dragItem.classList.remove("drag-over");
+          });
+        });
 
         const thumb = document.createElement("div");
         thumb.className = "work-thumb";
@@ -1547,6 +1790,8 @@
         title.textContent = work.title || "Untitled";
         meta.appendChild(title);
 
+        meta.appendChild(createWorkOrderControls(work, index, currentWorks.length));
+
         const director = document.createElement("p");
         director.textContent = work.director ? `Director: ${work.director}` : "Director: -";
         meta.appendChild(director);
@@ -1587,14 +1832,77 @@
           15000,
           "Timed out while loading works."
         );
-        renderWorksList(works);
+        savedWorksSnapshot = normalizeOrderedWorks(works);
+        currentWorks = savedWorksSnapshot.map((work) => ({ ...work }));
+        renderWorksList(currentWorks);
+        setOrderDirty(false, "");
       } catch (error) {
         existingWorks.textContent = "";
+        currentWorks = [];
+        savedWorksSnapshot = [];
+        setOrderDirty(false, "");
         const fail = document.createElement("div");
         fail.className = "works-empty";
         fail.innerHTML = `<p class="tiny">${error.message || "Failed to load works."}</p>`;
         existingWorks.appendChild(fail);
       }
+    }
+
+    async function saveWorksOrder() {
+      if (!orderDirty || orderSaving) {
+        return;
+      }
+
+      orderSaving = true;
+      renderWorksList(currentWorks);
+      updateOrderActionState("Saving order...");
+
+      try {
+        const supabase = adminRuntime.getClient();
+        const orderedWorks = normalizeOrderedWorks(currentWorks);
+        const updates = orderedWorks.map((work, index) =>
+          supabase
+            .from("works")
+            .update({ sort_order: index + 1 })
+            .eq("id", work.id)
+        );
+        const responses = await withTimeout(
+          Promise.all(updates),
+          20000,
+          "Timed out while saving the order."
+        );
+        const failed = responses.find((response) => response && response.error);
+        if (failed) {
+          throw failed.error;
+        }
+        savedWorksSnapshot = orderedWorks.map((work) => ({ ...work }));
+        currentWorks = orderedWorks.map((work) => ({ ...work }));
+        orderDirty = false;
+        renderWorksList(currentWorks);
+        updateOrderActionState("Order saved.");
+      } catch (error) {
+        updateOrderActionState(error.message || "Could not save order.", false);
+      } finally {
+        orderSaving = false;
+        renderWorksList(currentWorks);
+        updateOrderActionState();
+      }
+    }
+
+    function resetWorksOrder() {
+      currentWorks = savedWorksSnapshot.map((work) => ({ ...work }));
+      renderWorksList(currentWorks);
+      setOrderDirty(false, "");
+    }
+
+    function moveWork(workId, direction) {
+      if (orderSaving) {
+        return;
+      }
+
+      const fromIndex = currentWorks.findIndex((work) => work.id === workId);
+      const toIndex = fromIndex + direction;
+      moveWorkToIndex(workId, toIndex);
     }
 
     async function deleteWork(work, deleteImage) {
@@ -1793,6 +2101,8 @@
 
     signOutBtn.addEventListener("click", handleSignOut);
     dashboardSignOutBtn.addEventListener("click", handleSignOut);
+    resetOrderBtn.addEventListener("click", resetWorksOrder);
+    saveOrderBtn.addEventListener("click", saveWorksOrder);
 
     createUploadBtn.addEventListener("click", async () => {
       await uploadImageFromInput(
@@ -1834,7 +2144,8 @@
           image_path: payload.imagePath,
           image_url: payload.imageUrl,
           image_style: payload.imageStyle,
-          image_alt: payload.title
+          image_alt: payload.title,
+          sort_order: currentWorks.length + 1
         };
 
         const response = await withTimeout(

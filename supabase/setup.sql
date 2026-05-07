@@ -15,9 +15,30 @@ create table if not exists public.works (
   image_url text not null,
   image_style text not null default '',
   image_alt text not null,
+  sort_order integer not null default 0,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table public.works
+add column if not exists sort_order integer not null default 0;
+
+with ordered_works as (
+  select
+    id,
+    (row_number() over (
+      order by
+        nullif(sort_order, 0) nulls last,
+        created_at,
+        title
+    ))::integer as next_sort_order
+  from public.works
+)
+update public.works as works
+set sort_order = ordered_works.next_sort_order
+from ordered_works
+where works.id = ordered_works.id
+  and works.sort_order = 0;
 
 create or replace function public.set_updated_at()
 returns trigger

@@ -3,6 +3,7 @@
 ## 1. Create the project resources
 - Create a Supabase project.
 - Open the SQL editor and run [supabase/setup.sql](/Users/patrickbeaino/Documents/Patrick/joe-html/supabase/setup.sql).
+- Run this file again after deploying catalog changes; it is safe to re-run and adds any new columns such as `sort_order`.
 
 ## 2. Create the admin user
 - In Supabase Dashboard, go to `Authentication` -> `Users`.

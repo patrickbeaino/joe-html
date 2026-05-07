@@ -170,11 +170,24 @@ function extractWorkId(pathname) {
 async function readWorks() {
   const content = await fsp.readFile(WORKS_FILE, "utf8");
   const parsed = JSON.parse(content);
-  return Array.isArray(parsed) ? parsed : [];
+  if (!Array.isArray(parsed)) return [];
+  return parsed
+    .map((work, index) => ({
+      ...work,
+      sortOrder: Number.isFinite(Number(work && work.sortOrder)) ? Number(work.sortOrder) : index + 1,
+    }))
+    .sort((a, b) => {
+      const sortDelta = (a.sortOrder || 0) - (b.sortOrder || 0);
+      if (sortDelta !== 0) return sortDelta;
+      return String(a.id || "").localeCompare(String(b.id || ""));
+    });
 }
 
 async function writeWorks(works) {
-  await fsp.writeFile(WORKS_FILE, JSON.stringify(works, null, 2) + "\n", "utf8");
+  const normalized = Array.isArray(works)
+    ? works.map((work, index) => ({ ...work, sortOrder: index + 1 }))
+    : [];
+  await fsp.writeFile(WORKS_FILE, JSON.stringify(normalized, null, 2) + "\n", "utf8");
 }
 
 function contentTypeFor(filePath) {
@@ -286,6 +299,7 @@ async function handleCreateWork(req, res) {
   }
 
   const works = await readWorks();
+  entry.sortOrder = works.length + 1;
   works.push(entry);
   await writeWorks(works);
 

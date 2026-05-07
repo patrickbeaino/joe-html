@@ -38,18 +38,25 @@ with seed (
     ('Nous', 'Trailer', 'Alice Diop', 'https://vimeo.com/1180753554', 'assets-2/catalog/nous.jpg', '/assets-2/catalog/nous.jpg', '', 'Nous'),
     ('Gaza Mon Amour', 'Promoreel', 'Arab & Tarzan Nasser', 'https://vimeo.com/735918777', 'assets-2/catalog/gaza-mon-amour.jpg', '/assets-2/catalog/gaza-mon-amour.jpg', '', 'Gaza Mon Amour')
 ),
+numbered_seed as (
+  select
+    seed.*,
+    (row_number() over ())::integer as sort_order
+  from seed
+),
 updated as (
   update public.works as existing
   set
-    type = seed.type,
-    vimeo_url = seed.vimeo_url,
-    image_path = seed.image_path,
-    image_url = seed.image_url,
-    image_style = seed.image_style,
-    image_alt = seed.image_alt
-  from seed
-  where existing.title = seed.title
-    and existing.director = seed.director
+    type = numbered_seed.type,
+    vimeo_url = numbered_seed.vimeo_url,
+    image_path = numbered_seed.image_path,
+    image_url = numbered_seed.image_url,
+    image_style = numbered_seed.image_style,
+    image_alt = numbered_seed.image_alt,
+    sort_order = numbered_seed.sort_order
+  from numbered_seed
+  where existing.title = numbered_seed.title
+    and existing.director = numbered_seed.director
   returning existing.title, existing.director
 )
 insert into public.works (
@@ -60,21 +67,23 @@ insert into public.works (
   image_path,
   image_url,
   image_style,
-  image_alt
+  image_alt,
+  sort_order
 )
 select
-  seed.title,
-  seed.type,
-  seed.director,
-  seed.vimeo_url,
-  seed.image_path,
-  seed.image_url,
-  seed.image_style,
-  seed.image_alt
-from seed
+  numbered_seed.title,
+  numbered_seed.type,
+  numbered_seed.director,
+  numbered_seed.vimeo_url,
+  numbered_seed.image_path,
+  numbered_seed.image_url,
+  numbered_seed.image_style,
+  numbered_seed.image_alt,
+  numbered_seed.sort_order
+from numbered_seed
 where not exists (
   select 1
   from public.works existing
-  where existing.title = seed.title
-    and existing.director = seed.director
+  where existing.title = numbered_seed.title
+    and existing.director = numbered_seed.director
 );

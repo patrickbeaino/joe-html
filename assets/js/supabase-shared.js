@@ -64,6 +64,8 @@
     const imagePath = row.image_path || row.imagePath || "";
     const rawImageUrl = row.image_url || row.imageUrl || imagePath;
     const imageUrl = toPublicImageUrl(rawImageUrl || imagePath);
+    const rawSortOrder = row.sort_order ?? row.sortOrder;
+    const sortOrder = Number.isFinite(Number(rawSortOrder)) ? Number(rawSortOrder) : 0;
     return {
       id: row.id,
       title: row.title || "",
@@ -74,17 +76,19 @@
       imageUrl,
       imageStyle: row.image_style || row.imageStyle || "",
       imageAlt: row.image_alt || row.imageAlt || row.title || "Work image",
+      sortOrder,
       createdAt: row.created_at || row.createdAt || "",
       updatedAt: row.updated_at || row.updatedAt || ""
     };
   }
 
-  async function listWorks(orderAscending) {
+  async function listWorks() {
     const supabase = getClient();
     const { data, error } = await supabase
       .from("works")
-      .select("id,title,type,director,vimeo_url,image_path,image_url,image_style,image_alt,created_at,updated_at")
-      .order("created_at", { ascending: orderAscending });
+      .select("id,title,type,director,vimeo_url,image_path,image_url,image_style,image_alt,sort_order,created_at,updated_at")
+      .order("sort_order", { ascending: true })
+      .order("created_at", { ascending: true });
     if (error) throw error;
     return (data || []).map(normalizeWork);
   }
@@ -140,10 +144,10 @@
     isAdminEmail,
     isConfigured,
     listAdminWorks() {
-      return listWorks(false);
+      return listWorks();
     },
     listPublicWorks() {
-      return listWorks(true);
+      return listWorks();
     },
     normalizeWork,
     resolveSession,

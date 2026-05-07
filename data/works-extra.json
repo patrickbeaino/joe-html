@@ -6,7 +6,8 @@
     "director": "Dir. Name",
     "vimeoUrl": "",
     "imagePath": "/assets-2/1777046116838-binance.png",
-    "imageAlt": "TESTERERSS"
+    "imageAlt": "TESTERERSS",
+    "sortOrder": 1
   },
   {
     "id": "extra-1777903823185",
@@ -15,6 +16,7 @@
     "director": "JOE",
     "vimeoUrl": "",
     "imagePath": "/assets-2/1777903812068-Screenshot-2026-05-04-at-1.13.25-PM.png",
-    "imageAlt": "NEWEST MOVIE"
+    "imageAlt": "NEWEST MOVIE",
+    "sortOrder": 2
   }
 ]
