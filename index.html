@@ -1,986 +1,2131 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>entracte — Creative Agency</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"/>
-<style>
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-:root{--y:#e9fe6b;--b:#231f20;--p:#973fef;--pk:#f52eff;--w:#f4f1f1;--g:#888}
-html{scroll-behavior:smooth}
-body{background:var(--b);color:var(--b);font-family:'DM Sans',sans-serif;overflow-x:hidden}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>entracte — Creative Agency</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
 
-/* ── INTRO ── */
-#intro{position:fixed;inset:0;z-index:10000;min-height:100dvh;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden;pointer-events:none;opacity:1;visibility:visible;transition:opacity .45s ease,visibility .45s ease}
-#intro-video{width:min(88vw,1680px);height:auto;max-width:88vw;max-height:88dvh;aspect-ratio:16/9;object-fit:contain;object-position:center;display:block;background:#000}
-#intro.gone{opacity:0;visibility:hidden}
+    :root {
+      --y: #e9fe6b;
+      --b: #231f20;
+      --p: #973fef;
+      --pk: #f52eff;
+      --w: #f4f1f1;
+      --g: #888
+    }
 
-/* ── NAV ── */
-nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;flex-direction:column;align-items:center;padding:18px 48px 0;background:var(--y);transition:background .4s}
-nav.dark{background:var(--b)}
-.nlogo{height:68px;width:auto;padding-bottom:8px;cursor:pointer;display:block}
-nav.dark .nlogo{filter:invert(1) brightness(10)}
-.nav-tagline{font-family:'DM Sans',sans-serif;font-size:.52rem;letter-spacing:.5em;text-transform:uppercase;color:rgba(35,31,32,.35);margin-bottom:9px}
-nav.dark .nav-tagline{color:rgba(255,255,255,.28)}
-.ndiv{width:100%;height:1px;background:rgba(35,31,32,.12);transition:background .4s}
-nav.dark .ndiv{background:rgba(255,255,255,.12)}
-.nlinks{display:flex;padding:6px 0}
-.nbtn{padding:6px 20px;font-family:'DM Sans',sans-serif;font-size:.67rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;background:transparent;border:none;color:rgba(35,31,32,.45);cursor:pointer;transition:color .25s}
-.nbtn:hover,.nbtn.active{color:var(--b);font-weight:700}
-nav.dark .nbtn{color:rgba(255,255,255,.35)}
-nav.dark .nbtn:hover,nav.dark .nbtn.active{color:var(--y);font-weight:700}
+    html {
+      scroll-behavior: smooth
+    }
 
-/* ── PAGES ── */
-.page{display:none}
-.page.active{display:block}
+    body {
+      background: var(--b);
+      color: var(--b);
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden
+    }
 
-/* ══ HOME ══ */
-#phome{background:var(--b)}
+    /* ── INTRO ── */
+    #intro {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      min-height: 100dvh;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      pointer-events: none;
+      opacity: 1;
+      visibility: visible;
+      transition: opacity .45s ease, visibility .45s ease
+    }
 
-/* HERO — logo centered on yellow */
-#hero{
-  min-height:100vh;background:var(--y);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  position:relative;overflow:hidden;
-  padding:140px 48px 80px;
-}
-.hero-bg-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Syne',sans-serif;font-size:clamp(7rem,20vw,20rem);font-weight:800;color:rgba(35,31,32,.04);white-space:nowrap;pointer-events:none;user-select:none}
-.hero-logo-wrap{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center}
-.hero-logo{width:clamp(220px,55vw,600px);display:block}
-.hero-tagline-small{font-family:'DM Sans',sans-serif;font-size:clamp(.58rem,1.6vw,.78rem);letter-spacing:.55em;text-transform:uppercase;color:rgba(35,31,32,.42);margin-top:16px}
-.hero-actions{position:relative;z-index:1;display:flex;gap:14px;margin-top:52px}
-.btnb{background:var(--b);color:var(--y);padding:13px 28px;font-family:'DM Sans',sans-serif;font-size:.74rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;border:none;cursor:pointer;transition:background .3s}
-.btnb:hover{background:var(--p)}
-.btno{border:1.5px solid var(--b);background:transparent;color:var(--b);padding:13px 28px;font-family:'DM Sans',sans-serif;font-size:.74rem;font-weight:500;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:all .3s}
-.btno:hover{background:var(--b);color:var(--y)}
+    #intro-video {
+      width: min(88vw, 1680px);
+      height: auto;
+      max-width: 88vw;
+      max-height: 88dvh;
+      aspect-ratio: 16/9;
+      object-fit: contain;
+      object-position: center;
+      display: block;
+      background: #000
+    }
 
-/* ABOUT SECTION */
-#about{background:var(--b);padding:90px 48px 0}
-.sec-label{font-size:.63rem;font-weight:500;letter-spacing:.48em;text-transform:uppercase;margin-bottom:10px}
-.sec-title{font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.8rem);font-weight:800;line-height:1.05}
-#about .sec-label{color:rgba(244,241,241,.35)}
-#about .sec-title{color:var(--y);margin-bottom:48px}
-.at p{font-size:.93rem;line-height:1.85;color:rgba(244,241,241,.65);margin-bottom:16px;max-width:680px}
-.at p strong{color:#f4f1f1;font-weight:500}
+    #intro.gone {
+      opacity: 0;
+      visibility: hidden
+    }
 
-/* ── SLIDESHOW (in about section) ── */
-.slideshow-wrap{
-  position:relative;width:100%;max-width:960px;
-  margin-top:36px;overflow:hidden;background:#111;
-  aspect-ratio:16/9;
-}
-.ss-slide{
-  position:absolute;inset:0;
-  background-size:cover;background-position:center;
-  opacity:0;transition:opacity 1.2s ease;
-}
-.ss-slide.active{opacity:1}
-.ss-overlay{
-  position:absolute;inset:0;
-  background:linear-gradient(to top,rgba(20,18,18,.7) 0%,transparent 55%);
-  z-index:1;
-}
-.ss-caption{
-  position:absolute;bottom:20px;left:24px;right:24px;z-index:2;
-}
-.ss-type{font-size:.55rem;letter-spacing:.35em;text-transform:uppercase;color:var(--y);margin-bottom:3px}
-.ss-title{font-family:'Syne',sans-serif;font-size:clamp(.9rem,2vw,1.2rem);font-weight:700;color:#fff}
-.ss-dir{font-size:.65rem;color:rgba(255,255,255,.5);margin-top:2px;font-style:italic}
-.ss-dots{position:absolute;bottom:20px;right:20px;display:flex;gap:7px;z-index:2}
-.ss-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;transition:all .3s;border:none}
-.ss-dot.active{background:var(--y);transform:scale(1.3)}
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 18px 48px 0;
+      background: var(--y);
+      transition: background .4s
+    }
 
-/* STATS */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;padding:56px 0 80px;border-top:1px solid rgba(244,241,241,.08);margin-top:56px}
-.stat{padding-right:24px}
-.snum{font-family:'Syne',sans-serif;font-size:2.6rem;font-weight:800;color:var(--y);line-height:1}
-.slabel{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(244,241,241,.3);margin-top:5px}
+    nav.dark {
+      background: var(--b)
+    }
 
-/* CONTACT */
-#contact{background:var(--b);padding:72px 48px 90px;border-top:1px solid rgba(244,241,241,.07)}
-#contact .sec-label{color:rgba(244,241,241,.35)}
-#contact .sec-title{color:var(--y);margin-bottom:48px}
-.ctgrid{display:grid;grid-template-columns:1fr 1fr;gap:72px}
-.citem{margin-bottom:32px;padding-bottom:32px;border-bottom:1px solid rgba(244,241,241,.07)}
-.citem:last-child{border:none;margin:0;padding:0}
-.cilabel{font-size:.6rem;letter-spacing:.35em;text-transform:uppercase;color:rgba(244,241,241,.3);margin-bottom:7px}
-.cival{font-family:'Syne',sans-serif;font-size:1rem;font-weight:600;color:#f4f1f1;line-height:1.6}
-.cival a{color:inherit;text-decoration:none;transition:color .3s}
-.cival a:hover{color:var(--y)}
-.cform{display:flex;flex-direction:column;gap:20px}
-.cfg label{display:block;font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(244,241,241,.3);margin-bottom:7px}
-.cfg input,.cfg textarea,.cfg select{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(244,241,241,.12);padding:9px 0;color:#f4f1f1;font-family:'DM Sans',sans-serif;font-size:.88rem;outline:none;transition:border-color .3s;resize:none;-webkit-appearance:none}
-.cfg select option{background:var(--b)}
-.cfg input:focus,.cfg textarea:focus,.cfg select:focus{border-bottom-color:var(--y)}
-.cfg input::placeholder,.cfg textarea::placeholder{color:rgba(244,241,241,.18)}
-.btny{background:var(--y);color:var(--b);padding:14px 32px;font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;border:none;cursor:pointer;transition:background .3s,color .3s,opacity .3s;width:100%}
-.btny:hover{background:var(--pk);color:#fff}
-.btny:disabled{background:rgba(233,254,107,.55);color:rgba(18,16,16,.85);cursor:wait;opacity:.9}
-.fsuccess{display:none;padding:13px;border:1px solid rgba(233,254,107,.25);text-align:center;font-size:.74rem;letter-spacing:.1em;color:var(--y);margin-top:4px}
+    .nlogo {
+      height: 68px;
+      width: auto;
+      padding-bottom: 8px;
+      cursor: pointer;
+      display: block
+    }
 
-/* FOOTER */
-footer{background:var(--b);padding:26px 48px;border-top:1px solid rgba(244,241,241,.06);display:flex;align-items:center;justify-content:space-between}
-.flogo img{height:20px;width:auto;filter:invert(1) brightness(10);opacity:.25}
-.fcopy{font-size:.62rem;letter-spacing:.1em;color:rgba(244,241,241,.18)}
+    nav.dark .nlogo {
+      filter: invert(1) brightness(10)
+    }
 
-/* ══ WORKS ══ */
-#pworks{background:var(--w);min-height:100vh}
-.works-top{padding:150px 48px 40px;display:flex;align-items:flex-end;justify-content:space-between;gap:24px}
-#pworks .sec-label{color:var(--g)}
-#pworks .sec-title{color:var(--b)}
-.wgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:0 48px 80px}
-.wc{
-  position:relative;overflow:hidden;background:#111;
-  cursor:pointer;aspect-ratio:16/9;
-}
-.wc img{width:100%;height:100%;object-fit:cover;object-position:center;filter:grayscale(8%);transition:transform .8s cubic-bezier(.16,1,.3,1),filter .5s;display:block}
-.wc:hover img{transform:scale(1.04);filter:grayscale(0%)}
-/* titles always visible */
-.wo{
-  position:absolute;inset:0;
-  background:linear-gradient(to top,rgba(18,16,16,.88) 0%,rgba(18,16,16,.15) 45%,transparent 70%);
-  display:flex;flex-direction:column;justify-content:flex-end;
-  padding:14px 12px;
-}
-.wtype{font-size:.52rem;letter-spacing:.35em;text-transform:uppercase;color:var(--y);margin-bottom:3px}
-.wtitle{font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;color:#fff;line-height:1.2}
-.wdir{font-size:.6rem;color:rgba(255,255,255,.5);margin-top:2px;font-style:italic}
-.wlock{position:absolute;top:10px;right:10px;width:26px;height:26px;background:var(--y);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .3s}
-.wc:hover .wlock{opacity:1}
+    .nav-tagline {
+      font-family: 'DM Sans', sans-serif;
+      font-size: .52rem;
+      letter-spacing: .5em;
+      text-transform: uppercase;
+      color: rgba(35, 31, 32, .35);
+      margin-bottom: 9px
+    }
 
-/* ══ ABOUT PAGE ══ */
-#pabout{background:#f0ece4;min-height:100vh} #pabout footer{background:#e8e3d8;border-top:1px solid rgba(35,31,20,.1)} #pabout .fcopy{color:rgba(35,31,20,.35)} #pabout .flogo img{filter:none;opacity:.4} .pabout-dark{background:var(--b)}
-.about-top{padding:150px 48px 0;background:#f0ece4}
-#pabout .sec-label{color:rgba(35,31,20,.45)}
-#pabout .sec-title{color:var(--b);margin-bottom:48px}
-.about-body{padding:0 48px 60px;background:#f0ece4}
-.about-body p{font-size:.95rem;line-height:1.85;color:rgba(35,31,20,.65);margin-bottom:16px;max-width:680px}
-.about-body p strong{color:var(--b);font-weight:500}
-.clients-section{padding:80px 48px;background:#f0ece4}
-.clients-section .sec-label{color:rgba(35,31,20,.4);margin-bottom:12px}
-.clients-section .sec-title-sm{font-family:'Syne',sans-serif;font-size:clamp(1.6rem,3.5vw,2.6rem);font-weight:800;color:#231f20;margin-bottom:52px;line-height:1.05}
-.cl-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;border:1px solid rgba(35,31,20,.1)}
-.cb{background:#f0ece4;aspect-ratio:3/2;display:flex;align-items:center;justify-content:center;padding:20px;transition:background .3s,transform .3s;overflow:hidden;border:none}
-.cb:hover{background:#e8e3d8;transform:scale(1.03)}
-.cb img{max-width:78%;max-height:65%;object-fit:contain;filter:none;opacity:.75;transition:opacity .3s,filter .3s}
-.cb:hover img{opacity:1;filter:none}
+    nav.dark .nav-tagline {
+      color: rgba(255, 255, 255, .28)
+    }
 
-/* ── MODAL ── */
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(18,16,16,.92);z-index:300;align-items:center;justify-content:center;backdrop-filter:blur(12px)}
-.modal-bg.active{display:flex}
-.modal{width:460px;background:var(--y);padding:52px 44px;position:relative;animation:popIn .4s cubic-bezier(.16,1,.3,1)}
-@keyframes popIn{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
-.modal h3{font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;color:var(--b);margin-bottom:5px}
-.modal-subtitle{font-size:.76rem;color:rgba(35,31,32,.5);margin-bottom:24px;font-style:italic}
-.modal-tabs{display:flex;margin-bottom:24px}
-.mtab{flex:1;padding:10px;background:rgba(35,31,32,.08);border:none;font-family:'DM Sans',sans-serif;font-size:.68rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(35,31,32,.4);cursor:pointer;transition:all .3s}
-.mtab.active{background:var(--b);color:var(--y)}
-.mpanel{display:none}
-.mpanel.active{display:block}
-.modal label{display:block;font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(35,31,32,.4);margin-bottom:7px}
-.modal input{width:100%;background:transparent;border:none;border-bottom:2px solid rgba(35,31,32,.15);padding:9px 0;color:var(--b);font-family:'DM Sans',sans-serif;font-size:.92rem;outline:none;margin-bottom:22px;transition:border-color .3s}
-.modal input:focus{border-bottom-color:var(--p)}
-.modal input::placeholder{color:rgba(35,31,32,.2)}
-.modal .btnb{background:var(--b);color:var(--y);width:100%;text-align:center;font-family:'DM Sans',sans-serif;cursor:pointer;display:block}
-.modal .btnb:disabled{opacity:.75;cursor:wait}
-.merror{font-size:.68rem;color:#c0504f;margin-top:10px;display:none}
-.mclose{position:absolute;top:16px;right:20px;background:none;border:none;font-size:1.2rem;color:rgba(35,31,32,.3);cursor:pointer;transition:color .3s}
-.mclose:hover{color:var(--b)}
-.req-sent{display:none;text-align:center;padding:18px 0}
-.req-sent p{font-size:.84rem;color:var(--b);line-height:1.7}
-.req-sent strong{color:var(--p)}
-.req-feedback{display:none;font-size:.72rem;line-height:1.6;margin-top:10px}
-.req-feedback.error{color:#c0504f}
+    .ndiv {
+      width: 100%;
+      height: 1px;
+      background: rgba(35, 31, 32, .12);
+      transition: background .4s
+    }
 
-/* ── RESPONSIVE ── */
-@media(max-width:900px){
-  #intro-video{width:94vw;max-width:94vw;max-height:72dvh}
-  nav{padding:14px 20px 0}
-  .nlogo{height:50px}
-  #hero{padding:130px 20px 60px}
-  .hero-actions{flex-direction:column;align-items:center;gap:10px}
-  #about,#contact,.about-top,.about-body,.clients-section{padding-left:20px;padding-right:20px}
-  .works-top{padding:140px 20px 32px;flex-direction:column;align-items:flex-start}
-  .wgrid{grid-template-columns:1fr 1fr;padding:0 20px 60px;gap:3px}
-  .ctgrid{grid-template-columns:1fr}
-  .stats{grid-template-columns:1fr 1fr;gap:24px}
-  footer{flex-direction:column;gap:8px;text-align:center;padding:22px 20px}
-  .modal{width:94%;padding:36px 22px}
-  .cl-grid{grid-template-columns:repeat(3,1fr)}
-  .slideshow-wrap{max-width:100%}
-}
-@media(max-width:480px){
-  .wgrid{grid-template-columns:1fr}
-}
-</style>
+    nav.dark .ndiv {
+      background: rgba(255, 255, 255, .12)
+    }
+
+    .nlinks {
+      display: flex;
+      padding: 6px 0
+    }
+
+    .nbtn {
+      padding: 6px 20px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .67rem;
+      font-weight: 500;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      background: transparent;
+      border: none;
+      color: rgba(35, 31, 32, .45);
+      cursor: pointer;
+      transition: color .25s
+    }
+
+    .nbtn:hover,
+    .nbtn.active {
+      color: var(--b);
+      font-weight: 700
+    }
+
+    nav.dark .nbtn {
+      color: rgba(255, 255, 255, .35)
+    }
+
+    nav.dark .nbtn:hover,
+    nav.dark .nbtn.active {
+      color: var(--y);
+      font-weight: 700
+    }
+
+    /* ── PAGES ── */
+    .page {
+      display: none
+    }
+
+    .page.active {
+      display: block
+    }
+
+    /* ══ HOME ══ */
+    #phome {
+      background: var(--b)
+    }
+
+    /* HERO — logo-led editorial entrance */
+    #hero {
+      height: 44dvh;
+      min-height: 640px;
+      background: var(--y);
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      padding: 96px 48px 40px;
+    }
+
+    .hero-bg-text {
+      position: absolute;
+      top: 53%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(8rem, 24vw, 24rem);
+      font-weight: 800;
+      color: rgba(35, 31, 32, .035);
+      white-space: nowrap;
+      pointer-events: none;
+      user-select: none
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 1180px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(300px, 620px) 1fr;
+      align-items: center;
+      gap: 48px
+    }
+
+    .hero-logo-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      text-align: left
+    }
+
+    .hero-logo {
+      width: clamp(300px, 42vw, 560px);
+      display: block
+    }
+
+    .hero-tagline-small {
+      font-family: 'DM Sans', sans-serif;
+      font-size: clamp(.58rem, 1vw, .74rem);
+      letter-spacing: .7em;
+      text-transform: uppercase;
+      color: rgba(35, 31, 32, .48);
+      margin-top: 16px;
+      margin-left: 4px
+    }
+
+    .hero-copy {
+      max-width: 420px;
+      margin-top: 28px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: clamp(1.02rem, 1.55vw, 1.35rem);
+      line-height: 1.55;
+      color: var(--b);
+      font-weight: 500
+    }
+
+    .hero-copy strong {
+      font-weight: 800
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      margin-top: 38px
+    }
+
+    .hero-space {
+      min-height: 0
+    }
+
+    .btnb {
+      background: var(--b);
+      color: var(--y);
+      padding: 13px 28px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .74rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      transition: background .3s
+    }
+
+    .btnb:hover {
+      background: var(--p)
+    }
+
+    .btno {
+      border: 1.5px solid var(--b);
+      background: transparent;
+      color: var(--b);
+      padding: 13px 28px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .74rem;
+      font-weight: 500;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all .3s
+    }
+
+    .btno:hover {
+      background: var(--b);
+      color: var(--y)
+    }
+
+    #hero .btnb,
+    #hero .btno {
+      padding: 15px 30px;
+      font-size: .7rem;
+      font-weight: 800;
+      letter-spacing: .18em
+    }
+
+    /* ABOUT SECTION */
+    #about {
+      background: radial-gradient(circle at 28% 8%, rgba(233, 254, 107, .06), transparent 24%), var(--b);
+      padding: 76px 48px 0
+    }
+
+    .sec-label {
+      font-size: .63rem;
+      font-weight: 500;
+      letter-spacing: .48em;
+      text-transform: uppercase;
+      margin-bottom: 10px
+    }
+
+    .sec-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      font-weight: 800;
+      line-height: 1.05
+    }
+
+    #phome .sec-title {
+      font-size: clamp(2.45rem, 4.2vw, 4rem);
+      line-height: .98
+    }
+
+    #about .sec-label {
+      color: rgba(244, 241, 241, .35)
+    }
+
+    #about .sec-title {
+      color: var(--y);
+      margin-bottom: 34px;
+      max-width: 520px
+    }
+
+    .at {
+      max-width: 1180px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(360px, .9fr) minmax(520px, 1.1fr);
+      gap: 64px;
+      align-items: center
+    }
+
+    .about-copy {
+      max-width: 560px;
+      min-width: 0
+    }
+
+    .at p {
+      font-size: .9rem;
+      line-height: 1.9;
+      color: rgba(244, 241, 241, .62);
+      margin-bottom: 16px;
+      max-width: 600px
+    }
+
+    .at p strong {
+      color: #f4f1f1;
+      font-weight: 500
+    }
+
+    /* ── SLIDESHOW (in about section) ── */
+    .slideshow-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 680px;
+      margin-top: 0;
+      overflow: hidden;
+      background: #111;
+      aspect-ratio: 16/9;
+      justify-self: end;
+    }
+
+    .ss-slide {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transition: opacity 1.2s ease;
+    }
+
+    .ss-slide.active {
+      opacity: 1
+    }
+
+    .ss-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(20, 18, 18, .7) 0%, transparent 55%);
+      z-index: 1;
+    }
+
+    .ss-caption {
+      position: absolute;
+      bottom: 20px;
+      left: 24px;
+      right: 24px;
+      z-index: 2;
+    }
+
+    .ss-type {
+      font-size: .55rem;
+      letter-spacing: .35em;
+      text-transform: uppercase;
+      color: var(--y);
+      margin-bottom: 3px
+    }
+
+    .ss-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(.9rem, 2vw, 1.2rem);
+      font-weight: 700;
+      color: #fff
+    }
+
+    .ss-dir {
+      font-size: .65rem;
+      color: rgba(255, 255, 255, .5);
+      margin-top: 2px;
+      font-style: italic
+    }
+
+    .ss-dots {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      gap: 7px;
+      z-index: 2
+    }
+
+    .ss-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .3);
+      cursor: pointer;
+      transition: all .3s;
+      border: none
+    }
+
+    .ss-dot.active {
+      background: var(--y);
+      transform: scale(1.3)
+    }
+
+    /* STATS */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      max-width: 1180px;
+      margin: 52px auto 0;
+      padding: 22px 0 64px;
+      border-top: 1px solid rgba(244, 241, 241, .12);
+      border-bottom: 1px solid rgba(244, 241, 241, .08)
+    }
+
+    .stat {
+      padding-right: 24px
+    }
+
+    .snum {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.1rem, 4vw, 3.4rem);
+      font-weight: 800;
+      color: var(--y);
+      line-height: 1
+    }
+
+    .slabel {
+      font-size: .62rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: rgba(244, 241, 241, .3);
+      margin-top: 5px
+    }
+
+    /* CONTACT */
+    #contact {
+      background: var(--b);
+      padding: 58px 48px 90px;
+      border-top: 0
+    }
+
+    #contact .sec-label {
+      color: rgba(244, 241, 241, .35)
+    }
+
+    #contact .sec-title {
+      color: var(--y);
+      margin-bottom: 42px
+    }
+
+    .ctgrid {
+      display: grid;
+      grid-template-columns: minmax(360px, .9fr) minmax(520px, 1.1fr);
+      gap: 64px;
+      max-width: 1180px;
+      margin: 0 auto
+    }
+
+    .contact-copy {
+      max-width: 560px;
+      min-width: 0
+    }
+
+    .citem {
+      margin-bottom: 32px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid rgba(244, 241, 241, .07)
+    }
+
+    .citem:last-child {
+      border: none;
+      margin: 0;
+      padding: 0
+    }
+
+    .cilabel {
+      font-size: .6rem;
+      letter-spacing: .35em;
+      text-transform: uppercase;
+      color: rgba(244, 241, 241, .3);
+      margin-bottom: 7px
+    }
+
+    .cival {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #f4f1f1;
+      line-height: 1.6
+    }
+
+    .cival a {
+      color: inherit;
+      text-decoration: none;
+      transition: color .3s
+    }
+
+    .cival a:hover {
+      color: var(--y)
+    }
+
+    .cform {
+      display: flex;
+      flex-direction: column;
+      gap: 20px
+    }
+
+    .cfg label {
+      display: block;
+      font-size: .6rem;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: rgba(244, 241, 241, .3);
+      margin-bottom: 7px
+    }
+
+    .cfg input,
+    .cfg textarea,
+    .cfg select {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(244, 241, 241, .12);
+      padding: 9px 0;
+      color: #f4f1f1;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .88rem;
+      outline: none;
+      transition: border-color .3s;
+      resize: none;
+      -webkit-appearance: none
+    }
+
+    .cfg select option {
+      background: var(--b)
+    }
+
+    .cfg input:focus,
+    .cfg textarea:focus,
+    .cfg select:focus {
+      border-bottom-color: var(--y)
+    }
+
+    .cfg input::placeholder,
+    .cfg textarea::placeholder {
+      color: rgba(244, 241, 241, .18)
+    }
+
+    .btny {
+      background: var(--y);
+      color: var(--b);
+      padding: 14px 32px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      transition: background .3s, color .3s, opacity .3s;
+      width: 100%
+    }
+
+    .btny:hover {
+      background: var(--pk);
+      color: #fff
+    }
+
+    .btny:disabled {
+      background: rgba(233, 254, 107, .55);
+      color: rgba(18, 16, 16, .85);
+      cursor: wait;
+      opacity: .9
+    }
+
+    .fsuccess {
+      display: none;
+      padding: 13px;
+      border: 1px solid rgba(233, 254, 107, .25);
+      text-align: center;
+      font-size: .74rem;
+      letter-spacing: .1em;
+      color: var(--y);
+      margin-top: 4px
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--b);
+      padding: 26px 48px;
+      border-top: 1px solid rgba(244, 241, 241, .06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    .flogo img {
+      height: 20px;
+      width: auto;
+      filter: invert(1) brightness(10);
+      opacity: .25
+    }
+
+    .fcopy {
+      font-size: .62rem;
+      letter-spacing: .1em;
+      color: rgba(244, 241, 241, .18)
+    }
+
+    /* ══ WORKS ══ */
+    #pworks {
+      background: var(--w);
+      min-height: 100vh
+    }
+
+    .works-top {
+      padding: 150px 48px 40px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px
+    }
+
+    #pworks .sec-label {
+      color: var(--g)
+    }
+
+    #pworks .sec-title {
+      color: var(--b)
+    }
+
+    .wgrid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      padding: 0 48px 80px
+    }
+
+    .wc {
+      position: relative;
+      overflow: hidden;
+      background: #111;
+      cursor: pointer;
+      aspect-ratio: 16/9;
+    }
+
+    .wc img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      filter: grayscale(8%);
+      transition: transform .8s cubic-bezier(.16, 1, .3, 1), filter .5s;
+      display: block
+    }
+
+    .wc:hover img {
+      transform: scale(1.04);
+      filter: grayscale(0%)
+    }
+
+    /* titles always visible */
+    .wo {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(18, 16, 16, .88) 0%, rgba(18, 16, 16, .15) 45%, transparent 70%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 14px 12px;
+    }
+
+    .wtype {
+      font-size: .52rem;
+      letter-spacing: .35em;
+      text-transform: uppercase;
+      color: var(--y);
+      margin-bottom: 3px
+    }
+
+    .wtitle {
+      font-family: 'Syne', sans-serif;
+      font-size: .85rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2
+    }
+
+    .wdir {
+      font-size: .6rem;
+      color: rgba(255, 255, 255, .5);
+      margin-top: 2px;
+      font-style: italic
+    }
+
+    .wlock {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 26px;
+      height: 26px;
+      background: var(--y);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity .3s
+    }
+
+    .wc:hover .wlock {
+      opacity: 1
+    }
+
+    /* ══ ABOUT PAGE ══ */
+    #pabout {
+      background: #f0ece4;
+      min-height: 100vh
+    }
+
+    #pabout footer {
+      background: #e8e3d8;
+      border-top: 1px solid rgba(35, 31, 20, .1)
+    }
+
+    #pabout .fcopy {
+      color: rgba(35, 31, 20, .35)
+    }
+
+    #pabout .flogo img {
+      filter: none;
+      opacity: .4
+    }
+
+    .pabout-dark {
+      background: var(--b)
+    }
+
+    .about-top {
+      padding: 150px 48px 0;
+      background: #f0ece4
+    }
+
+    #pabout .sec-label {
+      color: rgba(35, 31, 20, .45)
+    }
+
+    #pabout .sec-title {
+      color: var(--b);
+      margin-bottom: 48px
+    }
+
+    .about-body {
+      padding: 0 48px 60px;
+      background: #f0ece4
+    }
+
+    .about-body p {
+      font-size: .95rem;
+      line-height: 1.85;
+      color: rgba(35, 31, 20, .65);
+      margin-bottom: 16px;
+      max-width: 680px
+    }
+
+    .about-body p strong {
+      color: var(--b);
+      font-weight: 500
+    }
+
+    .clients-section {
+      padding: 80px 48px;
+      background: #f0ece4
+    }
+
+    .clients-section .sec-label {
+      color: rgba(35, 31, 20, .4);
+      margin-bottom: 12px
+    }
+
+    .clients-section .sec-title-sm {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+      font-weight: 800;
+      color: #231f20;
+      margin-bottom: 52px;
+      line-height: 1.05
+    }
+
+    .cl-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1px;
+      border: 1px solid rgba(35, 31, 20, .1)
+    }
+
+    .cb {
+      background: #f0ece4;
+      aspect-ratio: 3/2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      transition: background .3s, transform .3s;
+      overflow: hidden;
+      border: none
+    }
+
+    .cb:hover {
+      background: #e8e3d8;
+      transform: scale(1.03)
+    }
+
+    .cb img {
+      max-width: 78%;
+      max-height: 65%;
+      object-fit: contain;
+      filter: none;
+      opacity: .75;
+      transition: opacity .3s, filter .3s
+    }
+
+    .cb img.logo-wide {
+      max-width: 88%;
+      max-height: 54%
+    }
+
+    .cb:hover img {
+      opacity: 1;
+      filter: none
+    }
+
+    /* ── MODAL ── */
+    .modal-bg {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(18, 16, 16, .92);
+      z-index: 300;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(12px)
+    }
+
+    .modal-bg.active {
+      display: flex
+    }
+
+    .modal {
+      width: 460px;
+      background: var(--y);
+      padding: 52px 44px;
+      position: relative;
+      animation: popIn .4s cubic-bezier(.16, 1, .3, 1)
+    }
+
+    @keyframes popIn {
+      from {
+        transform: scale(.9);
+        opacity: 0
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1
+      }
+    }
+
+    .modal h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: var(--b);
+      margin-bottom: 5px
+    }
+
+    .modal-subtitle {
+      font-size: .76rem;
+      color: rgba(35, 31, 32, .5);
+      margin-bottom: 24px;
+      font-style: italic
+    }
+
+    .modal-tabs {
+      display: flex;
+      margin-bottom: 24px
+    }
+
+    .mtab {
+      flex: 1;
+      padding: 10px;
+      background: rgba(35, 31, 32, .08);
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .68rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(35, 31, 32, .4);
+      cursor: pointer;
+      transition: all .3s
+    }
+
+    .mtab.active {
+      background: var(--b);
+      color: var(--y)
+    }
+
+    .mpanel {
+      display: none
+    }
+
+    .mpanel.active {
+      display: block
+    }
+
+    .modal label {
+      display: block;
+      font-size: .6rem;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: rgba(35, 31, 32, .4);
+      margin-bottom: 7px
+    }
+
+    .modal input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid rgba(35, 31, 32, .15);
+      padding: 9px 0;
+      color: var(--b);
+      font-family: 'DM Sans', sans-serif;
+      font-size: .92rem;
+      outline: none;
+      margin-bottom: 22px;
+      transition: border-color .3s
+    }
+
+    .modal input:focus {
+      border-bottom-color: var(--p)
+    }
+
+    .modal input::placeholder {
+      color: rgba(35, 31, 32, .2)
+    }
+
+    .modal .btnb {
+      background: var(--b);
+      color: var(--y);
+      width: 100%;
+      text-align: center;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      display: block
+    }
+
+    .modal .btnb:disabled {
+      opacity: .75;
+      cursor: wait
+    }
+
+    .merror {
+      font-size: .68rem;
+      color: #c0504f;
+      margin-top: 10px;
+      display: none
+    }
+
+    .mclose {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      color: rgba(35, 31, 32, .3);
+      cursor: pointer;
+      transition: color .3s
+    }
+
+    .mclose:hover {
+      color: var(--b)
+    }
+
+    .req-sent {
+      display: none;
+      text-align: center;
+      padding: 18px 0
+    }
+
+    .req-sent p {
+      font-size: .84rem;
+      color: var(--b);
+      line-height: 1.7
+    }
+
+    .req-sent strong {
+      color: var(--p)
+    }
+
+    .req-feedback {
+      display: none;
+      font-size: .72rem;
+      line-height: 1.6;
+      margin-top: 10px
+    }
+
+    .req-feedback.error {
+      color: #c0504f
+    }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:900px) {
+      #intro-video {
+        width: 94vw;
+        max-width: 94vw;
+        max-height: 72dvh
+      }
+
+      nav {
+        padding: 14px 20px 0
+      }
+
+      .nlogo {
+        height: 50px
+      }
+
+      #hero {
+        height: auto;
+        min-height: 0;
+        padding: 96px 20px 36px
+      }
+
+      .hero-content {
+        grid-template-columns: 1fr;
+        gap: 28px
+      }
+
+      .hero-logo {
+        width: min(86vw, 420px)
+      }
+
+      .hero-space {
+        display: none
+      }
+
+      .hero-actions {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px
+      }
+
+      .hero-copy {
+        font-size: 1rem
+      }
+
+      #about {
+        padding-top: 56px
+      }
+
+      .at {
+        grid-template-columns: 1fr;
+        gap: 36px
+      }
+
+      .ctgrid {
+        grid-template-columns: 1fr;
+        gap: 42px
+      }
+
+      #about .sec-title {
+        max-width: none
+      }
+
+      .slideshow-wrap {
+        justify-self: stretch;
+        max-width: 100%
+      }
+
+      #about,
+      #contact,
+      .about-top,
+      .about-body,
+      .clients-section {
+        padding-left: 20px;
+        padding-right: 20px
+      }
+
+      .works-top {
+        padding: 140px 20px 32px;
+        flex-direction: column;
+        align-items: flex-start
+      }
+
+      .wgrid {
+        grid-template-columns: 1fr 1fr;
+        padding: 0 20px 60px;
+        gap: 3px
+      }
+
+      .ctgrid {
+        grid-template-columns: 1fr
+      }
+
+      .stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 24px
+      }
+
+      footer {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+        padding: 22px 20px
+      }
+
+      .modal {
+        width: 94%;
+        padding: 36px 22px
+      }
+
+      .cl-grid {
+        grid-template-columns: repeat(3, 1fr)
+      }
+
+      .slideshow-wrap {
+        max-width: 100%
+      }
+    }
+
+    @media(max-width:480px) {
+      .wgrid {
+        grid-template-columns: 1fr
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<!-- INTRO -->
-<div id="intro">
-  <video id="intro-video" autoplay muted playsinline preload="auto" aria-label="Entracte intro animation">
-    <source src="assets/entracte-intro.mp4" type="video/mp4" />
-  </video>
-</div>
-
-<!-- NAV -->
-<nav id="mainnav">
-  <img class="nlogo" src="assets/entracte-logo.png" alt="entracte" onclick="goPage('home')"/>
-  <div class="nav-tagline">Beyond the Frame</div>
-  <div class="ndiv"></div>
-  <div class="nlinks">
-    <button class="nbtn active" id="btn-home"  onclick="goPage('home')">Home</button>
-    <button class="nbtn"        id="btn-works" onclick="goPage('works')">Works</button>
-    <button class="nbtn"        id="btn-about" onclick="goPage('about')">About</button>
-  </div>
-</nav>
-
-<!-- ══ HOME ══ -->
-<div class="page active" id="phome">
-
-  <!-- HERO: logo + tagline -->
-  <div id="hero">
-    <div class="hero-bg-text">ENTRACTE</div>
-    <div class="hero-logo-wrap">
-      <img class="hero-logo" src="assets/entracte-logo.png" alt="entracte"/>
-      <div class="hero-tagline-small">Beyond the Frame</div>
-    </div>
-    <div class="hero-actions">
-      <button class="btnb" onclick="goPage('works')">View Works</button>
-      <button class="btno" onclick="goPage('about')">About Us</button>
-    </div>
+  <!-- INTRO -->
+  <div id="intro">
+    <video id="intro-video" autoplay muted playsinline preload="auto" aria-label="Entracte intro animation">
+      <source src="assets/entracte-intro.mp4" type="video/mp4" />
+    </video>
   </div>
 
-  <!-- ABOUT + SLIDESHOW -->
-  <section id="about">
-    <div class="sec-label">Who We Are</div>
-    <h2 class="sec-title">Driven by<br/>Cinematic Passion</h2>
-    <div class="at">
-      <p>Entracte Creative Agency crafts <strong>bespoke promotional assets</strong> — trailers, teasers, promoreels — meticulously designed to capture the unique identity of each film.</p>
-      <p>Driven by a passion for cinematic storytelling, we explore the <strong>visual and emotional core</strong> of every project to create a compelling narrative experience.</p>
-      <p>By combining this artistic focus with <strong>deep international expertise</strong>, Entracte helps producers, distributors, and sales agents elevate their films and resonate authentically across global territories.</p>
+  <!-- NAV -->
+  <nav id="mainnav">
+    <img class="nlogo" src="assets/entracte-logo.png" alt="entracte" onclick="goPage('home')" />
+    <div class="nav-tagline">Beyond the Frame</div>
+    <div class="ndiv"></div>
+    <div class="nlinks">
+      <button class="nbtn active" id="btn-home" onclick="goPage('home')">Home</button>
+      <button class="nbtn" id="btn-works" onclick="goPage('works')">Works</button>
+      <button class="nbtn" id="btn-about" onclick="goPage('about')">About</button>
+    </div>
+  </nav>
 
-      <!-- SLIDESHOW replaces image placeholder -->
-      <div class="slideshow-wrap">
-        <div class="ss-slide active" id="ss-0"></div>
-        <div class="ss-slide" id="ss-1"></div>
-        <div class="ss-slide" id="ss-2"></div>
-        <div class="ss-slide" id="ss-3"></div>
-        <div class="ss-overlay"></div>
-        <div class="ss-caption" id="ss-caption">
-          <div class="ss-type" id="ss-type">Teaser</div>
-          <div class="ss-title" id="ss-title">I Don't Know You</div>
-          <div class="ss-dir" id="ss-dir">Dir. Kentaro Sakaguchi</div>
+  <!-- ══ HOME ══ -->
+  <div class="page active" id="phome">
+
+    <!-- HERO: logo + tagline -->
+    <div id="hero">
+      <div class="hero-bg-text">ENTRACTE</div>
+      <div class="hero-content">
+        <div>
+          <div class="hero-logo-wrap">
+            <img class="hero-logo" src="assets/entracte-logo.png" alt="entracte" />
+            <div class="hero-tagline-small">Beyond the Frame</div>
+          </div>
+          <p class="hero-copy">We craft cinematic stories that <strong>move, inspire,</strong> and leave a lasting
+            impression.</p>
+          <div class="hero-actions">
+            <button class="btnb" onclick="goPage('works')">View Works</button>
+            <button class="btno" onclick="goPage('about')">About Us</button>
+          </div>
         </div>
-        <div class="ss-dots" id="ss-dots"></div>
+        <div class="hero-space" aria-hidden="true"></div>
       </div>
     </div>
 
-    <div class="stats" id="stats">
-      <div class="stat"><div class="snum"><span class="cnt" data-t="25" data-s="+">25+</span></div><div class="slabel">Films</div></div>
-      <div class="stat"><div class="snum"><span class="cnt" data-t="16" data-s="+">16+</span></div><div class="slabel">Client Partners</div></div>
-      <div class="stat"><div class="snum"><span class="cnt" data-t="3"  data-s="">3</span></div><div class="slabel">Core Formats</div></div>
-      <div class="stat"><div class="snum">∞</div><div class="slabel">Territories</div></div>
-    </div>
-  </section>
+    <!-- ABOUT + SLIDESHOW -->
+    <section id="about">
+      <div class="at">
+        <div class="about-copy">
+          <div class="sec-label">Who We Are</div>
+          <h2 class="sec-title">Driven by<br />Cinematic Passion</h2>
+          <p>Entracte Creative Agency crafts <strong>bespoke promotional assets</strong> — trailers, teasers, promoreels
+            — meticulously designed to capture the unique identity of each film.</p>
+          <p>Driven by a passion for cinematic storytelling, we explore the <strong>visual and emotional core</strong>
+            of every project to create a compelling narrative experience.</p>
+          <p>By combining this artistic focus with <strong>deep international expertise</strong>, Entracte helps
+            producers, distributors, and sales agents elevate their films and resonate authentically across global
+            territories.</p>
+        </div>
 
-  <!-- CONTACT -->
-  <section id="contact">
-    <div class="sec-label">Say Hello</div>
-    <h2 class="sec-title">Let's Work<br/>Together</h2>
-    <div class="ctgrid">
+        <!-- SLIDESHOW replaces image placeholder -->
+        <div class="slideshow-wrap">
+          <div class="ss-slide active" id="ss-0"></div>
+          <div class="ss-slide" id="ss-1"></div>
+          <div class="ss-slide" id="ss-2"></div>
+          <div class="ss-slide" id="ss-3"></div>
+          <div class="ss-overlay"></div>
+          <div class="ss-caption" id="ss-caption">
+            <div class="ss-type" id="ss-type">Teaser</div>
+            <div class="ss-title" id="ss-title">I Don't Know You</div>
+            <div class="ss-dir" id="ss-dir">Dir. Kentaro Sakaguchi</div>
+          </div>
+          <div class="ss-dots" id="ss-dots"></div>
+        </div>
+      </div>
+
+      <div class="stats" id="stats">
+        <div class="stat">
+          <div class="snum"><span class="cnt" data-t="25" data-s="+">25+</span></div>
+          <div class="slabel">Films</div>
+        </div>
+        <div class="stat">
+          <div class="snum"><span class="cnt" data-t="16" data-s="+">16+</span></div>
+          <div class="slabel">Client Partners</div>
+        </div>
+        <div class="stat">
+          <div class="snum"><span class="cnt" data-t="3" data-s="">3</span></div>
+          <div class="slabel">Core Formats</div>
+        </div>
+        <div class="stat">
+          <div class="snum">∞</div>
+          <div class="slabel">Territories</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact">
+      <div class="ctgrid">
+        <div class="contact-copy">
+          <div class="sec-label">Say Hello</div>
+          <h2 class="sec-title">Let's Work<br />Together</h2>
+          <div class="citem">
+            <div class="cilabel">Agency</div>
+            <div class="cival">Entracte Creative Agency</div>
+          </div>
+          <div class="citem">
+            <div class="cilabel">Address</div>
+            <div class="cival">Calle Fuencarral, 68<br />28004 Madrid, Spain</div>
+          </div>
+          <!-- <div class="citem"><div class="cilabel">Email</div><div class="cival"><a href="mailto:violaine@entracte.eu">violaine@entracte.eu</a></div></div> -->
+        </div>
+        <div class="cform">
+          <div class="cfg"><label>Full Name</label><input type="text" placeholder="Your name" id="cf-name" /></div>
+          <div class="cfg"><label>Email</label><input type="email" placeholder="your@email.com" id="cf-email" /></div>
+          <div class="cfg"><label>Subject</label>
+            <select id="cf-subj">
+              <option value="" disabled selected>Select a topic</option>
+              <option>New Project Inquiry</option>
+              <option>Client Access Request</option>
+              <option>Partnership</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="cfg"><label>Message</label><textarea placeholder="Tell us about your project..." id="cf-msg"
+              rows="4"></textarea></div>
+          <button class="btny" id="cf-submit" onclick="submitForm()">Send Message</button>
+          <div class="fsuccess" id="fsuccess">✦ Message received. We'll be in touch soon.</div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="flogo"><img src="assets/entracte-logo.png" alt="entracte" /></div>
+      <div class="fcopy">© 2025 Entracte Creative Agency. Madrid, Spain.</div>
+    </footer>
+
+  </div><!-- end home -->
+
+  <!-- ══ WORKS ══ -->
+  <div class="page" id="pworks">
+    <div class="works-top">
       <div>
-        <div class="citem"><div class="cilabel">Agency</div><div class="cival">Entracte Creative Agency</div></div>
-        <div class="citem"><div class="cilabel">Address</div><div class="cival">Calle Fuencarral, 68<br/>28004 Madrid, Spain</div></div>
-        <div class="citem"><div class="cilabel">Email</div><div class="cival"><a href="mailto:violaine@entracte.eu">violaine@entracte.eu</a></div></div>
+        <div class="sec-label">Selected Projects</div>
+        <h2 class="sec-title">Our Works</h2>
       </div>
-      <div class="cform">
-        <div class="cfg"><label>Full Name</label><input type="text" placeholder="Your name" id="cf-name"/></div>
-        <div class="cfg"><label>Email</label><input type="email" placeholder="your@email.com" id="cf-email"/></div>
-        <div class="cfg"><label>Subject</label>
-          <select id="cf-subj"><option value="" disabled selected>Select a topic</option><option>New Project Inquiry</option><option>Client Access Request</option><option>Partnership</option><option>Other</option></select>
+      <p style="max-width:240px;font-size:.82rem;line-height:1.7;color:var(--g)">Protected screenings. Enter your access
+        code or request a private link.</p>
+    </div>
+    <div class="wgrid" id="works-grid">
+      <div class="wc" onclick="openModal(event,'I Don&#39;t Know You','https://vimeo.com/1174435355')">
+        <img src="assets-2/catalog/i-don-t-know-you.webp" alt="I Don&#39;t Know You" loading="lazy" />
+        <div class="wo">
+          <div class="wtype">Teaser</div>
+          <div class="wtitle">I Don't Know You</div>
+          <div class="wdir">Dir. Kentaro Sakaguchi</div>
         </div>
-        <div class="cfg"><label>Message</label><textarea placeholder="Tell us about your project..." id="cf-msg" rows="4"></textarea></div>
-        <button class="btny" id="cf-submit" onclick="submitForm()">Send Message</button>
-        <div class="fsuccess" id="fsuccess">✦ Message received. We'll be in touch soon.</div>
+        <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20"
+            stroke-width="2.5">
+            <rect x="3" y="11" width="18" height="11" rx="1" />
+            <path d="M7 11V7a5 5 0 0110 0v4" />
+          </svg></div>
+      </div>
+      <div class="wc" onclick="openModal(event,'Brave Cat','https://vimeo.com/1173944474')">
+        <img src="assets-2/catalog/brave-cat.jpg" alt="Brave Cat" loading="lazy" />
+        <div class="wo">
+          <div class="wtype">Promoreel</div>
+          <div class="wtitle">Brave Cat</div>
+          <div class="wdir">Dir. Gabriel Osorio Vargas</div>
+        </div>
+        <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20"
+            stroke-width="2.5">
+            <rect x="3" y="11" width="18" height="11" rx="1" />
+            <path d="M7 11V7a5 5 0 0110 0v4" />
+          </svg></div>
+      </div>
+      <div class="wc" onclick="openModal(event,'All That&#39;s Left of You','')">
+        <img src="assets-2/catalog/all-that-s-left-of-you.webp" alt="All That&#39;s Left of You" loading="lazy" />
+        <div class="wo">
+          <div class="wtype">Trailer</div>
+          <div class="wtitle">All That's Left of You</div>
+          <div class="wdir">Dir. Cherien Dabis</div>
+        </div>
+        <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20"
+            stroke-width="2.5">
+            <rect x="3" y="11" width="18" height="11" rx="1" />
+            <path d="M7 11V7a5 5 0 0110 0v4" />
+          </svg></div>
+      </div>
+      <div class="wc" onclick="openModal(event,'Mano Negra: Bring the Noise!','https://vimeo.com/1174438225')">
+        <img src="assets-2/catalog/mano-negra-bring-the-noise.webp" alt="Mano Negra: Bring the Noise!" loading="lazy" />
+        <div class="wo">
+          <div class="wtype">Teaser</div>
+          <div class="wtitle">Mano Negra: Bring the Noise!</div>
+          <div class="wdir">Dir. David Dufresne</div>
+        </div>
+        <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20"
+            stroke-width="2.5">
+            <rect x="3" y="11" width="18" height="11" rx="1" />
+            <path d="M7 11V7a5 5 0 0110 0v4" />
+          </svg></div>
+      </div>
+      <div class="wc" onclick="openModal(event,'We Believe You','')">
+        <img src="assets-2/catalog/we-believe-you.webp" alt="We Believe You" loading="lazy" />
+        <div class="wo">
+          <div class="wtype">Trailer</div>
+          <div class="wtitle">We Believe You</div>
+          <div class="wdir">Dir. Charlotte Devillers & Arnaud Dufeys</div>
+        </div>
+        <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20"
+            stroke-width="2.5">
+            <rect x="3" y="11" width="18" height="11" rx="1" />
+            <path d="M7 11V7a5 5 0 0110 0v4" />
+          </svg></div>
+      </div>
+      <div class="wc" onclick="openModal(event,'The Wonderers','https://vimeo.com/1092046354')">
+        <img src="assets-2/catalog/the-wonderers.jpg" alt="The Wonderers" loading="lazy" />
+        <div class="wo">
+          <div class="wtype">Promoreel</div>
+          <div class="wtitle">The Wonderers</div>
+          <div class="wdir">Dir. Joséphine Japy</div>
+        </div>
+        <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20"
+            stroke-width="2.5">
+            <rect x="3" y="11" width="18" height="11" rx="1" />
+            <path d="M7 11V7a5 5 0 0110 0v4" />
+          </svg></div>
+      </div>
+      <div class="wc" onclick="openModal(event,'Growing Down','https://vimeo.com/1092052668')">
+        <img src="assets-2/catalog/growing-down.jpg" alt="Growing Down" loading="lazy" />
+        <div class="wo">
+          <div class="wtype">Promoreel</div>
+          <div class="wtitle">Growing Down</div>
+          <div class="wdir">Dir. Dániel Bálint Sós</div>
+        </div>
+        <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20"
+            stroke-width="2.5">
+            <rect x="3" y="11" width="18" height="11" rx="1" />
+            <path d="M7 11V7a5 5 0 0110 0v4" />
+          </svg></div>
+      </div>
+      <div class="wc" onclick="openModal(event,'Inside','https://vimeo.com/933675685')">
+        <img src="assets-2/catalog/inside.jpg" alt="Inside" loading="lazy" />
+        <div class="wo">
+          <div class="wtype">Promoreel</div>
+          <div class="wtitle">Inside</div>
+          <div class="wdir">Dir. Charles Williams</div>
+        </div>
+        <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20"
+            stroke-width="2.5">
+            <rect x="3" y="11" width="18" height="11" rx="1" />
+            <path d="M7 11V7a5 5 0 0110 0v4" />
+          </svg></div>
+      </div>
+      <div class="wc" onclick="openModal(event,'Une Vie Rêvée','https://vimeo.com/883967785')">
+        <img src="assets-2/catalog/une-vie-revee.jpg" alt="Une Vie Rêvée" loading="lazy" />
+        <div class="wo">
+          <div class="wtype">Promoreel</div>
+          <div class="wtitle">Une Vie Rêvée</div>
+          <div class="wdir">Dir. Morgan Simon</div>
+        </div>
+        <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20"
+            stroke-width="2.5">
+            <rect x="3" y="11" width="18" height="11" rx="1" />
+            <path d="M7 11V7a5 5 0 0110 0v4" />
+          </svg></div>
+      </div>
+      <div class="wc" onclick="openModal(event,'All Shall Be Well','')">
+        <img src="assets-2/catalog/all-shall-be-well.webp" alt="All Shall Be Well" loading="lazy" />
+        <div class="wo">
+          <div class="wtype">Trailer</div>
+          <div class="wtitle">All Shall Be Well</div>
+          <div class="wdir">Dir. Ray Yeung</div>
+        </div>
+        <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20"
+            stroke-width="2.5">
+            <rect x="3" y="11" width="18" height="11" rx="1" />
+            <path d="M7 11V7a5 5 0 0110 0v4" />
+          </svg></div>
+      </div>
+      <div class="wc" onclick="openModal(event,'Silverstar','https://vimeo.com/933679158')">
+        <img src="assets-2/catalog/silverstar.webp" alt="Silverstar" loading="lazy" />
+        <div class="wo">
+          <div class="wtype">Promo</div>
+          <div class="wtitle">Silverstar</div>
+          <div class="wdir">Dir. Ruben Amar</div>
+        </div>
+        <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20"
+            stroke-width="2.5">
+            <rect x="3" y="11" width="18" height="11" rx="1" />
+            <path d="M7 11V7a5 5 0 0110 0v4" />
+          </svg></div>
+      </div>
+      <div class="wc" onclick="openModal(event,'Morte Cucina','https://vimeo.com/1092047126')">
+        <img src="assets-2/catalog/morte-cucina.jpg" alt="Morte Cucina" loading="lazy" />
+        <div class="wo">
+          <div class="wtype">Promoreel</div>
+          <div class="wtitle">Morte Cucina</div>
+          <div class="wdir">Dir. Pen-Ek Ratanaruang</div>
+        </div>
+        <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20"
+            stroke-width="2.5">
+            <rect x="3" y="11" width="18" height="11" rx="1" />
+            <path d="M7 11V7a5 5 0 0110 0v4" />
+          </svg></div>
+      </div>
+      <div class="wc" onclick="openModal(event,'Lo Que Queda de Ti','')">
+        <img src="assets-2/catalog/lo-que-queda-de-ti.jpg" alt="Lo Que Queda de Ti" loading="lazy" />
+        <div class="wo">
+          <div class="wtype">Trailer</div>
+          <div class="wtitle">Lo Que Queda de Ti</div>
+          <div class="wdir">Dir. Gala Gracia</div>
+        </div>
+        <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20"
+            stroke-width="2.5">
+            <rect x="3" y="11" width="18" height="11" rx="1" />
+            <path d="M7 11V7a5 5 0 0110 0v4" />
+          </svg></div>
+      </div>
+      <div class="wc" onclick="openModal(event,'Fin de Fiesta','https://vimeo.com/933710406')">
+        <img src="assets-2/catalog/fin-de-fiesta.jpg" alt="Fin de Fiesta" loading="lazy" />
+        <div class="wo">
+          <div class="wtype">Promoreel</div>
+          <div class="wtitle">Fin de Fiesta</div>
+          <div class="wdir">Dir. Elena Manrique</div>
+        </div>
+        <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20"
+            stroke-width="2.5">
+            <rect x="3" y="11" width="18" height="11" rx="1" />
+            <path d="M7 11V7a5 5 0 0110 0v4" />
+          </svg></div>
+      </div>
+      <div class="wc" onclick="openModal(event,'Calladita','')">
+        <img src="assets-2/catalog/calladita.jpg" alt="Calladita" loading="lazy" />
+        <div class="wo">
+          <div class="wtype">Trailer</div>
+          <div class="wtitle">Calladita</div>
+          <div class="wdir">Dir. Miguel Faus</div>
+        </div>
+        <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20"
+            stroke-width="2.5">
+            <rect x="3" y="11" width="18" height="11" rx="1" />
+            <path d="M7 11V7a5 5 0 0110 0v4" />
+          </svg></div>
+      </div>
+      <div class="wc" onclick="openModal(event,'Heroico','https://vimeo.com/764180059')">
+        <img src="assets-2/catalog/heroico.jpg" alt="Heroico" loading="lazy" />
+        <div class="wo">
+          <div class="wtype">Promoreel</div>
+          <div class="wtitle">Heroico</div>
+          <div class="wdir">Dir. David Zonana</div>
+        </div>
+        <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20"
+            stroke-width="2.5">
+            <rect x="3" y="11" width="18" height="11" rx="1" />
+            <path d="M7 11V7a5 5 0 0110 0v4" />
+          </svg></div>
+      </div>
+      <div class="wc" onclick="openModal(event,'Some Rain Must Fall','https://vimeo.com/883971552')">
+        <img src="assets-2/catalog/some-rain-must-fall.jpg" alt="Some Rain Must Fall" loading="lazy" />
+        <div class="wo">
+          <div class="wtype">Teaser</div>
+          <div class="wtitle">Some Rain Must Fall</div>
+          <div class="wdir">Dir. Wang Qiu</div>
+        </div>
+        <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20"
+            stroke-width="2.5">
+            <rect x="3" y="11" width="18" height="11" rx="1" />
+            <path d="M7 11V7a5 5 0 0110 0v4" />
+          </svg></div>
+      </div>
+      <div class="wc" onclick="openModal(event,'Woman Of','')">
+        <img src="assets-2/catalog/woman-of.jpg" alt="Woman Of" loading="lazy" />
+        <div class="wo">
+          <div class="wtype">Trailer</div>
+          <div class="wtitle">Woman Of</div>
+          <div class="wdir">Dir. Małgorzata Szumowska & Michał Englert</div>
+        </div>
+        <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20"
+            stroke-width="2.5">
+            <rect x="3" y="11" width="18" height="11" rx="1" />
+            <path d="M7 11V7a5 5 0 0110 0v4" />
+          </svg></div>
+      </div>
+      <div class="wc" onclick="openModal(event,'Stranizza d&#39;Amuri','https://vimeo.com/772393932')">
+        <img src="assets-2/catalog/stranizza-d-amuri.png" alt="Stranizza d&#39;Amuri" loading="lazy" />
+        <div class="wo">
+          <div class="wtype">Promoreel</div>
+          <div class="wtitle">Stranizza d'Amuri</div>
+          <div class="wdir">Dir. Giuseppe Fiorello</div>
+        </div>
+        <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20"
+            stroke-width="2.5">
+            <rect x="3" y="11" width="18" height="11" rx="1" />
+            <path d="M7 11V7a5 5 0 0110 0v4" />
+          </svg></div>
+      </div>
+      <div class="wc" onclick="openModal(event,'Fatum','https://vimeo.com/766887601')">
+        <img src="assets-2/catalog/fatum.jpg" alt="Fatum" loading="lazy" />
+        <div class="wo">
+          <div class="wtype">Promoreel</div>
+          <div class="wtitle">Fatum</div>
+          <div class="wdir">Dir. Juan Galiñanes</div>
+        </div>
+        <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20"
+            stroke-width="2.5">
+            <rect x="3" y="11" width="18" height="11" rx="1" />
+            <path d="M7 11V7a5 5 0 0110 0v4" />
+          </svg></div>
+      </div>
+      <div class="wc" onclick="openModal(event,'Madame Luna','https://vimeo.com/883972318')">
+        <img src="assets-2/catalog/madame-luna.jpg" alt="Madame Luna" loading="lazy" />
+        <div class="wo">
+          <div class="wtype">Promoreel</div>
+          <div class="wtitle">Madame Luna</div>
+          <div class="wdir">Dir. Daniel Espinosa</div>
+        </div>
+        <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20"
+            stroke-width="2.5">
+            <rect x="3" y="11" width="18" height="11" rx="1" />
+            <path d="M7 11V7a5 5 0 0110 0v4" />
+          </svg></div>
+      </div>
+      <div class="wc" onclick="openModal(event,'The Blue Caftan','')">
+        <img src="assets-2/catalog/the-blue-caftan.jpg" alt="The Blue Caftan" loading="lazy" />
+        <div class="wo">
+          <div class="wtype">Trailer</div>
+          <div class="wtitle">The Blue Caftan</div>
+          <div class="wdir">Dir. Maryam Touzani</div>
+        </div>
+        <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20"
+            stroke-width="2.5">
+            <rect x="3" y="11" width="18" height="11" rx="1" />
+            <path d="M7 11V7a5 5 0 0110 0v4" />
+          </svg></div>
+      </div>
+      <div class="wc" onclick="openModal(event,'Stella in Love','https://vimeo.com/735911279')">
+        <img src="assets-2/catalog/stella-in-love.png" alt="Stella in Love" loading="lazy" />
+        <div class="wo">
+          <div class="wtype">Promoreel</div>
+          <div class="wtitle">Stella in Love</div>
+          <div class="wdir">Dir. Sylvie Verheyde</div>
+        </div>
+        <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20"
+            stroke-width="2.5">
+            <rect x="3" y="11" width="18" height="11" rx="1" />
+            <path d="M7 11V7a5 5 0 0110 0v4" />
+          </svg></div>
+      </div>
+      <div class="wc" onclick="openModal(event,'The Hole in the Fence','https://vimeo.com/735371013')">
+        <img src="assets-2/catalog/the-hole-in-the-fence.webp" alt="The Hole in the Fence" loading="lazy" />
+        <div class="wo">
+          <div class="wtype">Promoreel</div>
+          <div class="wtitle">The Hole in the Fence</div>
+          <div class="wdir">Dir. Joaquin del Paso</div>
+        </div>
+        <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20"
+            stroke-width="2.5">
+            <rect x="3" y="11" width="18" height="11" rx="1" />
+            <path d="M7 11V7a5 5 0 0110 0v4" />
+          </svg></div>
+      </div>
+      <div class="wc" onclick="openModal(event,'Tel Aviv-Beyrouth','https://vimeo.com/1180755254')">
+        <img src="assets-2/catalog/tel-aviv-beyrouth.jpg" alt="Tel Aviv-Beyrouth" loading="lazy" />
+        <div class="wo">
+          <div class="wtype">Promoreel</div>
+          <div class="wtitle">Tel Aviv-Beyrouth</div>
+          <div class="wdir">Dir. Michale Boganim</div>
+        </div>
+        <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20"
+            stroke-width="2.5">
+            <rect x="3" y="11" width="18" height="11" rx="1" />
+            <path d="M7 11V7a5 5 0 0110 0v4" />
+          </svg></div>
+      </div>
+      <div class="wc" onclick="openModal(event,'Centauro','https://vimeo.com/735908744')">
+        <img src="assets-2/catalog/centauro.jpg" alt="Centauro" loading="lazy" />
+        <div class="wo">
+          <div class="wtype">Trailer</div>
+          <div class="wtitle">Centauro</div>
+          <div class="wdir">Dir. Daniel Calparsoro</div>
+        </div>
+        <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20"
+            stroke-width="2.5">
+            <rect x="3" y="11" width="18" height="11" rx="1" />
+            <path d="M7 11V7a5 5 0 0110 0v4" />
+          </svg></div>
+      </div>
+      <div class="wc" onclick="openModal(event,'Nous','https://vimeo.com/1180753554')">
+        <img src="assets-2/catalog/nous.jpg" alt="Nous" loading="lazy" />
+        <div class="wo">
+          <div class="wtype">Trailer</div>
+          <div class="wtitle">Nous</div>
+          <div class="wdir">Dir. Alice Diop</div>
+        </div>
+        <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20"
+            stroke-width="2.5">
+            <rect x="3" y="11" width="18" height="11" rx="1" />
+            <path d="M7 11V7a5 5 0 0110 0v4" />
+          </svg></div>
+      </div>
+      <div class="wc" onclick="openModal(event,'Gaza Mon Amour','https://vimeo.com/735918777')">
+        <img src="assets-2/catalog/gaza-mon-amour.jpg" alt="Gaza Mon Amour" loading="lazy" />
+        <div class="wo">
+          <div class="wtype">Promoreel</div>
+          <div class="wtitle">Gaza Mon Amour</div>
+          <div class="wdir">Dir. Arab & Tarzan Nasser</div>
+        </div>
+        <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20"
+            stroke-width="2.5">
+            <rect x="3" y="11" width="18" height="11" rx="1" />
+            <path d="M7 11V7a5 5 0 0110 0v4" />
+          </svg></div>
       </div>
     </div>
-  </section>
+  </div>
 
-  <footer>
-    <div class="flogo"><img src="assets/entracte-logo.png" alt="entracte"/></div>
-    <div class="fcopy">© 2025 Entracte Creative Agency. Madrid, Spain.</div>
-  </footer>
-
-</div><!-- end home -->
-
-<!-- ══ WORKS ══ -->
-<div class="page" id="pworks">
-  <div class="works-top">
-    <div>
-      <div class="sec-label">Selected Projects</div>
-      <h2 class="sec-title">Our Works</h2>
+  <!-- ══ ABOUT ══ -->
+  <div class="page" id="pabout">
+    <div class="about-top">
+      <div class="sec-label">Who We Are</div>
+      <h2 class="sec-title">Entracte<br />Creative Agency</h2>
     </div>
-    <p style="max-width:240px;font-size:.82rem;line-height:1.7;color:var(--g)">Protected screenings. Enter your access code or request a private link.</p>
-  </div>
-  <div class="wgrid" id="works-grid">
-<div class="wc" onclick="openModal(event,'I Don&#39;t Know You','https://vimeo.com/1174435355')">
-  <img src="assets-2/catalog/i-don-t-know-you.webp" alt="I Don&#39;t Know You" loading="lazy"/>
-  <div class="wo">
-    <div class="wtype">Teaser</div>
-    <div class="wtitle">I Don't Know You</div>
-    <div class="wdir">Dir. Kentaro Sakaguchi</div>
-  </div>
-  <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-</div>
-<div class="wc" onclick="openModal(event,'Brave Cat','https://vimeo.com/1173944474')">
-  <img src="assets-2/catalog/brave-cat.jpg" alt="Brave Cat" loading="lazy"/>
-  <div class="wo">
-    <div class="wtype">Promoreel</div>
-    <div class="wtitle">Brave Cat</div>
-    <div class="wdir">Dir. Gabriel Osorio Vargas</div>
-  </div>
-  <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-</div>
-<div class="wc" onclick="openModal(event,'All That&#39;s Left of You','')">
-  <img src="assets-2/catalog/all-that-s-left-of-you.webp" alt="All That&#39;s Left of You" loading="lazy"/>
-  <div class="wo">
-    <div class="wtype">Trailer</div>
-    <div class="wtitle">All That's Left of You</div>
-    <div class="wdir">Dir. Cherien Dabis</div>
-  </div>
-  <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-</div>
-<div class="wc" onclick="openModal(event,'Mano Negra: Bring the Noise!','https://vimeo.com/1174438225')">
-  <img src="assets-2/catalog/mano-negra-bring-the-noise.webp" alt="Mano Negra: Bring the Noise!" loading="lazy"/>
-  <div class="wo">
-    <div class="wtype">Teaser</div>
-    <div class="wtitle">Mano Negra: Bring the Noise!</div>
-    <div class="wdir">Dir. David Dufresne</div>
-  </div>
-  <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-</div>
-<div class="wc" onclick="openModal(event,'We Believe You','')">
-  <img src="assets-2/catalog/we-believe-you.webp" alt="We Believe You" loading="lazy"/>
-  <div class="wo">
-    <div class="wtype">Trailer</div>
-    <div class="wtitle">We Believe You</div>
-    <div class="wdir">Dir. Charlotte Devillers & Arnaud Dufeys</div>
-  </div>
-  <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-</div>
-<div class="wc" onclick="openModal(event,'The Wonderers','https://vimeo.com/1092046354')">
-  <img src="assets-2/catalog/the-wonderers.jpg" alt="The Wonderers" loading="lazy"/>
-  <div class="wo">
-    <div class="wtype">Promoreel</div>
-    <div class="wtitle">The Wonderers</div>
-    <div class="wdir">Dir. Joséphine Japy</div>
-  </div>
-  <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-</div>
-<div class="wc" onclick="openModal(event,'Growing Down','https://vimeo.com/1092052668')">
-  <img src="assets-2/catalog/growing-down.jpg" alt="Growing Down" loading="lazy"/>
-  <div class="wo">
-    <div class="wtype">Promoreel</div>
-    <div class="wtitle">Growing Down</div>
-    <div class="wdir">Dir. Dániel Bálint Sós</div>
-  </div>
-  <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-</div>
-<div class="wc" onclick="openModal(event,'Inside','https://vimeo.com/933675685')">
-  <img src="assets-2/catalog/inside.jpg" alt="Inside" loading="lazy"/>
-  <div class="wo">
-    <div class="wtype">Promoreel</div>
-    <div class="wtitle">Inside</div>
-    <div class="wdir">Dir. Charles Williams</div>
-  </div>
-  <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-</div>
-<div class="wc" onclick="openModal(event,'Une Vie Rêvée','https://vimeo.com/883967785')">
-  <img src="assets-2/catalog/une-vie-revee.jpg" alt="Une Vie Rêvée" loading="lazy"/>
-  <div class="wo">
-    <div class="wtype">Promoreel</div>
-    <div class="wtitle">Une Vie Rêvée</div>
-    <div class="wdir">Dir. Morgan Simon</div>
-  </div>
-  <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-</div>
-<div class="wc" onclick="openModal(event,'All Shall Be Well','')">
-  <img src="assets-2/catalog/all-shall-be-well.webp" alt="All Shall Be Well" loading="lazy"/>
-  <div class="wo">
-    <div class="wtype">Trailer</div>
-    <div class="wtitle">All Shall Be Well</div>
-    <div class="wdir">Dir. Ray Yeung</div>
-  </div>
-  <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-</div>
-<div class="wc" onclick="openModal(event,'Silverstar','https://vimeo.com/933679158')">
-  <img src="assets-2/catalog/silverstar.webp" alt="Silverstar" loading="lazy"/>
-  <div class="wo">
-    <div class="wtype">Promo</div>
-    <div class="wtitle">Silverstar</div>
-    <div class="wdir">Dir. Ruben Amar</div>
-  </div>
-  <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-</div>
-<div class="wc" onclick="openModal(event,'Morte Cucina','https://vimeo.com/1092047126')">
-  <img src="assets-2/catalog/morte-cucina.jpg" alt="Morte Cucina" loading="lazy"/>
-  <div class="wo">
-    <div class="wtype">Promoreel</div>
-    <div class="wtitle">Morte Cucina</div>
-    <div class="wdir">Dir. Pen-Ek Ratanaruang</div>
-  </div>
-  <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-</div>
-<div class="wc" onclick="openModal(event,'Lo Que Queda de Ti','')">
-  <img src="assets-2/catalog/lo-que-queda-de-ti.jpg" alt="Lo Que Queda de Ti" loading="lazy"/>
-  <div class="wo">
-    <div class="wtype">Trailer</div>
-    <div class="wtitle">Lo Que Queda de Ti</div>
-    <div class="wdir">Dir. Gala Gracia</div>
-  </div>
-  <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-</div>
-<div class="wc" onclick="openModal(event,'Fin de Fiesta','https://vimeo.com/933710406')">
-  <img src="assets-2/catalog/fin-de-fiesta.jpg" alt="Fin de Fiesta" loading="lazy"/>
-  <div class="wo">
-    <div class="wtype">Promoreel</div>
-    <div class="wtitle">Fin de Fiesta</div>
-    <div class="wdir">Dir. Elena Manrique</div>
-  </div>
-  <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-</div>
-<div class="wc" onclick="openModal(event,'Calladita','')">
-  <img src="assets-2/catalog/calladita.jpg" alt="Calladita" loading="lazy"/>
-  <div class="wo">
-    <div class="wtype">Trailer</div>
-    <div class="wtitle">Calladita</div>
-    <div class="wdir">Dir. Miguel Faus</div>
-  </div>
-  <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-</div>
-<div class="wc" onclick="openModal(event,'Heroico','https://vimeo.com/764180059')">
-  <img src="assets-2/catalog/heroico.jpg" alt="Heroico" loading="lazy"/>
-  <div class="wo">
-    <div class="wtype">Promoreel</div>
-    <div class="wtitle">Heroico</div>
-    <div class="wdir">Dir. David Zonana</div>
-  </div>
-  <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-</div>
-<div class="wc" onclick="openModal(event,'Some Rain Must Fall','https://vimeo.com/883971552')">
-  <img src="assets-2/catalog/some-rain-must-fall.jpg" alt="Some Rain Must Fall" loading="lazy"/>
-  <div class="wo">
-    <div class="wtype">Teaser</div>
-    <div class="wtitle">Some Rain Must Fall</div>
-    <div class="wdir">Dir. Wang Qiu</div>
-  </div>
-  <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-</div>
-<div class="wc" onclick="openModal(event,'Woman Of','')">
-  <img src="assets-2/catalog/woman-of.jpg" alt="Woman Of" loading="lazy"/>
-  <div class="wo">
-    <div class="wtype">Trailer</div>
-    <div class="wtitle">Woman Of</div>
-    <div class="wdir">Dir. Małgorzata Szumowska & Michał Englert</div>
-  </div>
-  <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-</div>
-<div class="wc" onclick="openModal(event,'Stranizza d&#39;Amuri','https://vimeo.com/772393932')">
-  <img src="assets-2/catalog/stranizza-d-amuri.png" alt="Stranizza d&#39;Amuri" loading="lazy"/>
-  <div class="wo">
-    <div class="wtype">Promoreel</div>
-    <div class="wtitle">Stranizza d'Amuri</div>
-    <div class="wdir">Dir. Giuseppe Fiorello</div>
-  </div>
-  <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-</div>
-<div class="wc" onclick="openModal(event,'Fatum','https://vimeo.com/766887601')">
-  <img src="assets-2/catalog/fatum.jpg" alt="Fatum" loading="lazy"/>
-  <div class="wo">
-    <div class="wtype">Promoreel</div>
-    <div class="wtitle">Fatum</div>
-    <div class="wdir">Dir. Juan Galiñanes</div>
-  </div>
-  <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-</div>
-<div class="wc" onclick="openModal(event,'Madame Luna','https://vimeo.com/883972318')">
-  <img src="assets-2/catalog/madame-luna.jpg" alt="Madame Luna" loading="lazy"/>
-  <div class="wo">
-    <div class="wtype">Promoreel</div>
-    <div class="wtitle">Madame Luna</div>
-    <div class="wdir">Dir. Daniel Espinosa</div>
-  </div>
-  <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-</div>
-<div class="wc" onclick="openModal(event,'The Blue Caftan','')">
-  <img src="assets-2/catalog/the-blue-caftan.jpg" alt="The Blue Caftan" loading="lazy"/>
-  <div class="wo">
-    <div class="wtype">Trailer</div>
-    <div class="wtitle">The Blue Caftan</div>
-    <div class="wdir">Dir. Maryam Touzani</div>
-  </div>
-  <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-</div>
-<div class="wc" onclick="openModal(event,'Stella in Love','https://vimeo.com/735911279')">
-  <img src="assets-2/catalog/stella-in-love.png" alt="Stella in Love" loading="lazy"/>
-  <div class="wo">
-    <div class="wtype">Promoreel</div>
-    <div class="wtitle">Stella in Love</div>
-    <div class="wdir">Dir. Sylvie Verheyde</div>
-  </div>
-  <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-</div>
-<div class="wc" onclick="openModal(event,'The Hole in the Fence','https://vimeo.com/735371013')">
-  <img src="assets-2/catalog/the-hole-in-the-fence.webp" alt="The Hole in the Fence" loading="lazy"/>
-  <div class="wo">
-    <div class="wtype">Promoreel</div>
-    <div class="wtitle">The Hole in the Fence</div>
-    <div class="wdir">Dir. Joaquin del Paso</div>
-  </div>
-  <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-</div>
-<div class="wc" onclick="openModal(event,'Tel Aviv-Beyrouth','https://vimeo.com/1180755254')">
-  <img src="assets-2/catalog/tel-aviv-beyrouth.jpg" alt="Tel Aviv-Beyrouth" loading="lazy"/>
-  <div class="wo">
-    <div class="wtype">Promoreel</div>
-    <div class="wtitle">Tel Aviv-Beyrouth</div>
-    <div class="wdir">Dir. Michale Boganim</div>
-  </div>
-  <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-</div>
-<div class="wc" onclick="openModal(event,'Centauro','https://vimeo.com/735908744')">
-  <img src="assets-2/catalog/centauro.jpg" alt="Centauro" loading="lazy"/>
-  <div class="wo">
-    <div class="wtype">Trailer</div>
-    <div class="wtitle">Centauro</div>
-    <div class="wdir">Dir. Daniel Calparsoro</div>
-  </div>
-  <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-</div>
-<div class="wc" onclick="openModal(event,'Nous','https://vimeo.com/1180753554')">
-  <img src="assets-2/catalog/nous.jpg" alt="Nous" loading="lazy"/>
-  <div class="wo">
-    <div class="wtype">Trailer</div>
-    <div class="wtitle">Nous</div>
-    <div class="wdir">Dir. Alice Diop</div>
-  </div>
-  <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-</div>
-<div class="wc" onclick="openModal(event,'Gaza Mon Amour','https://vimeo.com/735918777')">
-  <img src="assets-2/catalog/gaza-mon-amour.jpg" alt="Gaza Mon Amour" loading="lazy"/>
-  <div class="wo">
-    <div class="wtype">Promoreel</div>
-    <div class="wtitle">Gaza Mon Amour</div>
-    <div class="wdir">Dir. Arab & Tarzan Nasser</div>
-  </div>
-  <div class="wlock"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-</div>
-  </div>
-</div>
-
-<!-- ══ ABOUT ══ -->
-<div class="page" id="pabout">
-  <div class="about-top">
-    <div class="sec-label">Who We Are</div>
-    <h2 class="sec-title">Entracte<br/>Creative Agency</h2>
-  </div>
-  <div class="about-body">
-    <p>Entracte Creative Agency crafts <strong>bespoke promotional assets</strong> — trailers, teasers, promoreels — meticulously designed to capture the unique identity of each film.</p>
-    <p>Driven by a passion for cinematic storytelling, we explore the <strong>visual and emotional core</strong> of every project to create a compelling narrative experience.</p>
-    <p>By combining this artistic focus with <strong>deep international expertise</strong>, Entracte helps producers, distributors, and sales agents elevate their films and resonate authentically across global territories.</p>
-  </div>
-  <div class="clients-section">
-    <div class="sec-label">Trusted By</div>
-    <h2 class="sec-title-sm">Our Clients</h2>
-    <div class="cl-grid">
-      <div class="cb"><img src="assets/borsalino-production.jpg" alt="client"/></div><div class="cb"><img src="assets/capstone-pictures.jpg" alt="client"/></div><div class="cb"><img src="assets/caramel-films.jpg" alt="client"/></div><div class="cb"><img src="assets/constellation-films.jpg" alt="client"/></div><div class="cb"><img src="assets/contracorriente-films.jpg" alt="client"/></div><div class="cb"><img src="assets/karma-films.jpg" alt="client"/></div><div class="cb"><img src="assets/lazona-films.jpg" alt="client"/></div><div class="cb"><img src="assets/netflix.jpg" alt="client"/></div><div class="cb"><img src="assets/pool-films.jpg" alt="client"/></div><div class="cb"><img src="assets/pulsar-content.jpg" alt="client"/></div><div class="cb"><img src="assets/totem-films.jpg" alt="client"/></div><div class="cb"><img src="assets/wild-production.jpg" alt="client"/></div><div class="cb"><img src="assets/wtf-films.jpg" alt="client"/></div><div class="cb"></div><div class="cb"></div>
+    <div class="about-body">
+      <p>Entracte Creative Agency crafts <strong>bespoke promotional assets</strong> — trailers, teasers, promoreels —
+        meticulously designed to capture the unique identity of each film.</p>
+      <p>Driven by a passion for cinematic storytelling, we explore the <strong>visual and emotional core</strong> of
+        every project to create a compelling narrative experience.</p>
+      <p>By combining this artistic focus with <strong>deep international expertise</strong>, Entracte helps producers,
+        distributors, and sales agents elevate their films and resonate authentically across global territories.</p>
     </div>
-  </div>
-  <footer style="background:#e8e3d8;border-top:1px solid rgba(35,31,20,.08)">
-    <div class="flogo"><img src="assets/entracte-logo.png" alt="entracte"/></div>
-    <div class="fcopy">© 2025 Entracte Creative Agency. Madrid, Spain.</div>
-  </footer>
-</div>
-
-<!-- MODAL -->
-<div class="modal-bg" id="modalBg">
-  <div class="modal">
-    <button class="mclose" onclick="closeModal()">✕</button>
-    <h3>Access Film</h3>
-    <div class="modal-subtitle" id="modal-film"></div>
-    <div class="modal-tabs">
-      <button class="mtab active" id="tab-pw"  onclick="switchTab('pw')">Enter Code</button>
-      <button class="mtab"        id="tab-req" onclick="switchTab('req')">Request Access</button>
-    </div>
-    <div class="mpanel active" id="panel-pw">
-      <label>Access Code</label>
-      <input type="password" id="mpass" placeholder="Enter your code" onkeydown="if(event.key==='Enter')tryLogin()"/>
-      <button class="btnb" onclick="tryLogin()">Watch Now</button>
-      <div class="merror" id="merror">Incorrect code. Please try again.</div>
-    </div>
-    <div class="mpanel" id="panel-req">
-      <div id="req-form">
-        <label>Your Name</label><input type="text" id="rname" placeholder="Full name"/>
-        <label>Email</label><input type="email" id="remail" placeholder="your@email.com"/>
-        <button class="btnb" id="req-submit" onclick="sendRequest()">Request Access</button>
-        <div class="req-feedback error" id="req-error"></div>
+    <div class="clients-section">
+      <div class="sec-label">Trusted By</div>
+      <h2 class="sec-title-sm">Our Clients</h2>
+      <div class="cl-grid">
+        <div class="cb"><img src="assets/borsalino-production.jpg" alt="client" /></div>
+        <div class="cb"><img src="assets/capstone-pictures.jpg" alt="client" /></div>
+        <div class="cb"><img src="assets/caramel-films.jpg" alt="client" /></div>
+        <div class="cb"><img src="assets/constellation-films.jpg" alt="client" /></div>
+        <div class="cb"><img src="assets/contracorriente-films.jpg" alt="client" /></div>
+        <div class="cb"><img src="assets/karma-films.jpg" alt="client" /></div>
+        <div class="cb"><img src="assets/lazona-films.jpg" alt="client" /></div>
+        <div class="cb"><img src="assets/netflix.jpg" alt="client" /></div>
+        <div class="cb"><img src="assets/pool-films.jpg" alt="client" /></div>
+        <div class="cb"><img src="assets/pulsar-content.jpg" alt="client" /></div>
+        <div class="cb"><img src="assets/totem-films.jpg" alt="client" /></div>
+        <div class="cb"><img src="assets/wild-production.jpg" alt="client" /></div>
+        <div class="cb"><img src="assets/wtf-films.jpg" alt="client" /></div>
+        <div class="cb"><img src="assets/is-logo-nb-ndg.png" alt="Indie Sales" /></div>
+        <div class="cb"><img class="logo-wide" src="assets/goodfellas-couleur-noirplein.png" alt="Goodfellas" /></div>
       </div>
-      <div class="req-sent" id="req-sent">
-        <p>✦ Request sent!<br/><strong>We'll send your link within 24 hours.</strong></p>
+    </div>
+    <footer style="background:#e8e3d8;border-top:1px solid rgba(35,31,20,.08)">
+      <div class="flogo"><img src="assets/entracte-logo.png" alt="entracte" /></div>
+      <div class="fcopy">© 2025 Entracte Creative Agency. Madrid, Spain.</div>
+    </footer>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal-bg" id="modalBg">
+    <div class="modal">
+      <button class="mclose" onclick="closeModal()">✕</button>
+      <h3>Access Film</h3>
+      <div class="modal-subtitle" id="modal-film"></div>
+      <div class="modal-tabs">
+        <button class="mtab active" id="tab-pw" onclick="switchTab('pw')">Enter Code</button>
+        <button class="mtab" id="tab-req" onclick="switchTab('req')">Request Access</button>
+      </div>
+      <div class="mpanel active" id="panel-pw">
+        <label>Access Code</label>
+        <input type="password" id="mpass" placeholder="Enter your code" onkeydown="if(event.key==='Enter')tryLogin()" />
+        <button class="btnb" onclick="tryLogin()">Watch Now</button>
+        <div class="merror" id="merror">Incorrect code. Please try again.</div>
+      </div>
+      <div class="mpanel" id="panel-req">
+        <div id="req-form">
+          <label>Your Name</label><input type="text" id="rname" placeholder="Full name" />
+          <label>Email</label><input type="email" id="remail" placeholder="your@email.com" />
+          <button class="btnb" id="req-submit" onclick="sendRequest()">Request Access</button>
+          <div class="req-feedback error" id="req-error"></div>
+        </div>
+        <div class="req-sent" id="req-sent">
+          <p>✦ Request sent!<br /><strong>We'll send your link within 24 hours.</strong></p>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="assets/js/supabase-config.js"></script>
-<script src="assets/js/supabase-shared.js"></script>
-<script>
-// ── SLIDESHOW DATA ──
-var ssImgs = [
-  "assets-2/catalog/i-don-t-know-you.webp",
-  "assets-2/catalog/brave-cat.jpg",
-  "assets-2/catalog/all-that-s-left-of-you.webp",
-  "assets-2/catalog/mano-negra-bring-the-noise.webp",
-];
-var ssCaptions = [
-  {type:'Teaser',    title:"I Don't Know You",            dir:'Dir. Kentaro Sakaguchi'},
-  {type:'Promoreel', title:'Brave Cat',                   dir:'Dir. Gabriel Osorio Vargas'},
-  {type:'Trailer',   title:"All That's Left of You",      dir:'Dir. Cherien Dabis'},
-  {type:'Teaser',    title:'Mano Negra: Bring the Noise!',dir:'Dir. David Dufresne'},
-];
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-config.js"></script>
+  <script src="assets/js/supabase-shared.js"></script>
+  <script>
+    // ── SLIDESHOW DATA ──
+    var ssImgs = [
+      "assets-2/catalog/i-don-t-know-you.webp",
+      "assets-2/catalog/brave-cat.jpg",
+      "assets-2/catalog/all-that-s-left-of-you.webp",
+      "assets-2/catalog/mano-negra-bring-the-noise.webp",
+    ];
+    var ssCaptions = [
+      { type: 'Teaser', title: "I Don't Know You", dir: 'Dir. Kentaro Sakaguchi' },
+      { type: 'Promoreel', title: 'Brave Cat', dir: 'Dir. Gabriel Osorio Vargas' },
+      { type: 'Trailer', title: "All That's Left of You", dir: 'Dir. Cherien Dabis' },
+      { type: 'Teaser', title: 'Mano Negra: Bring the Noise!', dir: 'Dir. David Dufresne' },
+    ];
 
-var ssEls  = document.querySelectorAll('.ss-slide');
-var ssDots = document.getElementById('ss-dots');
-var ssCur  = 0;
+    var ssEls = document.querySelectorAll('.ss-slide');
+    var ssDots = document.getElementById('ss-dots');
+    var ssCur = 0;
 
-// Set backgrounds
-ssImgs.forEach(function(src, i) {
-  if (ssEls[i]) ssEls[i].style.backgroundImage = 'url('+src+')';
-  var d = document.createElement('button');
-  d.className = 'ss-dot' + (i===0?' active':'');
-  d.onclick = (function(idx){return function(){goSlide(idx);}}) (i);
-  ssDots.appendChild(d);
-});
-
-function goSlide(n) {
-  ssEls[ssCur].classList.remove('active');
-  ssDots.querySelectorAll('.ss-dot')[ssCur].classList.remove('active');
-  ssCur = (n + ssImgs.length) % ssImgs.length;
-  ssEls[ssCur].classList.add('active');
-  ssDots.querySelectorAll('.ss-dot')[ssCur].classList.add('active');
-  var c = ssCaptions[ssCur];
-  document.getElementById('ss-type').textContent  = c.type;
-  document.getElementById('ss-title').textContent = c.title;
-  document.getElementById('ss-dir').textContent   = c.dir;
-}
-setInterval(function(){ goSlide(ssCur+1); }, 4500);
-
-// ── INTRO ──
-(function() {
-  var intro = document.getElementById('intro');
-  var introVideo = document.getElementById('intro-video');
-  var dismissed = false;
-
-  function dismissIntro() {
-    if (dismissed || !intro) return;
-    dismissed = true;
-    intro.classList.add('gone');
-  }
-
-  if (!intro || !introVideo) {
-    dismissIntro();
-    return;
-  }
-
-  var fallbackTimer = setTimeout(dismissIntro, 3000);
-
-  introVideo.addEventListener('ended', function() {
-    clearTimeout(fallbackTimer);
-    dismissIntro();
-  }, { once: true });
-
-  introVideo.addEventListener('error', function() {
-    clearTimeout(fallbackTimer);
-    dismissIntro();
-  }, { once: true });
-
-  var playAttempt = introVideo.play();
-  if (playAttempt && typeof playAttempt.catch === 'function') {
-    playAttempt.catch(function() {
-      clearTimeout(fallbackTimer);
-      dismissIntro();
-    });
-  }
-})();
-
-// ── NAV ──
-function updateNav() {
-  var nav = document.getElementById('mainnav');
-  var active = document.querySelector('.page.active').id;
-  if (active !== 'phome') {
-    nav.classList.add('dark');
-    nav.classList.remove('transparent');
-  } else {
-    var atDark = window.scrollY > (window.innerHeight * 0.8);
-    nav.classList.toggle('dark', atDark);
-  }
-}
-window.addEventListener('scroll', updateNav);
-
-// ── PAGE NAV ──
-function goPage(name) {
-  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
-  document.querySelectorAll('.nbtn').forEach(function(b){ b.classList.remove('active'); });
-  document.getElementById('p'+name).classList.add('active');
-  document.getElementById('btn-'+name).classList.add('active');
-  window.scrollTo(0,0);
-  updateNav();
-}
-
-// ── COUNTERS ──
-var countersRan = false;
-function runCounters() {
-  if (countersRan) return; countersRan = true;
-  document.querySelectorAll('.cnt').forEach(function(el) {
-    var t=parseInt(el.dataset.t), s=el.dataset.s||'', steps=50, inc=t/steps, c=0;
-    var tm=setInterval(function(){ c+=inc; if(c>=t){c=t;clearInterval(tm);} el.textContent=Math.floor(c)+s; }, 1200/steps);
-  });
-}
-var se = document.getElementById('stats');
-if (se) {
-  new IntersectionObserver(function(entries) {
-    entries.forEach(function(e){ if(e.isIntersecting) runCounters(); });
-  }, {threshold:0.3}).observe(se);
-}
-
-// ── MODAL ──
-var currentVimeo='';
-function openModal(e, title, vimeo) {
-  e.stopPropagation();
-  currentVimeo = vimeo;
-  document.getElementById('modal-film').textContent = title;
-  document.getElementById('merror').style.display = 'none';
-  document.getElementById('mpass').value = '';
-  document.getElementById('rname').value = '';
-  document.getElementById('remail').value = '';
-  document.getElementById('req-form').style.display = 'block';
-  document.getElementById('req-sent').style.display = 'none';
-  document.getElementById('req-error').style.display = 'none';
-  document.getElementById('req-error').textContent = '';
-  document.getElementById('req-submit').disabled = false;
-  document.getElementById('req-submit').textContent = document.getElementById('req-submit').dataset.idleLabel || 'Request Access';
-  switchTab('pw');
-  document.getElementById('modalBg').classList.add('active');
-}
-function closeModal() { document.getElementById('modalBg').classList.remove('active'); }
-document.getElementById('modalBg').addEventListener('click', function(e) {
-  if (e.target===this) closeModal();
-});
-function switchTab(t) {
-  document.querySelectorAll('.mtab').forEach(function(x){x.classList.remove('active');});
-  document.querySelectorAll('.mpanel').forEach(function(x){x.classList.remove('active');});
-  document.getElementById('tab-'+t).classList.add('active');
-  document.getElementById('panel-'+t).classList.add('active');
-}
-var CODE='EnTractE-CreA-26';
-function tryLogin() {
-  if (document.getElementById('mpass').value.trim()===CODE) {
-    closeModal();
-    if (currentVimeo) window.open(currentVimeo,'_blank');
-    else alert('Access granted. This link will be available soon.');
-  } else {
-    document.getElementById('merror').style.display='block';
-  }
-}
-async function sendRequest() {
-  var name = document.getElementById('rname').value.trim();
-  var email = document.getElementById('remail').value.trim();
-  var title = document.getElementById('modal-film').textContent.trim() || 'Unknown title';
-  var button = document.getElementById('req-submit');
-  var error = document.getElementById('req-error');
-  var idleLabel = button.dataset.idleLabel || button.textContent;
-
-  button.dataset.idleLabel = idleLabel;
-  error.style.display = 'none';
-  error.textContent = '';
-
-  if (!name || !email) {
-    error.textContent = 'Please fill in your name and email.';
-    error.style.display = 'block';
-    return;
-  }
-
-  button.disabled = true;
-  button.textContent = 'Sending...';
-
-  try {
-    var response = await fetch('/api/access-request', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        title: title,
-        name: name,
-        email: email
-      })
+    // Set backgrounds
+    ssImgs.forEach(function (src, i) {
+      if (ssEls[i]) ssEls[i].style.backgroundImage = 'url(' + src + ')';
+      var d = document.createElement('button');
+      d.className = 'ss-dot' + (i === 0 ? ' active' : '');
+      d.onclick = (function (idx) { return function () { goSlide(idx); } })(i);
+      ssDots.appendChild(d);
     });
 
-    var payload = await response.json().catch(function() { return {}; });
-    if (!response.ok) {
-      throw new Error(payload.error || 'Could not send your access request.');
+    function goSlide(n) {
+      ssEls[ssCur].classList.remove('active');
+      ssDots.querySelectorAll('.ss-dot')[ssCur].classList.remove('active');
+      ssCur = (n + ssImgs.length) % ssImgs.length;
+      ssEls[ssCur].classList.add('active');
+      ssDots.querySelectorAll('.ss-dot')[ssCur].classList.add('active');
+      var c = ssCaptions[ssCur];
+      document.getElementById('ss-type').textContent = c.type;
+      document.getElementById('ss-title').textContent = c.title;
+      document.getElementById('ss-dir').textContent = c.dir;
+    }
+    setInterval(function () { goSlide(ssCur + 1); }, 4500);
+
+    // ── INTRO ──
+    (function () {
+      var intro = document.getElementById('intro');
+      var introVideo = document.getElementById('intro-video');
+      var dismissed = false;
+
+      function dismissIntro() {
+        if (dismissed || !intro) return;
+        dismissed = true;
+        intro.classList.add('gone');
+      }
+
+      if (!intro || !introVideo) {
+        dismissIntro();
+        return;
+      }
+
+      var fallbackTimer = setTimeout(dismissIntro, 3000);
+
+      introVideo.addEventListener('ended', function () {
+        clearTimeout(fallbackTimer);
+        dismissIntro();
+      }, { once: true });
+
+      introVideo.addEventListener('error', function () {
+        clearTimeout(fallbackTimer);
+        dismissIntro();
+      }, { once: true });
+
+      var playAttempt = introVideo.play();
+      if (playAttempt && typeof playAttempt.catch === 'function') {
+        playAttempt.catch(function () {
+          clearTimeout(fallbackTimer);
+          dismissIntro();
+        });
+      }
+    })();
+
+    // ── NAV ──
+    function updateNav() {
+      var nav = document.getElementById('mainnav');
+      var active = document.querySelector('.page.active').id;
+      if (active !== 'phome') {
+        nav.classList.add('dark');
+        nav.classList.remove('transparent');
+      } else {
+        var hero = document.getElementById('hero');
+        var darkPoint = hero ? Math.max(0, hero.offsetHeight - nav.offsetHeight) : (window.innerHeight * 0.7);
+        var atDark = window.scrollY > darkPoint;
+        nav.classList.toggle('dark', atDark);
+      }
+    }
+    window.addEventListener('scroll', updateNav);
+
+    // ── PAGE NAV ──
+    function goPage(name) {
+      document.querySelectorAll('.page').forEach(function (p) { p.classList.remove('active'); });
+      document.querySelectorAll('.nbtn').forEach(function (b) { b.classList.remove('active'); });
+      document.getElementById('p' + name).classList.add('active');
+      document.getElementById('btn-' + name).classList.add('active');
+      window.scrollTo(0, 0);
+      updateNav();
     }
 
-    document.getElementById('req-form').style.display = 'none';
-    document.getElementById('req-sent').style.display = 'block';
-  } catch (requestError) {
-    error.textContent = requestError.message || 'Could not send your access request.';
-    error.style.display = 'block';
-  } finally {
-    button.disabled = false;
-    button.textContent = idleLabel;
-  }
-}
-
-// ── PUBLIC WORKS ──
-var worksGrid = document.getElementById('works-grid');
-var workLockSvg = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>';
-
-function formatDirectorLabel(director) {
-  var clean = String(director || '').replace(/^Dir\.\s*/i, '').trim();
-  return clean ? ('Dir. ' + clean) : 'Dir. —';
-}
-
-function buildWorkCard(work) {
-  var card = document.createElement('div');
-  card.className = 'wc';
-
-  var image = document.createElement('img');
-  image.src = work.imageUrl || work.imagePath || '';
-  image.alt = work.imageAlt || work.title || 'Work image';
-  image.loading = 'lazy';
-  if (work.imageStyle) {
-    image.style.cssText = work.imageStyle;
-  }
-
-  var overlay = document.createElement('div');
-  overlay.className = 'wo';
-
-  var type = document.createElement('div');
-  type.className = 'wtype';
-  type.textContent = work.type || 'Promoreel';
-
-  var title = document.createElement('div');
-  title.className = 'wtitle';
-  title.textContent = work.title || 'Untitled Work';
-
-  var director = document.createElement('div');
-  director.className = 'wdir';
-  director.textContent = formatDirectorLabel(work.director);
-
-  overlay.appendChild(type);
-  overlay.appendChild(title);
-  overlay.appendChild(director);
-
-  var lock = document.createElement('div');
-  lock.className = 'wlock';
-  lock.innerHTML = workLockSvg;
-
-  card.appendChild(image);
-  card.appendChild(overlay);
-  card.appendChild(lock);
-
-  card.addEventListener('click', function(event) {
-    openModal(event, work.title || 'Untitled Work', work.vimeoUrl || '');
-  });
-
-  return card;
-}
-
-function appendExtraWorks(works) {
-  if (!worksGrid || !Array.isArray(works) || works.length === 0) return;
-  worksGrid.innerHTML = '';
-  works.forEach(function(work) {
-    worksGrid.appendChild(buildWorkCard(work));
-  });
-}
-
-async function loadExtraWorks() {
-  if (!window.EntracteSupabase || typeof window.EntracteSupabase.listPublicWorks !== 'function') {
-    return;
-  }
-
-  try {
-    var works = await window.EntracteSupabase.listPublicWorks();
-    if (works.length > 0) {
-      appendExtraWorks(works);
+    // ── COUNTERS ──
+    var countersRan = false;
+    function runCounters() {
+      if (countersRan) return; countersRan = true;
+      document.querySelectorAll('.cnt').forEach(function (el) {
+        var t = parseInt(el.dataset.t), s = el.dataset.s || '', steps = 50, inc = t / steps, c = 0;
+        var tm = setInterval(function () { c += inc; if (c >= t) { c = t; clearInterval(tm); } el.textContent = Math.floor(c) + s; }, 1200 / steps);
+      });
     }
-  } catch (error) {
-    console.error('Failed to load public works:', error);
-  }
-}
+    var se = document.getElementById('stats');
+    if (se) {
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) runCounters(); });
+      }, { threshold: 0.3 }).observe(se);
+    }
 
-loadExtraWorks();
-
-// ── CONTACT ──
-async function submitForm() {
-  var name = document.getElementById('cf-name').value.trim();
-  var email = document.getElementById('cf-email').value.trim();
-  var subject = document.getElementById('cf-subj').value || '';
-  var message = document.getElementById('cf-msg').value.trim();
-  var status = document.getElementById('fsuccess');
-  var button = document.getElementById('cf-submit');
-  var idleLabel = button.dataset.idleLabel || button.textContent;
-
-  button.dataset.idleLabel = idleLabel;
-
-  if (!name || !email || !message) {
-    status.textContent = 'Please enter your name, email, and message.';
-    status.style.display = 'block';
-    return;
-  }
-
-  button.disabled = true;
-  button.textContent = 'Sending...';
-  button.setAttribute('aria-busy', 'true');
-  status.textContent = 'Sending...';
-  status.style.display = 'block';
-
-  try {
-    var response = await fetch('/api/contact', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        name: name,
-        email: email,
-        subject: subject,
-        message: message
-      })
+    // ── MODAL ──
+    var currentVimeo = '';
+    function openModal(e, title, vimeo) {
+      e.stopPropagation();
+      currentVimeo = vimeo;
+      document.getElementById('modal-film').textContent = title;
+      document.getElementById('merror').style.display = 'none';
+      document.getElementById('mpass').value = '';
+      document.getElementById('rname').value = '';
+      document.getElementById('remail').value = '';
+      document.getElementById('req-form').style.display = 'block';
+      document.getElementById('req-sent').style.display = 'none';
+      document.getElementById('req-error').style.display = 'none';
+      document.getElementById('req-error').textContent = '';
+      document.getElementById('req-submit').disabled = false;
+      document.getElementById('req-submit').textContent = document.getElementById('req-submit').dataset.idleLabel || 'Request Access';
+      switchTab('pw');
+      document.getElementById('modalBg').classList.add('active');
+    }
+    function closeModal() { document.getElementById('modalBg').classList.remove('active'); }
+    document.getElementById('modalBg').addEventListener('click', function (e) {
+      if (e.target === this) closeModal();
     });
+    function switchTab(t) {
+      document.querySelectorAll('.mtab').forEach(function (x) { x.classList.remove('active'); });
+      document.querySelectorAll('.mpanel').forEach(function (x) { x.classList.remove('active'); });
+      document.getElementById('tab-' + t).classList.add('active');
+      document.getElementById('panel-' + t).classList.add('active');
+    }
+    var CODE = 'EnTractE-CreA-26';
+    function tryLogin() {
+      if (document.getElementById('mpass').value.trim() === CODE) {
+        closeModal();
+        if (currentVimeo) window.open(currentVimeo, '_blank');
+        else alert('Access granted. This link will be available soon.');
+      } else {
+        document.getElementById('merror').style.display = 'block';
+      }
+    }
+    async function sendRequest() {
+      var name = document.getElementById('rname').value.trim();
+      var email = document.getElementById('remail').value.trim();
+      var title = document.getElementById('modal-film').textContent.trim() || 'Unknown title';
+      var button = document.getElementById('req-submit');
+      var error = document.getElementById('req-error');
+      var idleLabel = button.dataset.idleLabel || button.textContent;
 
-    var payload = await response.json().catch(function() { return {}; });
-    if (!response.ok) {
-      throw new Error(payload.error || 'Could not send your message.');
+      button.dataset.idleLabel = idleLabel;
+      error.style.display = 'none';
+      error.textContent = '';
+
+      if (!name || !email) {
+        error.textContent = 'Please fill in your name and email.';
+        error.style.display = 'block';
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent = 'Sending...';
+
+      try {
+        var response = await fetch('/api/access-request', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            title: title,
+            name: name,
+            email: email
+          })
+        });
+
+        var payload = await response.json().catch(function () { return {}; });
+        if (!response.ok) {
+          throw new Error(payload.error || 'Could not send your access request.');
+        }
+
+        document.getElementById('req-form').style.display = 'none';
+        document.getElementById('req-sent').style.display = 'block';
+      } catch (requestError) {
+        error.textContent = requestError.message || 'Could not send your access request.';
+        error.style.display = 'block';
+      } finally {
+        button.disabled = false;
+        button.textContent = idleLabel;
+      }
     }
 
-    status.textContent = 'Message received. We will be in touch soon.';
-    document.getElementById('cf-name').value = '';
-    document.getElementById('cf-email').value = '';
-    document.getElementById('cf-subj').selectedIndex = 0;
-    document.getElementById('cf-msg').value = '';
-  } catch (error) {
-    status.textContent = error.message || 'Could not send your message.';
-  } finally {
-    button.disabled = false;
-    button.textContent = idleLabel;
-    button.removeAttribute('aria-busy');
-  }
-}
-</script>
+    // ── PUBLIC WORKS ──
+    var worksGrid = document.getElementById('works-grid');
+    var workLockSvg = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231f20" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="1"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>';
+
+    function formatDirectorLabel(director) {
+      var clean = String(director || '').replace(/^Dir\.\s*/i, '').trim();
+      return clean ? ('Dir. ' + clean) : 'Dir. —';
+    }
+
+    function buildWorkCard(work) {
+      var card = document.createElement('div');
+      card.className = 'wc';
+
+      var image = document.createElement('img');
+      image.src = work.imageUrl || work.imagePath || '';
+      image.alt = work.imageAlt || work.title || 'Work image';
+      image.loading = 'lazy';
+      if (work.imageStyle) {
+        image.style.cssText = work.imageStyle;
+      }
+
+      var overlay = document.createElement('div');
+      overlay.className = 'wo';
+
+      var type = document.createElement('div');
+      type.className = 'wtype';
+      type.textContent = work.type || 'Promoreel';
+
+      var title = document.createElement('div');
+      title.className = 'wtitle';
+      title.textContent = work.title || 'Untitled Work';
+
+      var director = document.createElement('div');
+      director.className = 'wdir';
+      director.textContent = formatDirectorLabel(work.director);
+
+      overlay.appendChild(type);
+      overlay.appendChild(title);
+      overlay.appendChild(director);
+
+      var lock = document.createElement('div');
+      lock.className = 'wlock';
+      lock.innerHTML = workLockSvg;
+
+      card.appendChild(image);
+      card.appendChild(overlay);
+      card.appendChild(lock);
+
+      card.addEventListener('click', function (event) {
+        openModal(event, work.title || 'Untitled Work', work.vimeoUrl || '');
+      });
+
+      return card;
+    }
+
+    function appendExtraWorks(works) {
+      if (!worksGrid || !Array.isArray(works) || works.length === 0) return;
+      worksGrid.innerHTML = '';
+      works.forEach(function (work) {
+        worksGrid.appendChild(buildWorkCard(work));
+      });
+    }
+
+    async function loadExtraWorks() {
+      if (!window.EntracteSupabase || typeof window.EntracteSupabase.listPublicWorks !== 'function') {
+        return;
+      }
+
+      try {
+        var works = await window.EntracteSupabase.listPublicWorks();
+        if (works.length > 0) {
+          appendExtraWorks(works);
+        }
+      } catch (error) {
+        console.error('Failed to load public works:', error);
+      }
+    }
+
+    loadExtraWorks();
+
+    // ── CONTACT ──
+    async function submitForm() {
+      var name = document.getElementById('cf-name').value.trim();
+      var email = document.getElementById('cf-email').value.trim();
+      var subject = document.getElementById('cf-subj').value || '';
+      var message = document.getElementById('cf-msg').value.trim();
+      var status = document.getElementById('fsuccess');
+      var button = document.getElementById('cf-submit');
+      var idleLabel = button.dataset.idleLabel || button.textContent;
+
+      button.dataset.idleLabel = idleLabel;
+
+      if (!name || !email || !message) {
+        status.textContent = 'Please enter your name, email, and message.';
+        status.style.display = 'block';
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent = 'Sending...';
+      button.setAttribute('aria-busy', 'true');
+      status.textContent = 'Sending...';
+      status.style.display = 'block';
+
+      try {
+        var response = await fetch('/api/contact', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            name: name,
+            email: email,
+            subject: subject,
+            message: message
+          })
+        });
+
+        var payload = await response.json().catch(function () { return {}; });
+        if (!response.ok) {
+          throw new Error(payload.error || 'Could not send your message.');
+        }
+
+        status.textContent = 'Message received. We will be in touch soon.';
+        document.getElementById('cf-name').value = '';
+        document.getElementById('cf-email').value = '';
+        document.getElementById('cf-subj').selectedIndex = 0;
+        document.getElementById('cf-msg').value = '';
+      } catch (error) {
+        status.textContent = error.message || 'Could not send your message.';
+      } finally {
+        button.disabled = false;
+        button.textContent = idleLabel;
+        button.removeAttribute('aria-busy');
+      }
+    }
+  </script>
 </body>
+
 </html>
