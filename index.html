@@ -66,6 +66,12 @@
       mix-blend-mode: multiply
     }
 
+    @media (pointer:coarse) {
+      #cursor {
+        display: none
+      }
+    }
+
     /* ── INTRO ── */
     #intro {
       position: fixed;
@@ -2206,73 +2212,35 @@
 
     // ── CURSOR ──
     (function () {
+      if (!window.matchMedia('(pointer:fine)').matches) {
+        return;
+      }
+
       var cur = document.getElementById('cursor');
       if (!cur) {
         return;
       }
 
-      var hasFinePointer = window.matchMedia('(pointer:fine)').matches;
       var interactive = 'a, button, input, textarea, select, .wc, .nlogo, .mclose';
 
-      function moveCursor(x, y) {
-        cur.style.left = x + 'px';
-        cur.style.top = y + 'px';
+      document.addEventListener('mousemove', function (event) {
+        cur.style.left = event.clientX + 'px';
+        cur.style.top = event.clientY + 'px';
         cur.style.opacity = '1';
-      }
+      });
 
-      function setInteractiveState(target) {
-        if (target && target.closest && target.closest(interactive)) {
-          cur.classList.add('big');
-          return;
-        }
-        cur.classList.remove('big');
-      }
-
-      if (hasFinePointer) {
-        document.addEventListener('mousemove', function (event) {
-          moveCursor(event.clientX, event.clientY);
-        });
-
-        document.addEventListener('mouseleave', function () {
-          cur.style.opacity = '0';
-        });
-
-        document.querySelectorAll(interactive).forEach(function (el) {
-          el.addEventListener('mouseenter', function () {
-            cur.classList.add('big');
-          });
-          el.addEventListener('mouseleave', function () {
-            cur.classList.remove('big');
-          });
-        });
-        return;
-      }
-
-      document.addEventListener('touchstart', function (event) {
-        var touch = event.touches[0];
-        if (!touch) {
-          return;
-        }
-        moveCursor(touch.clientX, touch.clientY);
-        setInteractiveState(event.target);
-      }, { passive: true });
-
-      document.addEventListener('touchmove', function (event) {
-        var touch = event.touches[0];
-        if (!touch) {
-          return;
-        }
-        moveCursor(touch.clientX, touch.clientY);
-        setInteractiveState(document.elementFromPoint(touch.clientX, touch.clientY));
-      }, { passive: true });
-
-      function hideTouchCursor() {
+      document.addEventListener('mouseleave', function () {
         cur.style.opacity = '0';
-        cur.classList.remove('big');
-      }
+      });
 
-      document.addEventListener('touchend', hideTouchCursor, { passive: true });
-      document.addEventListener('touchcancel', hideTouchCursor, { passive: true });
+      document.querySelectorAll(interactive).forEach(function (el) {
+        el.addEventListener('mouseenter', function () {
+          cur.classList.add('big');
+        });
+        el.addEventListener('mouseleave', function () {
+          cur.classList.remove('big');
+        });
+      });
     })();
   </script>
 </body>
