@@ -37,6 +37,41 @@
       overflow-x: hidden
     }
 
+    @media (pointer:fine) {
+      body {
+        cursor: none
+      }
+    }
+
+    #cursor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 12px;
+      height: 12px;
+      background: var(--b);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width .24s ease, height .24s ease, background .24s ease, opacity .24s ease;
+      opacity: 0;
+      mix-blend-mode: normal
+    }
+
+    #cursor.big {
+      width: 44px;
+      height: 44px;
+      background: var(--p);
+      mix-blend-mode: multiply
+    }
+
+    @media (pointer:coarse) {
+      #cursor {
+        display: none
+      }
+    }
+
     /* ── INTRO ── */
     #intro {
       position: fixed;
@@ -220,19 +255,34 @@
       text-align: left
     }
 
-    .hero-logo {
-      width: clamp(300px, 42vw, 560px);
-      display: block
+    .hero-brand-logo {
+      width: clamp(280px, 36vw, 560px);
+      height: auto;
+      display: block;
+      margin-bottom: 20px
     }
 
-    .hero-tagline-small {
+    .hero-title {
+      display: grid;
+      gap: 0;
+      line-height: .92
+    }
+
+    .hero-title-beyond {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.2rem, 4.1vw, 3.6rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: #353032
+    }
+
+    .hero-title-frame {
       font-family: 'DM Sans', sans-serif;
-      font-size: clamp(.58rem, 1vw, .74rem);
-      letter-spacing: .7em;
-      text-transform: uppercase;
-      color: rgba(35, 31, 32, .48);
-      margin-top: 16px;
-      margin-left: 4px
+      font-size: clamp(1.95rem, 3.7vw, 3.1rem);
+      font-style: italic;
+      font-weight: 300;
+      letter-spacing: -0.05em;
+      color: var(--p)
     }
 
     .hero-copy {
@@ -1081,16 +1131,40 @@
       #hero {
         height: auto;
         min-height: 0;
-        padding: 96px 20px 36px
+        padding: 122px 20px 36px
       }
 
       .hero-content {
         grid-template-columns: 1fr;
-        gap: 28px
+        gap: 24px
       }
 
-      .hero-logo {
-        width: min(86vw, 420px)
+      .hero-logo-wrap {
+        width: 100%
+      }
+
+      .hero-brand-logo {
+        width: min(82vw, 420px);
+        margin-bottom: 16px
+      }
+
+      .hero-title {
+        width: 100%;
+        line-height: .96;
+        padding-top: 0
+      }
+
+      .hero-title-beyond {
+        font-size: clamp(1.9rem, 9vw, 3rem)
+      }
+
+      .hero-title-frame {
+        font-size: clamp(1.7rem, 8vw, 2.7rem)
+      }
+
+      .hero-bg-text {
+        font-size: clamp(5.8rem, 25vw, 9rem);
+        top: 55%
       }
 
       .hero-space {
@@ -1099,12 +1173,18 @@
 
       .hero-actions {
         flex-direction: column;
-        align-items: center;
+        align-items: stretch;
         gap: 10px
       }
 
       .hero-copy {
-        font-size: 1rem
+        max-width: none;
+        font-size: .95rem
+      }
+
+      #hero .btnb,
+      #hero .btno {
+        width: 100%
       }
 
       #about {
@@ -1190,6 +1270,7 @@
 </head>
 
 <body>
+  <div id="cursor" aria-hidden="true"></div>
 
   <!-- INTRO -->
   <div id="intro">
@@ -1219,11 +1300,14 @@
       <div class="hero-content">
         <div>
           <div class="hero-logo-wrap">
-            <img class="hero-logo" src="assets/entracte-logo.png" alt="entracte" />
-            <div class="hero-tagline-small">Beyond the Frame</div>
+            <img class="hero-brand-logo" src="assets/entracte-logo.png" alt="entracte" />
+            <div class="hero-title" aria-label="Beyond the Frame">
+              <span class="hero-title-beyond">Beyond</span>
+              <span class="hero-title-frame">the Frame.</span>
+            </div>
           </div>
-          <p class="hero-copy">We craft cinematic stories that <strong>move, inspire,</strong> and leave a lasting
-            impression.</p>
+          <p class="hero-copy">We craft cinematic stories that <strong>move, inspire,</strong> and stay with audiences.
+          </p>
           <div class="hero-actions">
             <button class="btnb" onclick="goPage('works')">View Works</button>
             <button class="btno" onclick="goPage('about')">About Us</button>
@@ -2125,6 +2209,39 @@
         button.removeAttribute('aria-busy');
       }
     }
+
+    // ── CURSOR ──
+    (function () {
+      if (!window.matchMedia('(pointer:fine)').matches) {
+        return;
+      }
+
+      var cur = document.getElementById('cursor');
+      if (!cur) {
+        return;
+      }
+
+      var interactive = 'a, button, input, textarea, select, .wc, .nlogo, .mclose';
+
+      document.addEventListener('mousemove', function (event) {
+        cur.style.left = event.clientX + 'px';
+        cur.style.top = event.clientY + 'px';
+        cur.style.opacity = '1';
+      });
+
+      document.addEventListener('mouseleave', function () {
+        cur.style.opacity = '0';
+      });
+
+      document.querySelectorAll(interactive).forEach(function (el) {
+        el.addEventListener('mouseenter', function () {
+          cur.classList.add('big');
+        });
+        el.addEventListener('mouseleave', function () {
+          cur.classList.remove('big');
+        });
+      });
+    })();
   </script>
 </body>
 

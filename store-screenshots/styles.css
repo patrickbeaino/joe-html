@@ -1,0 +1,235 @@
+:root {
+  --resk-red: #ef475c;
+  --resk-deep: #8c191b;
+  --ink: #191919;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #111;
+  color: #fff;
+}
+
+.sheet-grid {
+  display: grid;
+  gap: 22px;
+  padding: 22px;
+  justify-content: center;
+}
+
+.store-shot {
+  width: 1290px;
+  height: 2796px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 40px;
+  background: radial-gradient(circle at 12% 8%, #ffffff30 0, transparent 26%),
+    linear-gradient(170deg, #fdf7f8 0%, #fff 40%, #f9f0f1 100%);
+  color: var(--ink);
+  padding: 130px 92px;
+}
+
+.store-shot::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(155deg, #ef475c22 0%, #8c191b08 60%, transparent 100%);
+  pointer-events: none;
+}
+
+.noise {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(#00000009 1px, transparent 1px);
+  background-size: 4px 4px;
+  opacity: .35;
+}
+
+header {
+  position: relative;
+  z-index: 2;
+  max-width: 980px;
+}
+
+.eyebrow {
+  letter-spacing: 0.22em;
+  font-weight: 700;
+  color: #9d3a43;
+  font-size: 34px;
+  margin: 0 0 40px;
+}
+
+h1 {
+  font-size: 110px;
+  line-height: 1.02;
+  margin: 0;
+  font-weight: 800;
+}
+
+.sub {
+  font-size: 50px;
+  line-height: 1.28;
+  color: #4d4d4d;
+  margin-top: 44px;
+}
+
+.phone-wrap {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 120px;
+  z-index: 3;
+}
+
+.iphone {
+  width: 760px;
+  height: 1500px;
+  border-radius: 90px;
+  padding: 18px;
+  background: linear-gradient(165deg, #1f1f1f, #000);
+  box-shadow: 0 60px 120px #0000003d;
+}
+
+.app-screen {
+  height: 100%;
+  border-radius: 72px;
+  background-size: cover;
+  background-position: center;
+  border: 1px solid #ffffff1a;
+}
+
+/* Use existing app visuals where available, then blend over with UI chrome */
+.app-screen.home {
+  background-image: linear-gradient(#ffffff40, #ffffff90), url('../resk_lebanon_customer_app/assets/explore/resk-beirut.jpg');
+}
+
+.app-screen.brands {
+  background-image: linear-gradient(#ffffff66, #ffffffcc), url('../resk_lebanon_customer_app/assets/explore/resk-beirut1.png');
+}
+
+.app-screen.products {
+  background-image: linear-gradient(#fff9, #fff), url('../resk_lebanon_customer_app/assets/explore/resk-mount-lebanon.png');
+}
+
+.app-screen.orders {
+  background-image: linear-gradient(#ffffffeb, #fff), url('../resk_lebanon_customer_app/assets/explore/resk-bekaa.png');
+}
+
+.app-screen.partner {
+  background-image: linear-gradient(#ffffffd9, #fff), url('../resk_lebanon_customer_app/assets/explore/resk-north-lebanon.png');
+}
+
+.floating-card {
+  position: absolute;
+  background: #fff;
+  color: #1f1f1f;
+  border-radius: 999px;
+  padding: 26px 38px;
+  font-weight: 700;
+  font-size: 36px;
+  box-shadow: 0 30px 60px #00000021;
+  z-index: 4;
+}
+
+.card-brand {
+  left: -120px;
+  top: 220px;
+}
+
+.card-fast {
+  right: -120px;
+  top: 460px;
+  background: linear-gradient(130deg, var(--resk-red), var(--resk-deep));
+  color: #fff;
+}
+
+.card-cat {
+  left: -90px;
+  top: 350px;
+}
+
+.card-cat.second {
+  right: -145px;
+  left: auto;
+  top: 600px;
+}
+
+.card-price {
+  right: -130px;
+  top: 420px;
+}
+
+.card-track {
+  left: -120px;
+  top: 530px;
+}
+
+.card-sell {
+  right: -140px;
+  top: 390px;
+  background: linear-gradient(130deg, var(--resk-red), var(--resk-deep));
+  color: #fff;
+}
+
+.shot-discovery {
+  background-image: linear-gradient(155deg, #fff6f7, #fff);
+}
+
+.shot-products,
+.shot-orders {
+  background-image: linear-gradient(165deg, #fff, #fcf5f6);
+}
+
+.shot-partners::after {
+  content: "";
+  position: absolute;
+  top: 80px;
+  right: 92px;
+  width: 300px;
+  height: 102px;
+  background: url('../resk_lebanon_customer_app/assets/resk-w:slogan.png') no-repeat center/contain;
+}
+
+/* Play Store export size (1080x1920) */
+@media (max-width: 1100px) {
+  .store-shot {
+    width: 1080px;
+    height: 1920px;
+    border-radius: 28px;
+    padding: 78px 68px;
+  }
+
+  h1 {
+    font-size: 76px;
+  }
+
+  .sub {
+    font-size: 34px;
+    margin-top: 26px;
+  }
+
+  .eyebrow {
+    font-size: 24px;
+    margin-bottom: 24px;
+  }
+
+  .iphone {
+    width: 530px;
+    height: 1030px;
+    border-radius: 68px;
+  }
+
+  .app-screen {
+    border-radius: 50px;
+  }
+
+  .floating-card {
+    font-size: 24px;
+    padding: 16px 24px;
+  }
+}
