@@ -6,6 +6,7 @@
     "resend": "^4.8.0"
   },
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "supabase:keepalive": "node scripts/supabase-keepalive.js"
   }
 }
